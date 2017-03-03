@@ -1,4 +1,4 @@
-package org.leaf.anno.doc.vo;
+package org.treeleafj.xdoc.demo.vo;
 
 import lombok.Data;
 

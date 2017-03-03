@@ -1,4 +1,4 @@
-package org.leaf.anno.doc;
+package org.treeleafj.xdoc.utils;
 
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.AnnotationValue;
@@ -11,6 +11,8 @@ import com.sun.javadoc.Tag;
 import com.sun.tools.javadoc.AnnotationValueImpl;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.map.HashedMap;
+import org.treeleafj.xdoc.model.Param;
+import org.treeleafj.xdoc.model.ParamField;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
@@ -92,12 +94,12 @@ public class DocUtils {
                 String classType = aClass.qualifiedTypeName();
                 try {
                     Class<?> classz = Class.forName(classType);
-                    List<VOField> fields = analysisFields(classz, aClass);
-                    VOInfo voInfo = new VOInfo();
-                    voInfo.setTypeName(classType);
-                    voInfo.setVoFields(fields);
-                    voInfo.setComment(text);
-                    map.put(_tag.name(), voInfo);
+                    List<ParamField> fields = analysisFields(classz, aClass);
+                    Param param = new Param();
+                    param.setType(Class.forName(classType));
+                    param.setParamFields(fields);
+                    param.setComment(text);
+                    map.put(_tag.name(), param);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -110,15 +112,15 @@ public class DocUtils {
     }
 
 
-    private static List<VOField> analysisFields(Class classz, ClassDoc classDoc) {
+    private static List<ParamField> analysisFields(Class classz, ClassDoc classDoc) {
         PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(classz);
         FieldDoc[] fieldDocs = classDoc.fields(false);
-        List<VOField> fields = new ArrayList<VOField>();
+        List<ParamField> fields = new ArrayList<ParamField>();
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             if (propertyDescriptor.getName().equals("class")) {
                 continue;
             }
-            VOField field = new VOField();
+            ParamField field = new ParamField();
             field.setTypeName(propertyDescriptor.getPropertyType().getSimpleName());
             field.setType(propertyDescriptor.getPropertyType().getName());
             field.setName(propertyDescriptor.getName());

@@ -1,9 +1,9 @@
-package org.leaf.anno.doc.controller;
+package org.treeleafj.xdoc.demo.controller;
 
-import org.leaf.anno.doc.vo.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.treeleafj.xdoc.demo.vo.User;
 
 /**
  * 用户模块
@@ -21,10 +21,10 @@ public class UserController {
      * @param username 用户名
      * @param password 密码
      * @return 用户注册后的信息
-     * @see User
+     * @see org.treeleafj.xdoc.demo.vo.User
      */
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public User register(String username, String password) {
+    public User register(User user, int num, String username, String password) {
         return null;
     }
 }

@@ -1,8 +1,7 @@
-package org.leaf.anno.doc;
+package org.treeleafj.xdoc.model;
 
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,7 +9,7 @@ import java.util.List;
  * @date 2017-03-03 12:14
  */
 @Data
-public class VOInfo {
+public class ParamField {
 
     private String typeName;
 
@@ -20,6 +19,6 @@ public class VOInfo {
 
     private String comment;
 
-    private List<VOField> voFields = new ArrayList<VOField>();
+    private List<ParamField> paramFields;
 
 }
