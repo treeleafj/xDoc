@@ -22,6 +22,7 @@ public class UserController {
      * @param password 密码
      * @return 用户注册后的信息
      * @see org.treeleafj.xdoc.demo.vo.User
+     * @see java.util.HashMap
      */
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public User register(User user, int num, String username, String password) {

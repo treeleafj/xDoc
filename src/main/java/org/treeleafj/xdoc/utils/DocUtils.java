@@ -1,5 +1,6 @@
 package org.treeleafj.xdoc.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.sun.javadoc.AnnotationDesc;
 import com.sun.javadoc.AnnotationValue;
 import com.sun.javadoc.ClassDoc;
@@ -9,22 +10,20 @@ import com.sun.javadoc.ProgramElementDoc;
 import com.sun.javadoc.SeeTag;
 import com.sun.javadoc.Tag;
 import com.sun.tools.javadoc.AnnotationValueImpl;
-import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.map.HashedMap;
-import org.treeleafj.xdoc.model.Param;
-import org.treeleafj.xdoc.model.ParamField;
+import org.treeleafj.xdoc.converter.DocTagConverterRegistrator;
+import org.treeleafj.xdoc.converter.TagConverter;
+import org.treeleafj.xdoc.model.DocTag;
+import org.treeleafj.xdoc.model.DocTags;
 
-import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
- * @author Administrator
+ * @author leaf
  * @date 2017-03-03 10:34
  */
 public class DocUtils {
+
     public static boolean isController(ClassDoc classDoc) {
         for (AnnotationDesc annotationDesc : classDoc.annotations()) {
             if (annotationDesc.annotationType().name().equals("Controller")) {
@@ -73,66 +72,26 @@ public class DocUtils {
         return map;
     }
 
-    public static Map<String, Object> getDocs(ProgramElementDoc elementDoc) {
+    /**
+     * 获取元素上的所有基于便签的注释信息
+     *
+     * @param elementDoc
+     * @return
+     */
+    public static DocTags getDocsForTag(ProgramElementDoc elementDoc) {
         Tag[] tags = elementDoc.tags();
-        Map<String, Object> map = new HashedMap();
+
+        DocTags docTags = new DocTags(new ArrayList<DocTag>(tags.length));
         for (Tag tag : tags) {
 
-            if (tag instanceof ParamTag) {
-                ParamTag _tag = (ParamTag) tag;
-                Map<String, String> o = (Map<String, String>) map.get(tag.name());
-                if (o == null) {
-                    o = new TreeMap<String, String>();
-                    map.put(tag.name(), o);
-                }
-                o.put(_tag.parameterName(), _tag.parameterComment());
-            } else if (tag instanceof SeeTag) {
-                SeeTag _tag = (SeeTag) tag;
-
-                ClassDoc aClass = _tag.referencedClass().findClass(_tag.referencedClassName());
-                String text = aClass.commentText();
-                String classType = aClass.qualifiedTypeName();
-                try {
-                    Class<?> classz = Class.forName(classType);
-                    List<ParamField> fields = analysisFields(classz, aClass);
-                    Param param = new Param();
-                    param.setType(Class.forName(classType));
-                    param.setParamFields(fields);
-                    param.setComment(text);
-                    map.put(_tag.name(), param);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } else {//其它认为是TagImpl
-                map.put(tag.name(), tag.text());
+            TagConverter tagConverter = DocTagConverterRegistrator.get(tag.getClass());
+            if (tagConverter == null) {
+                tagConverter = DocTagConverterRegistrator.getDefault();
             }
+
+            DocTag docTag = tagConverter.converter(tag);
+            docTags.getList().add(docTag);
         }
-        System.out.println(map);
-        return map;
-    }
-
-
-    private static List<ParamField> analysisFields(Class classz, ClassDoc classDoc) {
-        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(classz);
-        FieldDoc[] fieldDocs = classDoc.fields(false);
-        List<ParamField> fields = new ArrayList<ParamField>();
-        for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
-            if (propertyDescriptor.getName().equals("class")) {
-                continue;
-            }
-            ParamField field = new ParamField();
-            field.setTypeName(propertyDescriptor.getPropertyType().getSimpleName());
-            field.setType(propertyDescriptor.getPropertyType().getName());
-            field.setName(propertyDescriptor.getName());
-
-            for (FieldDoc fieldDoc : fieldDocs) {
-                if (fieldDoc.name().equals(propertyDescriptor.getName())) {
-                    field.setComment(fieldDoc.commentText());
-                }
-            }
-
-            fields.add(field);
-        }
-        return fields;
+        return docTags;
     }
 }

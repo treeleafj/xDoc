@@ -1,6 +1,9 @@
 package org.treeleafj.xdoc;
 
+import com.alibaba.fastjson.JSON;
 import org.treeleafj.xdoc.handler.CoreDocHandler;
+import org.treeleafj.xdoc.model.ApiModule;
+import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.FileUtils;
 
 import java.io.File;
@@ -47,5 +50,8 @@ public class XDoc {
         String[] docArgs = files.toArray(new String[files.size()]);
 
         com.sun.tools.javadoc.Main.execute(docArgs);
+
+        List<ApiModule> currentApiModules = ApiModulesHolder.getCurrentApiModules();
+        System.out.println(JSON.toJSONString(currentApiModules));
     }
 }

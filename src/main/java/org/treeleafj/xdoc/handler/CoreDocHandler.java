@@ -1,6 +1,5 @@
 package org.treeleafj.xdoc.handler;
 
-import com.alibaba.fastjson.JSON;
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
@@ -9,13 +8,19 @@ import org.treeleafj.xdoc.filter.DocFilter;
 import org.treeleafj.xdoc.filter.FilterFactory;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
-import org.treeleafj.xdoc.model.Param;
+import org.treeleafj.xdoc.model.DocTags;
+import org.treeleafj.xdoc.model.ObjectInfo;
+import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.DocUtils;
 
 import java.lang.reflect.Method;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
+ * 核心解析器,负责将类上的注释,类属性,方法属性等解析出来
+ *
  * @author leaf
  * @date 2017-03-03 17:02
  */
@@ -25,42 +30,44 @@ public class CoreDocHandler {
         DocFilter filter = FilterFactory.getDefaultFilter();
         ClassDoc[] classDocs = filter.filter(root.classes());
 
+        List<ApiModule> apiModules = new LinkedList<ApiModule>();
         for (int i = 0; i < classDocs.length; i++) {
             ClassDoc aClass = classDocs[i];
 
+            ApiModule apiModule = new ApiModule();
             Class<?> moduleType = Class.forName(aClass.qualifiedTypeName());
 
-            ApiModule apiModule = new ApiModule();
             apiModule.setType(moduleType);
             apiModule.setComment(aClass.commentText());
 
             MethodDoc[] methods = aClass.methods();
 
             for (MethodDoc method : methods) {
+                Class[] paramTypes = paramTypes(method);
+                Method m = moduleType.getMethod(method.name(), paramTypes);
+                DocTags docTags = DocUtils.getDocsForTag(method);
+
                 ApiAction apiAction = new ApiAction();
                 apiAction.setComment(method.commentText());
                 apiAction.setName(method.name());
-
-                Class[] paramTypes = paramTypes(method);
-                Method m = moduleType.getMethod(method.name(), paramTypes);
-
-                Map<String, Object> docs = DocUtils.getDocs(method);
-                Map<String, String> params = (Map<String, String>) docs.get("@param");
-                if (params != null) {
-                    apiAction.getParams().putAll(params);
-                }
+                apiAction.setDocTags(docTags);
                 apiAction.setMethod(m);
-                apiAction.setReturnDesc((String) docs.get("@return"));
-                apiAction.setReturnInfo((Param) docs.get("@see"));
                 apiModule.getApiActions().add(apiAction);
             }
 
-            System.out.println(JSON.toJSONString(apiModule));
-
+            apiModules.add(apiModule);
         }
+        ApiModulesHolder.setCurrentApiModules(apiModules);//设置当前的解析结果
         return true;
     }
 
+    /**
+     * 获取指定方法的所有入参类型,便于反射
+     *
+     * @param methodDoc
+     * @return
+     * @throws ClassNotFoundException
+     */
     private static Class[] paramTypes(MethodDoc methodDoc) throws ClassNotFoundException {
         Parameter[] parameters = methodDoc.parameters();
         Class[] types = new Class[parameters.length];
@@ -74,6 +81,12 @@ public class CoreDocHandler {
         return types;
     }
 
+    /**
+     * 将基本类型的转为class类型
+     *
+     * @param className
+     * @return
+     */
     private static Class toBae(String className) {
         if ("byte".equals(className)) {
             return byte.class;

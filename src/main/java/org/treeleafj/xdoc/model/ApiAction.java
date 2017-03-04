@@ -27,37 +27,12 @@ public class ApiAction {
     private Method method;
 
     /**
-     * 接口uri
-     */
-    private List uri;
-
-    /**
-     * 限制的访问方式:POST,GET等
-     */
-    private List<String> methods;
-
-    /**
      * 接口的描述
      */
     private String comment;
 
     /**
-     * 接口的作者
+     * 方法上标注的注解
      */
-    private String author;
-
-    /**
-     * 接口返回描述
-     */
-    private String returnDesc;
-
-    /**
-     * 接口返回的信息
-     */
-    private Param returnInfo;
-
-    /**
-     * 接口的入参
-     */
-    private Map<String, String> params = new TreeMap<String, String>();
+    private DocTags docTags;
 }

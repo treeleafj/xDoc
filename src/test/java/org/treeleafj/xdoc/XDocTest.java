@@ -9,7 +9,8 @@ public class XDocTest {
 
     @Test
     public void build() throws Exception {
-        XDoc xDoc = new XDoc("E:\\project\\xDoc\\src\\main\\java\\org\\treeleafj", "");
+        String rootDir = System.getProperty("user.dir");
+        XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", "");
         xDoc.build();
     }
 
