@@ -1,4 +1,4 @@
-package org.treeleafj.xdoc.handler;
+package org.treeleafj.xdoc;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
@@ -9,14 +9,12 @@ import org.treeleafj.xdoc.filter.FilterFactory;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.DocTags;
-import org.treeleafj.xdoc.model.ObjectInfo;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.DocUtils;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 核心解析器,负责将类上的注释,类属性,方法属性等解析出来

@@ -1,22 +1,16 @@
 package org.treeleafj.xdoc.utils;
 
-import com.alibaba.fastjson.JSON;
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.AnnotationValue;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.ParamTag;
-import com.sun.javadoc.ProgramElementDoc;
-import com.sun.javadoc.SeeTag;
-import com.sun.javadoc.Tag;
+import com.sun.javadoc.*;
 import com.sun.tools.javadoc.AnnotationValueImpl;
 import org.apache.commons.collections.map.HashedMap;
-import org.treeleafj.xdoc.converter.DocTagConverterRegistrator;
+import org.treeleafj.xdoc.converter.XDocConfig;
 import org.treeleafj.xdoc.converter.TagConverter;
 import org.treeleafj.xdoc.model.DocTag;
 import org.treeleafj.xdoc.model.DocTags;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author leaf
@@ -84,9 +78,9 @@ public class DocUtils {
         DocTags docTags = new DocTags(new ArrayList<DocTag>(tags.length));
         for (Tag tag : tags) {
 
-            TagConverter tagConverter = DocTagConverterRegistrator.get(tag.getClass());
+            TagConverter tagConverter = XDocConfig.getConverter(tag.getClass());
             if (tagConverter == null) {
-                tagConverter = DocTagConverterRegistrator.getDefault();
+                tagConverter = XDocConfig.getDefaultConverter();
             }
 
             DocTag docTag = tagConverter.converter(tag);

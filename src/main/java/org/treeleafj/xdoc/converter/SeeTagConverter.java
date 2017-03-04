@@ -47,7 +47,8 @@ public class SeeTagConverter implements TagConverter<SeeTag> {
                 continue;
             }
             FieldInfo field = new FieldInfo();
-            field.setType(propertyDescriptor.getPropertyType().getName());
+            field.setType(propertyDescriptor.getPropertyType());
+            field.setSimpleTypeName(propertyDescriptor.getPropertyType().getSimpleName());
             field.setName(propertyDescriptor.getName());
 
             for (FieldDoc fieldDoc : fieldDocs) {

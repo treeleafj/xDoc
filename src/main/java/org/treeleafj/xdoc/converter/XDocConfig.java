@@ -3,7 +3,6 @@ package org.treeleafj.xdoc.converter;
 
 import com.sun.javadoc.ParamTag;
 import com.sun.javadoc.SeeTag;
-import org.treeleafj.xdoc.model.ParamTagImpl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,22 +12,22 @@ import java.util.Map;
  * <p>
  * Created by leaf on 2017/3/4.
  */
-public class DocTagConverterRegistrator {
+public class XDocConfig {
 
     private static Map<Class, TagConverter> registrator = new HashMap<Class, TagConverter>();
 
     private static TagConverter defaultTagConverter = new DefaultTagConverterImpl();
 
     static {
-        register(ParamTag.class, new ParamTagConverter());
-        register(SeeTag.class, new SeeTagConverter());
+        registerConverter(ParamTag.class, new ParamTagConverter());
+        registerConverter(SeeTag.class, new SeeTagConverter());
     }
 
-    public static void register(Class classz, TagConverter tagConverter) {
+    public static void registerConverter(Class classz, TagConverter tagConverter) {
         registrator.put(classz, tagConverter);
     }
 
-    public static TagConverter get(Class classz) {
+    public static TagConverter getConverter(Class classz) {
         for (Map.Entry<Class, TagConverter> entry : registrator.entrySet()) {
             if (entry.getKey().isAssignableFrom(classz)) {
                 return entry.getValue();
@@ -37,7 +36,7 @@ public class DocTagConverterRegistrator {
         return null;
     }
 
-    public static TagConverter getDefault() {
+    public static TagConverter getDefaultConverter() {
         return defaultTagConverter;
     }
 }

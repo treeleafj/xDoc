@@ -1,8 +1,10 @@
 package org.treeleafj.xdoc.demo.controller;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.demo.vo.User;
 
 /**
@@ -27,5 +29,18 @@ public class UserController {
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public User register(User user, int num, String username, String password) {
         return null;
+    }
+
+    /**
+     * 查询当前登录用户的基本信息
+     *
+     * @param user 当前登录用户
+     * @return 当前登录用户的基本信息
+     * @see org.treeleafj.xdoc.demo.vo.User
+     */
+    @ResponseBody
+    @RequestMapping("info")
+    public User info(User user) {
+        return new User();
     }
 }

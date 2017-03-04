@@ -13,7 +13,9 @@ public class FieldInfo {
 
     private String name;
 
-    private String type;
+    private Class<?> type;
+
+    private String simpleTypeName;
 
     private String comment;
 

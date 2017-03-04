@@ -1,8 +1,8 @@
 package org.treeleafj.xdoc;
 
 import com.alibaba.fastjson.JSON;
-import org.treeleafj.xdoc.handler.CoreDocHandler;
 import org.treeleafj.xdoc.model.ApiModule;
+import org.treeleafj.xdoc.output.XDocOutput;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.FileUtils;
 
@@ -21,15 +21,15 @@ public class XDoc {
     private String srcPath;
 
     /**
-     * 目标路径
+     * 输出方式
      */
-    private String targetPath;
+    private XDocOutput output;
 
     private Class<?> docHandlerClass = CoreDocHandler.class;
 
-    public XDoc(String srcPath, String targetPath) {
+    public XDoc(String srcPath, XDocOutput output) {
         this.srcPath = srcPath;
-        this.targetPath = targetPath;
+        this.output = output;
     }
 
     public void build() {
@@ -53,5 +53,7 @@ public class XDoc {
 
         List<ApiModule> currentApiModules = ApiModulesHolder.getCurrentApiModules();
         System.out.println(JSON.toJSONString(currentApiModules));
+
+        output.output(currentApiModules);
     }
 }

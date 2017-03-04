@@ -25,11 +25,6 @@ public class ApiModule {
     private String comment;
 
     /**
-     * 业务模块的作者
-     */
-    private String author;
-
-    /**
      * 此业务模块下有哪些接口
      */
     private List<ApiAction> apiActions = new LinkedList<ApiAction>();
