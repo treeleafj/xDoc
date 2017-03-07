@@ -1,5 +1,7 @@
 package org.treeleafj.xdoc.model;
 
+import org.treeleafj.xdoc.tag.DocTag;
+
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,4 +1,6 @@
-package org.treeleafj.xdoc.model;
+package org.treeleafj.xdoc.tag;
+
+import org.treeleafj.xdoc.model.ObjectInfo;
 
 /**
  * Created by leaf on 2017/3/4.

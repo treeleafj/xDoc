@@ -5,7 +5,7 @@ import com.sun.tools.javadoc.AnnotationValueImpl;
 import org.apache.commons.collections.map.HashedMap;
 import org.treeleafj.xdoc.converter.XDocConfig;
 import org.treeleafj.xdoc.converter.TagConverter;
-import org.treeleafj.xdoc.model.DocTag;
+import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.model.DocTags;
 
 import java.util.ArrayList;

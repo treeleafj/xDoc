@@ -5,12 +5,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.treeleafj.xdoc.model.*;
+import org.treeleafj.xdoc.model.ApiAction;
+import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.output.XDocOutput;
+import org.treeleafj.xdoc.tag.DocTag;
+import org.treeleafj.xdoc.tag.ParamTagImpl;
+import org.treeleafj.xdoc.tag.SeeTagImpl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +40,7 @@ public class SpringXDocOutputImpl implements XDocOutput {
         List<SpringApiModule> list = new ArrayList<SpringApiModule>(apiModules.size());
         for (ApiModule apiModule : apiModules) {
             SpringApiModule sam = new SpringApiModule();
+
             sam.setComment(apiModule.getComment());
             sam.setType(apiModule.getType());
             sam.setJson(isJson(apiModule.getType()));
@@ -53,6 +57,18 @@ public class SpringXDocOutputImpl implements XDocOutput {
                 saa.setMethod(apiAction.getMethod());
                 saa.setDocTags(apiAction.getDocTags());
 
+                DocTag titleTag = apiAction.getDocTags().getTag("@title");
+                if (titleTag != null) {
+                    saa.setTitle((String) titleTag.getValues());
+                } else {
+                    saa.setTitle(apiAction.getComment());
+                }
+
+                DocTag respbodyTag = apiAction.getDocTags().getTag("@respbody");
+                if (respbodyTag != null) {
+                    saa.setRespbody((String) respbodyTag.getValues());
+                }
+
                 RequestMapping methodRequestMappingAnno = apiAction.getMethod().getAnnotation(RequestMapping.class);
 
                 saa.setUris(this.getUris(methodRequestMappingAnno));
@@ -60,8 +76,7 @@ public class SpringXDocOutputImpl implements XDocOutput {
 
                 List<DocTag> paramTags = apiAction.getDocTags().getTags("@param");
                 for (DocTag paramTag : paramTags) {
-                    ParamTagImpl tag = (ParamTagImpl) paramTag;
-                    saa.getParam().put(tag.getParamName(), tag.getParamDesc());
+                    saa.getParam().add((ParamTagImpl) paramTag);
                 }
 
                 SeeTagImpl seeTag = (SeeTagImpl) apiAction.getDocTags().getTag("@see");

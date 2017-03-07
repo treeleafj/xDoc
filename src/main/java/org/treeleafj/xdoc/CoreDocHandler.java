@@ -38,11 +38,11 @@ public class CoreDocHandler {
             apiModule.setType(moduleType);
             apiModule.setComment(aClass.commentText());
 
-            MethodDoc[] methods = aClass.methods();
+            MethodDoc[] methods = aClass.methods(false);
 
             for (MethodDoc method : methods) {
                 Class[] paramTypes = paramTypes(method);
-                Method m = moduleType.getMethod(method.name(), paramTypes);
+                Method m = moduleType.getDeclaredMethod(method.name(), paramTypes);
                 DocTags docTags = DocUtils.getDocsForTag(method);
 
                 ApiAction apiAction = new ApiAction();

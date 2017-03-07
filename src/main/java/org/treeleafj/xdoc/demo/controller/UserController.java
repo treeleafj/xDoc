@@ -1,6 +1,6 @@
 package org.treeleafj.xdoc.demo.controller;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
+import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +24,6 @@ public class UserController {
      * @param password 密码
      * @return 用户注册后的信息
      * @see org.treeleafj.xdoc.demo.vo.User
-     * @see java.util.HashMap
      */
     @RequestMapping(value = "register", method = RequestMethod.POST)
     public User register(User user, int num, String username, String password) {
@@ -41,6 +40,23 @@ public class UserController {
     @ResponseBody
     @RequestMapping("info")
     public User info(User user) {
+        return new User();
+    }
+
+
+    /**
+     * 注册
+     *
+     * @param user :username 用户名|必填
+     * @param user :password 密码|必填
+     * @return 当前登录用户的基本信息
+     * @title 用户注册
+     * @respbody {"id":"123","password":"123456","username":"admin"}
+     * @see org.treeleafj.xdoc.demo.vo.User
+     */
+    @ResponseBody
+    @RequestMapping("register2")
+    User register(User user) {
         return new User();
     }
 }

@@ -1,18 +1,24 @@
 # $comment
+
 #foreach( $apiAction in $apiActions)
 
 ---
-## $apiAction.comment
+# $apiAction.title
+> $apiAction.comment
 
 地址: $uris.get(0)/$apiAction.uris.get(0)
-方式: $apiAction.methods
+#if($apiAction.methods.size() > 0)
+支持方式: $apiAction.methods
+#else
+支持方式: 所有
+#end
 
 **参数:**
 
-参数名|描述
------|------
-#foreach($name in $apiAction.param.keySet())
-$name|$apiAction.param.get($name)
+参数名|描述|是否必填
+-----|------|------
+#foreach($p in $apiAction.param)
+$p.paramName|$p.paramDesc|$p.require
 #end
 
 **返回:**
@@ -23,11 +29,10 @@ $apiAction.returnDesc
 #foreach($field in $apiAction.returnObj.fieldInfos)
 $field.name|$field.simpleTypeName|$field.comment
 #end
+#if($apiAction.respbody)
 返回：
 ```json
-{
-"msg":"发送成功",
-"retCode":"000000"
-}
+$apiAction.respbody
 ```
+#end
 #end

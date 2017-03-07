@@ -17,6 +17,11 @@ import java.util.TreeMap;
 public class ApiAction {
 
     /**
+     * 展示用的标题
+     */
+    private String title;
+
+    /**
      * 接口方法名称
      */
     private String name;
