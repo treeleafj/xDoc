@@ -1,6 +1,5 @@
 package org.treeleafj.xdoc.demo.controller;
 
-import com.alibaba.fastjson.JSON;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,19 +17,6 @@ import org.treeleafj.xdoc.demo.vo.User;
 public class UserController {
 
     /**
-     * 注册用户
-     *
-     * @param username 用户名
-     * @param password 密码
-     * @return 用户注册后的信息
-     * @see org.treeleafj.xdoc.demo.vo.User
-     */
-    @RequestMapping(value = "register", method = RequestMethod.POST)
-    public User register(User user, int num, String username, String password) {
-        return null;
-    }
-
-    /**
      * 查询当前登录用户的基本信息
      *
      * @param user 当前登录用户
@@ -45,7 +31,7 @@ public class UserController {
 
 
     /**
-     * 注册
+     * 用户注册
      *
      * @param user :username 用户名|必填
      * @param user :password 密码|必填
@@ -55,7 +41,7 @@ public class UserController {
      * @see org.treeleafj.xdoc.demo.vo.User
      */
     @ResponseBody
-    @RequestMapping("register2")
+    @RequestMapping(value = "register", method = RequestMethod.POST)
     User register(User user) {
         return new User();
     }

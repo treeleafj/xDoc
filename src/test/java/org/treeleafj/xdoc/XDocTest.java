@@ -1,6 +1,7 @@
 package org.treeleafj.xdoc;
 
 import org.junit.Test;
+import org.treeleafj.xdoc.output.spring.MarkdownFormat;
 import org.treeleafj.xdoc.output.spring.SpringXDocOutputImpl;
 
 import java.io.ByteArrayOutputStream;
@@ -14,7 +15,8 @@ public class XDocTest {
     public void build() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String rootDir = System.getProperty("user.dir");
-        XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", new SpringXDocOutputImpl(out));
+        SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());
+        XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
         xDoc.build();
 
         System.out.println(out.toString());

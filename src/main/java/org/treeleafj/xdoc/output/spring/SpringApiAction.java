@@ -43,4 +43,11 @@ public class SpringApiAction extends ApiAction {
      * 返回的数据
      */
     private String respbody;
+
+    /**
+     * 是否返回json
+     */
+    private boolean json;
+
+
 }
