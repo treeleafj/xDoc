@@ -1,7 +1,7 @@
 package org.treeleafj.xdoc;
 
 import org.junit.Test;
-import org.treeleafj.xdoc.output.spring.MarkdownFormat;
+import org.treeleafj.xdoc.format.MarkdownFormat;
 import org.treeleafj.xdoc.output.spring.SpringXDocOutputImpl;
 
 import java.io.ByteArrayOutputStream;

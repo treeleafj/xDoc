@@ -1,4 +1,6 @@
-package org.treeleafj.xdoc.output.spring;
+package org.treeleafj.xdoc.format;
+
+import org.treeleafj.xdoc.output.spring.SpringApiModule;
 
 import java.util.List;
 

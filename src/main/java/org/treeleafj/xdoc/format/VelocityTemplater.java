@@ -1,4 +1,4 @@
-package org.treeleafj.xdoc.output.spring;
+package org.treeleafj.xdoc.format;
 
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
