@@ -6,7 +6,15 @@
 
     <groupId>com.github.treeleafj</groupId>
     <artifactId>xDoc</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <modules>
+        <module>xDoc-core</module>
+        <module>xDoc-spring</module>
+        <module>spring-boot-starter-xDoc</module>
+        <module>xDoc-test</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -15,18 +23,6 @@
     </parent>
 
     <dependencies>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.5</version>
-        </dependency>
-
 
         <dependency>
             <groupId>junit</groupId>
@@ -47,6 +43,13 @@
             <version>1.9.3</version>
         </dependency>
 
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+
         <!--fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -54,13 +57,7 @@
             <version>1.2.17</version>
         </dependency>
 
-        <!--velocity-->
-        <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-        </dependency>
-
+        <!--lombok-->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -70,8 +67,6 @@
     </dependencies>
 
     <build>
-        <finalName>xDoc</finalName>
-
         <resources>
             <resource>
                 <directory>src/main/java</directory>
@@ -88,13 +83,6 @@
                 <filtering>false</filtering>
             </resource>
         </resources>
-
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
     </build>
 
 </project>
