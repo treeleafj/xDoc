@@ -11,5 +11,12 @@
 
     <artifactId>spring-boot-starter-xDoc</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.github.treeleafj</groupId>
+            <artifactId>xDoc-spring</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

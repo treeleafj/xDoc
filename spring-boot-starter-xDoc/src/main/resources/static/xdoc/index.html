@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XDoc接口文档</title>
+    <script src="http://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.ajax({
+                url : 'apis',
+                dataType : 'json',
+                success : function(resp) {
+                    console.log(resp);
+                }
+            });
+        })
+    </script>
+</head>
+<body>
+
+</body>
+</html>

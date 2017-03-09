@@ -9,6 +9,7 @@
 
     <logger name="org.leaf" level="debug" additivity="true"/>
     <logger name="org.treeleaf" level="debug" additivity="true"/>
+    <logger name="org.treeleafj" level="debug" additivity="true"/>
     <logger name="org.treeleaf.web.spring.resovler" level="warn" additivity="true"/>
 
     <root level="warn">

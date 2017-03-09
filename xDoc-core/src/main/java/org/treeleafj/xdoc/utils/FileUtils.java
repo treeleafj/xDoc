@@ -28,8 +28,10 @@ public class FileUtils {
         List list = new ArrayList();
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            for (File f : files) {
-                list.addAll(getAllFiles(f));
+            if (files != null) {
+                for (File f : files) {
+                    list.addAll(getAllFiles(f));
+                }
             }
         }
         return list;

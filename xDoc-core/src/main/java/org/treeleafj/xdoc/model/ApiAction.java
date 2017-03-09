@@ -26,7 +26,7 @@ public class ApiAction {
     /**
      * 接口方法
      */
-    private Method method;
+    private transient Method method;
 
     /**
      * 接口的描述

@@ -17,7 +17,7 @@ public class ApiModule {
     /**
      * 源码在哪个类
      */
-    private Class<?> type;
+    private transient Class<?> type;
 
     /**
      * 业务模块的描述
