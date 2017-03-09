@@ -3,6 +3,7 @@ package org.treeleafj.xdoc.spring.format;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.treeleafj.xdoc.model.ApiAction;
+import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.spring.SpringApiAction;
 import org.treeleafj.xdoc.spring.SpringApiModule;
 import org.treeleafj.xdoc.utils.JsonFormatUtils;
@@ -16,16 +17,17 @@ import java.util.Map;
 public class MarkdownFormat implements Format {
 
     @Override
-    public String format(List<SpringApiModule> list) {
+    public String format(List<ApiModule> list) {
         StringBuilder sb = new StringBuilder();
-        for (SpringApiModule apiModule : list) {
+        for (ApiModule apiModule : list) {
+            SpringApiModule sam = (SpringApiModule) apiModule;
             sb.append(format(apiModule)).append("\n\n");
         }
         return sb.toString();
     }
 
     @Override
-    public String format(SpringApiModule apiModule) {
+    public String format(ApiModule apiModule) {
         VelocityTemplater templater = new VelocityTemplater("org/treeleafj/xdoc/spring/format/api.vm");
 
         for (ApiAction apiAction : apiModule.getApiActions()) {

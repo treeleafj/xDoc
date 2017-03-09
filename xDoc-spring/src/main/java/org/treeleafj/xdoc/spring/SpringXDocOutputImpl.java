@@ -15,6 +15,7 @@ import org.treeleafj.xdoc.spring.format.MarkdownFormat;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
 import org.treeleafj.xdoc.tag.SeeTagImpl;
+import org.treeleafj.xdoc.utils.ApiModulesHolder;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -43,7 +44,7 @@ public class SpringXDocOutputImpl implements XDocOutput {
 
     @Override
     public void output(List<ApiModule> apiModules) {
-        List<SpringApiModule> list = new ArrayList<SpringApiModule>(apiModules.size());
+        List<ApiModule> list = new ArrayList<ApiModule>(apiModules.size());
         for (ApiModule apiModule : apiModules) {
             SpringApiModule sam = new SpringApiModule();
 
@@ -64,6 +65,8 @@ public class SpringXDocOutputImpl implements XDocOutput {
 
             list.add(sam);
         }
+
+        ApiModulesHolder.setCurrentApiModules(list);
 
         if (out != null) {
             String s = format.format(list);

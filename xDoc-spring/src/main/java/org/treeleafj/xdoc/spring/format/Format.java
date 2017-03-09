@@ -1,5 +1,6 @@
 package org.treeleafj.xdoc.spring.format;
 
+import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.spring.SpringApiModule;
 
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  */
 public interface Format {
 
-    String format(List<SpringApiModule> list);
+    String format(List<ApiModule> list);
 
-    String format(SpringApiModule apiModule);
+    String format(ApiModule apiModule);
 }
