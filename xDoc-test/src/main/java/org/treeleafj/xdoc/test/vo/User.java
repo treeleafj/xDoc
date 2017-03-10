@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * 用户
  *
- * @author yaoshuhong
+ * @author leaf
  * @date 2017-03-03 10:13
  */
 @Data
