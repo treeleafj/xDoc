@@ -19,6 +19,6 @@ public class XDocProperties {
     /**
      * 源码决定路径
      */
-    private String absoluteSourcePath;
+    private String sourceAbsolutePath;
 
 }

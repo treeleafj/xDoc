@@ -11,18 +11,18 @@ import MessageBoard from './views/MessageBoard.vue';
 import SystemConfig from './views/SystemConfig.vue';
 
 const routes = [
-    // { path: '/index', component: Index },
-    // { path: '/account', component: Account },
-    // { path: '/role', component: Role },
-    // { path: '/log', component: Log },
-    // { path: '/systemConfig', component: SystemConfig },
-    // { path: '/login', component: Login, name: 'login', meta: { full: true } },
-    // { path: '/changePwd', component: ChangePwd},
-    // { path: '/manager', component: Manager},
-    // { path: '/seo', component: SEO},
-    // { path: '/banner', component: Banner},
-    // { path: '/messageBoard', component: MessageBoard},
-    // { path: '*', redirect: '/login' }
+    // { sourcePath: '/index', component: Index },
+    // { sourcePath: '/account', component: Account },
+    // { sourcePath: '/role', component: Role },
+    // { sourcePath: '/log', component: Log },
+    // { sourcePath: '/systemConfig', component: SystemConfig },
+    // { sourcePath: '/login', component: Login, name: 'login', meta: { full: true } },
+    // { sourcePath: '/changePwd', component: ChangePwd},
+    // { sourcePath: '/manager', component: Manager},
+    // { sourcePath: '/seo', component: SEO},
+    // { sourcePath: '/banner', component: Banner},
+    // { sourcePath: '/messageBoard', component: MessageBoard},
+    // { sourcePath: '*', redirect: '/login' }
 ];
 
 export default routes;

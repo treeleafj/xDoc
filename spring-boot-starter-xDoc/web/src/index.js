@@ -1,4 +1,3 @@
-import './theme/element-blue2-theme/index.css';
 import Vue from 'vue';
 import Resource from 'vue-resource';
 import Router from 'vue-router';

@@ -39,7 +39,7 @@ public class XDocController {
         log.info("开始启动XDoc");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String path = xDocProperties.getAbsoluteSourcePath();
+        String path = xDocProperties.getSourceAbsolutePath();
 
         String rootDir = System.getProperty("user.dir");
         if (StringUtils.isBlank(path)) {
@@ -56,7 +56,6 @@ public class XDocController {
 
         apiModules = ApiModulesHolder.getCurrentApiModules();
         json = JSON.toJSONString(apiModules, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
-//        json = JSON.toJSONString(apiModules);
     }
 
     /**

@@ -9,8 +9,8 @@ cooking.set({
     chunk: {
         'common': {name: 'common', filename: prod ? 'common.[chunkhash:7].js' : 'common.js'}
     },
-    dist: prod ? '../target/classes/static/' : './dist',
-    publicPath: '/',
+    dist: prod ? '../target/classes/static/xdoc' : './dist',
+    publicPath: '/xdoc',
     assetsPath: 'assets',
     extends: ['vue2'],
     template: './src/index.html',
