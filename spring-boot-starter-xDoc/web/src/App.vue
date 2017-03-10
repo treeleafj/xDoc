@@ -1,22 +1,63 @@
 <template>
     <div id="app">
+
+        <div>
+            <el-menu :default-active="activeIndex2" id="header" mode="horizontal">
+                <h2 class="logo-text">XDoc 接口文档</h2>
+                <el-submenu index="1"  class="head-user-box">
+                    <template slot="title">版本</template>
+                    <el-menu-item index="1-1">V1</el-menu-item>
+                    <el-menu-item index="1-2">V1.1</el-menu-item>
+                    <el-menu-item index="1-3">V1.2</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="2"  class="head-user-box">
+                    <el-input placeholder="请输入搜索内容" icon="search"></el-input>
+                </el-menu-item>
+            </el-menu>
+        </div>
+
+
         <div class="app-menu left-menu" id="left-menu">
-            <el-tree default-expand-all :data="reverseMenus" :props="defaultProps" @current-change="checkChangeHandle"></el-tree>
+            <el-tree highlight-current default-expand-all :data="reverseMenus" :props="defaultProps" @current-change="checkChangeHandle"></el-tree>
         </div>
         <div id="main" v-if="currentApiAction != null">
             <h2>{{currentApiAction.title}}</h2>
             <p class="comment">{{currentApiAction.comment}}</p>
-            <p class="uri" v-for="uri in currentApiAction.uris">接口地址:{{uri}}</p>
+            <p class="uri" v-if="currentApiAction.methods.length > 0">只支持:
+                <span v-for="m in currentApiAction.methods">{{m}}</span>
+            </p>
+            <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{currentApiModule.uris[0] + '/' + uri}}</p>
+            <p class="return">接口返回: {{currentApiAction.returnDesc}}</p>
 
-            <h2>入参</h2>
-            <template>
-                <el-table :data="tableData" style="width: 60%">
-                    <el-table-column prop="date" label="参数名" width="180"></el-table-column>
-                    <el-table-column prop="name" label="描述" width="180"></el-table-column>
-                    <el-table-column prop="address" label="是否必填"></el-table-column>
+            <div>
+                <h2>入参</h2>
+                <br/>
+                <el-table :data="reverseParam" style="width: 60%">
+                    <el-table-column prop="paramName" label="参数名" width="180"></el-table-column>
+                    <el-table-column prop="paramDesc" label="描述" width="180"></el-table-column>
+                    <el-table-column prop="require" label="是否必填">
+                        <template scope="scope">{{scope.row.require ? '是' : '否'}}</template>
+                    </el-table-column>
                 </el-table>
-            </template>
+            </div>
 
+            <br/>
+            <div>
+                <h2>出参</h2>
+                <br/>
+                <el-table :data="reverseResponse" style="width: 60%">
+                    <el-table-column prop="name" label="参数名" width="180"></el-table-column>
+                    <el-table-column prop="comment" label="描述" width="180"></el-table-column>
+                    <el-table-column prop="simpleTypeName" label="类型"></el-table-column>
+                </el-table>
+            </div>
+
+            <br/>
+            <div v-if="currentApiAction.respbody != null">
+                <h2>例子</h2>
+                <br/>
+                <pre>{{reverseRespbody}}</pre>
+            </div>
         </div>
     </div>
 </template>
@@ -26,25 +67,36 @@
         name: 'app',
         data() {
             return {
-                apiModules : [{"apiActions":[{"comment":"查询当前登录用户的基本信息","docTags":{"list":[{"name":"@param","paramDesc":"当前登录用户","paramName":"user","require":false,"values":"user 当前登录用户"},{"name":"@return","values":"当前登录用户的基本信息"},{"name":"@see","values":{"comment":"用户","fieldInfos":[{"comment":"密码","name":"password","simpleTypeName":"String","type":"java.lang.String"},{"comment":"用户ID","name":"id","simpleTypeName":"String","type":"java.lang.String"},{"comment":"用户名","name":"username","simpleTypeName":"String","type":"java.lang.String"}],"type":"org.treeleafj.xdoc.test.vo.User"}}]},"json":true,"methods":[],"name":"info","param":[{"$ref":"$[0].apiActions[0].docTags.list[0]"}],"returnDesc":"当前登录用户的基本信息","returnObj":{"$ref":"$[0].apiActions[0].docTags.list[2].values"},"title":"查询当前登录用户的基本信息","uris":["info"]},{"comment":"用户注册","docTags":{"list":[{"name":"@param","paramDesc":"用户名","paramName":"username","require":true,"values":"username 用户名"},{"name":"@param","paramDesc":"密码","paramName":"password","require":true,"values":"password 密码"},{"name":"@return","values":"当前登录用户的基本信息"},{"name":"@title","values":"用户注册"},{"name":"@respbody","values":"{\"id\":\"123\",\"password\":\"123456\",\"username\":\"admin\"}"},{"name":"@see","values":{"comment":"用户","fieldInfos":[{"comment":"密码","name":"password","simpleTypeName":"String","type":"java.lang.String"},{"comment":"用户ID","name":"id","simpleTypeName":"String","type":"java.lang.String"},{"comment":"用户名","name":"username","simpleTypeName":"String","type":"java.lang.String"}],"type":"org.treeleafj.xdoc.test.vo.User"}}]},"json":true,"methods":["POST"],"name":"register","param":[{"$ref":"$[0].apiActions[1].docTags.list[0]"},{"$ref":"$[0].apiActions[1].docTags.list[1]"}],"respbody":"{\n\t\"id\":\"123\",\n\t\"password\":\"123456\",\n\t\"username\":\"admin\"\n}","returnDesc":"当前登录用户的基本信息","returnObj":{"$ref":"$[0].apiActions[1].docTags.list[5].values"},"title":"用户注册","uris":["register"]}],"comment":"用户模块","json":false,"methods":[],"uris":["user"]}],
+                apiModules : [],
                 defaultProps :{
                     children: 'children',
                     label: 'label'
                 },
-                currentApiAction : null,
+                currentApiModule : null,
+                currentApiAction : null
             }
         },
 
         mounted() {
-            if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
-                this.currentApiAction = this.apiModules[0].apiActions[0];
-            }
+
+            this.$http.get('apis').then(response => {
+                return response.json();
+            }, response => {
+                _this.$message.error('系统错误');
+            }).then(data => {
+                this.apiModules = data;
+                if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
+                    this.currentApiModule = this.apiModules[0];
+                    this.currentApiAction = this.apiModules[0].apiActions[0];
+                }
+            });
         },
 
         computed: {
             reverseMenus() {
                 console.log(this.apiModules[i])
                 var menu = [];
+                var id = 1;
                 for (var i = 0; i < this.apiModules.length; i++) {
                     var apiModule = this.apiModules[i];
 
@@ -52,10 +104,10 @@
 
                     for (var j = 0; j < apiModule.apiActions.length; j++) {
                         var apiAction = apiModule.apiActions[j];
-                        console.log(apiAction);
+                        apiAction.id = id++;//赋值一个ID
                         children.push({
                             label : apiAction.title,
-                            url : apiAction.uris[0]
+                            id : apiAction.id
                         });
                     }
 
@@ -68,13 +120,58 @@
                 }
 
                 return menu;
+            },
+
+            reverseParam() {
+                if (this.currentApiAction) {
+                    var data = [];
+
+                    for (var i = 0; i < this.currentApiAction.param.length; i++) {
+                        var par = this.currentApiAction.param[i];
+                        data.push(par);
+                    }
+                    return data;
+                }
+            },
+
+            reverseResponse() {
+                if (this.currentApiAction && this.currentApiAction.returnObj) {
+                    var data = [];
+
+                    for (var i = 0; i < this.currentApiAction.returnObj.fieldInfos.length; i++) {
+                        var par = this.currentApiAction.returnObj.fieldInfos[i];
+                        data.push(par);
+                    }
+                    return data;
+                }
+            },
+
+            reverseRespbody() {
+                if (this.currentApiAction && this.currentApiAction.respbody) {
+                    return this.currentApiAction.respbody;
+                }
             }
         },
 
         methods : {
             checkChangeHandle(data, checked, indeterminate) {
-                console.log(data);
-                //this.currentApiAction
+                var array = this.findModuleAndActionById(data.id);
+                if (array) {
+                    this.currentApiModule = array[0];
+                    this.currentApiAction = array[1];
+                }
+            },
+
+            findModuleAndActionById(id) {
+                for (var i = 0; i < this.apiModules.length; i++) {
+                    var apiModule = this.apiModules[i];
+
+                    for (var j = 0; j < apiModule.apiActions.length; j++) {
+                        if (apiModule.apiActions[j].id == id) {
+                            return [apiModule, apiModule.apiActions[j]]
+                        }
+                    }
+                }
             }
         }
     }
@@ -87,6 +184,14 @@
         margin: 0;
     }
 
+    .logo-text {
+        float: left;
+        color: rgba(102, 102, 102, 0.7);
+        height: 60px;
+        line-height: 60px;
+        padding-left: 32px;
+    }
+
     .left-menu{
         width: 400px;
         border-right: solid 2px #EAEDF1;
@@ -94,28 +199,21 @@
         position: fixed;
         bottom: 0px;
         z-index: 102;
-        top : 0;
+        top : 60px;
         overflow-x: hidden;
+    }
+
+    #header {
+        height: 60px;
+        z-index: 10000;
+    }
+
+    #header .head-user-box{
+        float : right;
     }
 
     .el-tree {
         border : 0px solid #d1dbe5
-    }
-
-    .el-menu {
-        background-color : #3b8dbd;
-    }
-
-    .el-submenu__title {
-        color : #FFF;
-    }
-
-    .menu-user-box > div:hover {
-        background-color: #4898c7;
-    }
-
-    .el-submenu .el-menu {
-        background-color : #FFF;
     }
 
     #main {
@@ -123,13 +221,13 @@
         padding : 20px 20px;
         width: auto;
         position: absolute;
-        top: 0px;
+        top: 60px;
         bottom: 0px;
         right: 0px;
         overflow: hidden;
     }
 
-    #main .comment, .uri {
+    #main .comment, .uri, .return {
         padding : 20px;
     }
 </style>

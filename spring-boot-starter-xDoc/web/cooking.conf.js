@@ -23,7 +23,7 @@ cooking.set({
         stats: { colors: true },
         proxy: {
             '/api/*': {
-                target: 'http://localhost:8080/'
+                target: 'http://localhost:8080/xdoc'
             }
         },
         log: false,

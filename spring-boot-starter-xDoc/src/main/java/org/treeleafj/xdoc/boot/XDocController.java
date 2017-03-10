@@ -1,6 +1,7 @@
 package org.treeleafj.xdoc.boot;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,8 @@ public class XDocController {
         log.info("启动XDoc完成");
 
         apiModules = ApiModulesHolder.getCurrentApiModules();
-        json = JSON.toJSONString(apiModules);
+        json = JSON.toJSONString(apiModules, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
+//        json = JSON.toJSONString(apiModules);
     }
 
     /**

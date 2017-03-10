@@ -52,7 +52,6 @@ public class XDoc {
         com.sun.tools.javadoc.Main.execute(docArgs);
 
         List<ApiModule> currentApiModules = ApiModulesHolder.getCurrentApiModules();
-        System.out.println(JSON.toJSONString(currentApiModules));
 
         output.output(currentApiModules);
     }

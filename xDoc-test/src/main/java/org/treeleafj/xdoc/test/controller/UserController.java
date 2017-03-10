@@ -31,13 +31,13 @@ public class UserController {
 
 
     /**
-     * 用户注册
+     * 用户注册接口
      *
-     * @param user :username 用户名|必填
+     * @param user# username 用户名|必填
      * @param user :password 密码|必填
      * @return 当前登录用户的基本信息
      * @title 用户注册
-     * @respbody {"id":"123","password":"123456","username":"admin"}
+     * @respbody {"id":"123","password":"123456","username":"admin"kasbdkjaskjda}
      * @see User
      */
     @ResponseBody
