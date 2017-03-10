@@ -37,7 +37,7 @@ public class UserController {
      * @param user :password 密码|必填
      * @return 当前登录用户的基本信息
      * @title 用户注册
-     * @respbody {"id":"123","password":"123456","username":"admin"kasbdkjaskjda}
+     * @respbody {"id":"123","password":"123456","username":"admin"}
      * @see User
      */
     @ResponseBody
