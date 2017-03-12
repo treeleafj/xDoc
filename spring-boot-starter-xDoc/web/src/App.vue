@@ -84,7 +84,7 @@
             
             <h3>返回内容</h3>
             <br/>
-            <el-input ref="respbpdy" :value="testRespbody" type="textarea" :rows="10" placeholder="返回内容..."></el-input>
+            <el-input ref="respbpdy" v-model="testRespbody" type="textarea" :rows="10" placeholder="返回内容..."></el-input>
         </div>
     </div>
 </template>

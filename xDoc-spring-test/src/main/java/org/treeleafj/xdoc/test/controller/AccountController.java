@@ -26,6 +26,7 @@ public class AccountController {
      * @return 用户的资产
      * @see Account
      */
+    @ResponseBody
     @RequestMapping("info")
     Account info(User user) {
         return new Account();
