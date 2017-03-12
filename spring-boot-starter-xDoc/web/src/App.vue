@@ -21,7 +21,7 @@
             <el-tree ref="apiTree" highlight-current default-expand-all :data="reverseMenus" :props="defaultProps"
                      @current-change="checkChangeHandle" :filter-node-method="filterNode"></el-tree>
         </div>
-        <div id="main" v-if="currentApiAction != null">
+        <div id="main" v-if="currentApiAction != null" @click="hideTest">
             <h2>{{currentApiAction.title}}</h2>
             <p class="comment">{{currentApiAction.comment}}</p>
             <p class="uri" v-if="currentApiAction.methods.length > 0">只支持:
@@ -64,27 +64,31 @@
             </div>
         </div>
 
-        <div id="test" v-if="currentApiAction != null">
+        <div id="test" :class="testClassName" v-if="currentApiAction != null" @click="showTest">
             <h2>测试</h2>
             <br/>
-            <el-form ref="form" :model="testForm" label-width="120px" class="test-form">
-                <el-form-item label="请求方式">
-                    <el-radio-group v-model="request.type">
-                        <el-radio v-for="m in currentApiAction.methods" :label="m">{{m}}</el-radio>
-                    </el-radio-group>
-                </el-form-item>
+            <div class="test-main">
+                <el-form ref="form" :model="testForm" label-width="120px" class="test-form">
+                    <el-form-item v-if="currentApiAction.methods.length > 0" label="请求方式">
+                        <el-radio-group v-model="request.type">
+                            <el-radio v-for="m in currentApiAction.methods" :label="m">{{m}}</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
 
-                <el-form-item v-for="param in reverseParam" :label="param.paramDesc">
-                    <el-input v-model="testForm[param.paramName]"></el-input>
-                </el-form-item>
-                <div class="btn-div">
-                    <el-button type="primary" @click="onTest">测试</el-button>
+                    <el-form-item v-for="param in reverseParam" :label="param.paramDesc">
+                        <el-input v-model="testForm[param.paramName]"></el-input>
+                    </el-form-item>
+                    <div class="btn-div">
+                        <el-button type="primary" @click="onTest">测试</el-button>
+                    </div>
+                </el-form>
+                
+                <h3>返回内容</h3>
+                <br/>
+                <div class="test-respbody">
+                    <el-input ref="respbpdy" v-model="testRespbody" type="textarea" :rows="10" placeholder="返回内容..."></el-input>
                 </div>
-            </el-form>
-            
-            <h3>返回内容</h3>
-            <br/>
-            <el-input ref="respbpdy" v-model="testRespbody" type="textarea" :rows="10" placeholder="返回内容..."></el-input>
+            </div>
         </div>
     </div>
 </template>
@@ -99,6 +103,7 @@
                 testRespbody: '',
                 apiModules: [],
                 testForm : {},
+                testClassName : 'test-off',
                 defaultProps: {
                     children: 'children',
                     label: 'label'
@@ -115,7 +120,7 @@
             this.$http.get('apis').then(response => {
                 return response.json();
             }, response => {
-                this.$message.error('系统错误');
+                this.$message.error('系统错误,请求api列表 接口失败');
             }).then(data => {
                 this.apiModules = data;
                 if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
@@ -127,7 +132,6 @@
 
         computed: {
             reverseMenus() {
-                console.log(this.apiModules[i])
                 var menu = [];
                 var id = 1;
                 for (var i = 0; i < this.apiModules.length; i++) {
@@ -194,7 +198,6 @@
                             paramDesc: par.comment,
                             type: par.simpleTypeName
                         });
-                        console.log(data, par);
                     }
                     return data;
                 }
@@ -233,8 +236,15 @@
                 return data.label.indexOf(value) !== -1;
             },
 
+            showTest() {
+                this.testClassName = 'test-on';
+            },
+
+            hideTest() {
+                 this.testClassName = 'test-off';
+            },
+
             onTest() {
-                console.log(this.testForm);
                 
                 var uri = '';
                 if (this.currentApiModule.uris.length > 0) {
@@ -247,7 +257,7 @@
                 this.$http[this.request.type.toLocaleLowerCase()](uri, this.testForm).then(response => {
                     return response.text();
                 }, response => {
-                    this.$message.error('系统错误');
+                    this.$message.error('系统错误:' + response);
                 }).then(response => {
                     this.testRespbody = response;
                 });
@@ -320,7 +330,6 @@
         right: 0px;
         padding: 20px 20px;
         position: absolute;
-        width : 20px;
         top: 60px;
         bottom: 0px;
         overflow: hidden;
@@ -331,8 +340,22 @@
         z-index : 1;
     }
 
-    #test:hover {
+    .test-off {
+        width : 20px;
+        cursor: pointer;
+    }
+
+    .test-on {
         width : 800px;
+        cursor: auto;
+    }
+
+    .test-off .test-main {
+        display : none;
+    }
+
+    .test-on .test-main {
+        display : auto;
     }
 
     .test-form {
@@ -342,5 +365,10 @@
     .btn-div {
         width : 700px;
         text-align : center;
+    }
+
+    .test-respbody {
+        padding-left : 50px;
+        width : 700px;
     }
 </style>
