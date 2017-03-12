@@ -1,10 +1,13 @@
 package org.treeleafj.xdoc.tag;
 
+import lombok.Data;
+
 /**
  * 对@Param注释的封装
  * <p>
  * Created by leaf on 2017/3/4.
  */
+@Data
 public class ParamTagImpl extends DocTag {
 
     /**
@@ -50,15 +53,4 @@ public class ParamTagImpl extends DocTag {
         return paramName + " " + this.paramDesc;
     }
 
-    public String getParamName() {
-        return paramName;
-    }
-
-    public String getParamDesc() {
-        return paramDesc;
-    }
-
-    public boolean isRequire() {
-        return require;
-    }
 }

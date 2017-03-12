@@ -69,4 +69,9 @@ public class XDocController {
         return json;
     }
 
+    @RequestMapping("rebuild")
+    String rebuild() {
+        init();
+        return "redirect:apis";
+    }
 }

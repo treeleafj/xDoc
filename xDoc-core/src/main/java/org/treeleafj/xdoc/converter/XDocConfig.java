@@ -1,9 +1,6 @@
 package org.treeleafj.xdoc.converter;
 
 
-import com.sun.javadoc.ParamTag;
-import com.sun.javadoc.SeeTag;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,22 +11,23 @@ import java.util.Map;
  */
 public class XDocConfig {
 
-    private static Map<Class, TagConverter> registrator = new HashMap<Class, TagConverter>();
+    private static Map<String, TagConverter> registrator = new HashMap<>();
 
     private static TagConverter defaultTagConverter = new DefaultTagConverterImpl();
 
     static {
-        registerConverter(ParamTag.class, new ParamTagConverter());
-        registerConverter(SeeTag.class, new SeeTagConverter());
+        registerConverter("@param", new ParamTagConverter());
+        registerConverter("@see", new SeeTagConverter());
+        registerConverter("@resp", new RespTagConverter());
     }
 
-    public static void registerConverter(Class classz, TagConverter tagConverter) {
-        registrator.put(classz, tagConverter);
+    public static void registerConverter(String tagName, TagConverter tagConverter) {
+        registrator.put(tagName, tagConverter);
     }
 
-    public static TagConverter getConverter(Class classz) {
-        for (Map.Entry<Class, TagConverter> entry : registrator.entrySet()) {
-            if (entry.getKey().isAssignableFrom(classz)) {
+    public static TagConverter getConverter(String tagName) {
+        for (Map.Entry<String, TagConverter> entry : registrator.entrySet()) {
+            if (entry.getKey().equalsIgnoreCase(tagName)) {
                 return entry.getValue();
             }
         }

@@ -27,12 +27,17 @@ public class SpringApiAction extends ApiAction {
     /**
      * 入参
      */
-    private List<ParamTagImpl> param = new ArrayList<ParamTagImpl>();
+    private List<ParamInfo> param = new ArrayList<>(0);
 
     /**
      * 返回对象
      */
     private ObjectInfo returnObj;
+
+    /**
+     * 出参
+     */
+    private List<ParamInfo> respParam = new ArrayList<>(0);
 
     /**
      * 返回描述

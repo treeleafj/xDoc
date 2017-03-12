@@ -2,23 +2,24 @@
     <div id="app">
 
         <div>
-            <el-menu :default-active="activeIndex2" id="header" mode="horizontal">
+            <el-menu id="header" mode="horizontal">
                 <h2 class="logo-text">XDoc 接口文档</h2>
-                <el-submenu index="1"  class="head-user-box">
+                <el-submenu index="1" class="head-user-box">
                     <template slot="title">版本</template>
                     <el-menu-item index="1-1">V1</el-menu-item>
                     <el-menu-item index="1-2">V1.1</el-menu-item>
                     <el-menu-item index="1-3">V1.2</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="2"  class="head-user-box">
+                <el-menu-item index="2" class="head-user-box">
                     <el-input placeholder="请输入搜索内容" icon="search"></el-input>
                 </el-menu-item>
             </el-menu>
         </div>
 
-
+		
         <div class="app-menu left-menu" id="left-menu">
-            <el-tree highlight-current default-expand-all :data="reverseMenus" :props="defaultProps" @current-change="checkChangeHandle"></el-tree>
+            <el-tree highlight-current default-expand-all :data="reverseMenus" :props="defaultProps"
+                     @current-change="checkChangeHandle"></el-tree>
         </div>
         <div id="main" v-if="currentApiAction != null">
             <h2>{{currentApiAction.title}}</h2>
@@ -46,9 +47,12 @@
                 <h2>出参</h2>
                 <br/>
                 <el-table :data="reverseResponse" style="width: 60%">
-                    <el-table-column prop="name" label="参数名" width="180"></el-table-column>
-                    <el-table-column prop="comment" label="描述" width="180"></el-table-column>
-                    <el-table-column prop="simpleTypeName" label="类型"></el-table-column>
+                    <el-table-column prop="paramName" label="参数名" width="180"></el-table-column>
+                    <el-table-column prop="paramDesc" label="描述" width="180"></el-table-column>
+                    <el-table-column prop="type" label="类型"></el-table-column>
+                    <el-table-column prop="require" label="是否必填">
+                        <template scope="scope">{{scope.row.require ? '是' : '否'}}</template>
+                    </el-table-column>
                 </el-table>
             </div>
 
@@ -67,18 +71,17 @@
         name: 'app',
         data() {
             return {
-                apiModules : [],
-                defaultProps :{
+                apiModules: [],
+                defaultProps: {
                     children: 'children',
                     label: 'label'
                 },
-                currentApiModule : null,
-                currentApiAction : null
+                currentApiModule: null,
+                currentApiAction: null
             }
         },
 
         mounted() {
-
             this.$http.get('apis').then(response => {
                 return response.json();
             }, response => {
@@ -106,15 +109,15 @@
                         var apiAction = apiModule.apiActions[j];
                         apiAction.id = id++;//赋值一个ID
                         children.push({
-                            label : apiAction.title,
-                            id : apiAction.id
+                            label: apiAction.title,
+                            id: apiAction.id
                         });
                     }
 
                     var item = {
-                        label : apiModule.comment,
-                        children : children,
-                        data : apiAction
+                        label: apiModule.comment,
+                        children: children,
+                        data: apiAction
                     };
                     menu.push(item);
                 }
@@ -135,12 +138,33 @@
             },
 
             reverseResponse() {
+
+                if (this.currentApiAction && this.currentApiAction.respParam && this.currentApiAction.respParam.length > 0) {
+                    var data = [];
+
+                    for (var i = 0; i < this.currentApiAction.respParam.length; i++) {
+                        var par = this.currentApiAction.respParam[i];
+                        data.push({
+                            paramName: par.paramName,
+                            paramDesc: par.paramDesc,
+                            type: par.type,
+                            require: par.require
+                        });
+                    }
+                    return data;
+                }
+
                 if (this.currentApiAction && this.currentApiAction.returnObj) {
                     var data = [];
 
                     for (var i = 0; i < this.currentApiAction.returnObj.fieldInfos.length; i++) {
                         var par = this.currentApiAction.returnObj.fieldInfos[i];
-                        data.push(par);
+                        data.push({
+                            paramName: par.name,
+                            paramDesc: par.comment,
+                            type: par.simpleTypeName
+                        });
+                        console.log(data, par);
                     }
                     return data;
                 }
@@ -153,7 +177,7 @@
             }
         },
 
-        methods : {
+        methods: {
             checkChangeHandle(data, checked, indeterminate) {
                 var array = this.findModuleAndActionById(data.id);
                 if (array) {
@@ -192,14 +216,14 @@
         padding-left: 32px;
     }
 
-    .left-menu{
+    .left-menu {
         width: 400px;
         border-right: solid 2px #EAEDF1;
         display: block;
         position: fixed;
         bottom: 0px;
         z-index: 102;
-        top : 60px;
+        top: 60px;
         overflow-x: hidden;
     }
 
@@ -208,17 +232,17 @@
         z-index: 10000;
     }
 
-    #header .head-user-box{
-        float : right;
+    #header .head-user-box {
+        float: right;
     }
 
     .el-tree {
-        border : 0px solid #d1dbe5
+        border: 0px solid #d1dbe5
     }
 
     #main {
         left: 403px;
-        padding : 20px 20px;
+        padding: 20px 20px;
         width: auto;
         position: absolute;
         top: 60px;
@@ -228,6 +252,6 @@
     }
 
     #main .comment, .uri, .return {
-        padding : 20px;
+        padding: 20px;
     }
 </style>

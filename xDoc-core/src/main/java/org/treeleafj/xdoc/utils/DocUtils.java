@@ -80,10 +80,10 @@ public class DocUtils {
     public static DocTags getDocsForTag(ProgramElementDoc elementDoc) {
         Tag[] tags = elementDoc.tags();
 
-        DocTags docTags = new DocTags(new ArrayList<DocTag>(tags.length));
+        DocTags docTags = new DocTags(new ArrayList<>(tags.length));
         for (Tag tag : tags) {
 
-            TagConverter tagConverter = XDocConfig.getConverter(tag.getClass());
+            TagConverter tagConverter = XDocConfig.getConverter(tag.name());
             if (tagConverter == null) {
                 tagConverter = XDocConfig.getDefaultConverter();
             }

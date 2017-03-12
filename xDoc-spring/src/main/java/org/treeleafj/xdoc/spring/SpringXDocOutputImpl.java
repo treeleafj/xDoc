@@ -14,6 +14,7 @@ import org.treeleafj.xdoc.spring.format.Format;
 import org.treeleafj.xdoc.spring.format.MarkdownFormat;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
+import org.treeleafj.xdoc.tag.RespTagImpl;
 import org.treeleafj.xdoc.tag.SeeTagImpl;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
 
@@ -24,7 +25,7 @@ import java.util.List;
 
 /**
  * 基于spring-web的接口文档生成工具
- *
+ * <p>
  * Created by leaf on 2017/3/4.
  */
 public class SpringXDocOutputImpl implements XDocOutput {
@@ -104,7 +105,8 @@ public class SpringXDocOutputImpl implements XDocOutput {
 
         saa.setUris(this.getUris(methodRequestMappingAnno));
         saa.setMethods(this.getMethods(methodRequestMappingAnno));
-        saa.getParam().addAll(this.getParams(saa));
+        saa.setParam(this.getParams(saa));
+        saa.setRespParam(this.getRespParam(saa));
         saa.setReturnObj(this.getReturnObj(saa));
         saa.setReturnDesc(this.getReturnDesc(saa));
 
@@ -121,9 +123,33 @@ public class SpringXDocOutputImpl implements XDocOutput {
         return tag != null ? tag.getValues() : null;
     }
 
-    protected List<ParamTagImpl> getParams(SpringApiAction saa) {
-        List paramTags = saa.getDocTags().getTags("@param");
-        return paramTags;
+    protected List<ParamInfo> getParams(SpringApiAction saa) {
+        List tags = saa.getDocTags().getTags("@param");
+        List<ParamInfo> paramInfos = new ArrayList<ParamInfo>(tags.size());
+        for (Object tag : tags) {
+            ParamTagImpl paramTag = (ParamTagImpl) tag;
+            ParamInfo paramInfo = new ParamInfo();
+            paramInfo.setParamName(paramTag.getParamName());
+            paramInfo.setParamDesc(paramTag.getParamDesc());
+            paramInfo.setRequire(paramTag.isRequire());
+            paramInfos.add(paramInfo);
+        }
+        return paramInfos;
+    }
+
+    protected List<ParamInfo> getRespParam(SpringApiAction saa) {
+        List<DocTag> tags = saa.getDocTags().getTags("@resp");
+        List<ParamInfo> list = new ArrayList(tags.size());
+        for (DocTag tag : tags) {
+            RespTagImpl respTag = (RespTagImpl) tag;
+            ParamInfo paramInfo = new ParamInfo();
+            paramInfo.setParamName(respTag.getParamName());
+            paramInfo.setRequire(respTag.isRequire());
+            paramInfo.setParamDesc(respTag.getParamDesc());
+            paramInfo.setType(respTag.getType());
+            list.add(paramInfo);
+        }
+        return list;
     }
 
     protected String getRespbody(SpringApiAction saa) {
