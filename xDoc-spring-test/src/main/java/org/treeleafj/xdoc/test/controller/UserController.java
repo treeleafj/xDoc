@@ -13,7 +13,7 @@ import org.treeleafj.xdoc.test.vo.User;
  * @date 2017-03-03 10:11
  */
 @Controller
-@RequestMapping("user")
+@RequestMapping("api/user")
 public class UserController {
 
     /**
@@ -44,7 +44,7 @@ public class UserController {
      * @see User
      */
     @ResponseBody
-    @RequestMapping(value = "register", method = RequestMethod.POST)
+    @RequestMapping(value = "register", method = {RequestMethod.POST, RequestMethod.PUT})
     User register(User user) {
         return new User();
     }

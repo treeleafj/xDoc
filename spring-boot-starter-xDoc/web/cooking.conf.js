@@ -22,8 +22,11 @@ cooking.set({
         port: 3000,
         stats: { colors: true },
         proxy: {
-            '/api/*': {
+            '/apis': {
                 target: 'http://localhost:8080/xdoc'
+            },
+            '/api/*': {
+                target: 'http://localhost:8080'
             }
         },
         log: false,

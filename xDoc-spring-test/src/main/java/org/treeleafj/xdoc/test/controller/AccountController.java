@@ -17,7 +17,7 @@ import java.util.Map;
  * @date 2017-03-10 10:43
  */
 @Controller
-@RequestMapping("account")
+@RequestMapping("api/account")
 public class AccountController {
 
     /**
@@ -42,7 +42,7 @@ public class AccountController {
      * @see User
      */
     @ResponseBody
-    @RequestMapping(value = "status", method = RequestMethod.GET)
+    @RequestMapping(value = "status", method = {RequestMethod.GET, RequestMethod.POST})
     Map<String, String> status(User user) {
         return new HashMap<>();
     }

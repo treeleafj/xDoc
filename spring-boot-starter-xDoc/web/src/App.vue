@@ -11,21 +11,21 @@
                     <el-menu-item index="1-3">V1.2</el-menu-item>
                 </el-submenu>
                 <el-menu-item index="2" class="head-user-box">
-                    <el-input placeholder="请输入搜索内容" icon="search"></el-input>
+                    <el-input placeholder="请输入搜索内容" icon="search" v-model="search"></el-input>
                 </el-menu-item>
             </el-menu>
         </div>
 
 		
         <div class="app-menu left-menu" id="left-menu">
-            <el-tree highlight-current default-expand-all :data="reverseMenus" :props="defaultProps"
-                     @current-change="checkChangeHandle"></el-tree>
+            <el-tree ref="apiTree" highlight-current default-expand-all :data="reverseMenus" :props="defaultProps"
+                     @current-change="checkChangeHandle" :filter-node-method="filterNode"></el-tree>
         </div>
         <div id="main" v-if="currentApiAction != null">
             <h2>{{currentApiAction.title}}</h2>
             <p class="comment">{{currentApiAction.comment}}</p>
             <p class="uri" v-if="currentApiAction.methods.length > 0">只支持:
-                <span v-for="m in currentApiAction.methods">{{m}}</span>
+                <span v-for="m in currentApiAction.methods">{{m}} </span>
             </p>
             <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{currentApiModule.uris[0] + '/' + uri}}</p>
             <p class="return">接口返回: {{currentApiAction.returnDesc}}</p>
@@ -63,6 +63,29 @@
                 <pre>{{reverseRespbody}}</pre>
             </div>
         </div>
+
+        <div id="test" v-if="currentApiAction != null">
+            <h2>测试</h2>
+            <br/>
+            <el-form ref="form" :model="testForm" label-width="120px" class="test-form">
+                <el-form-item label="请求方式">
+                    <el-radio-group v-model="request.type">
+                        <el-radio v-for="m in currentApiAction.methods" :label="m">{{m}}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item v-for="param in reverseParam" :label="param.paramDesc">
+                    <el-input v-model="testForm[param.paramName]"></el-input>
+                </el-form-item>
+                <div class="btn-div">
+                    <el-button type="primary" @click="onTest">测试</el-button>
+                </div>
+            </el-form>
+            
+            <h3>返回内容</h3>
+            <br/>
+            <el-input ref="respbpdy" :value="testRespbody" type="textarea" :rows="10" placeholder="返回内容..."></el-input>
+        </div>
     </div>
 </template>
 
@@ -71,10 +94,17 @@
         name: 'app',
         data() {
             return {
+                search: '',
+                radio2: '1',
+                testRespbody: '',
                 apiModules: [],
+                testForm : {},
                 defaultProps: {
                     children: 'children',
                     label: 'label'
+                },
+                request : {
+                    type : 'get'
                 },
                 currentApiModule: null,
                 currentApiAction: null
@@ -196,7 +226,38 @@
                         }
                     }
                 }
+            },
+
+            filterNode(value, data) {
+                if (!value) return true;
+                return data.label.indexOf(value) !== -1;
+            },
+
+            onTest() {
+                console.log(this.testForm);
+                
+                var uri = '';
+                if (this.currentApiModule.uris.length > 0) {
+                    uri += '/' + this.currentApiModule.uris[0];
+                }
+
+                if (this.currentApiAction.uris.length > 0) {
+                    uri += '/' + this.currentApiAction.uris[0];
+                }
+                this.$http[this.request.type.toLocaleLowerCase()](uri, this.testForm).then(response => {
+                    return response.text();
+                }, response => {
+                    this.$message.error('系统错误');
+                }).then(response => {
+                    this.testRespbody = response;
+                });
             }
+        },
+
+        watch : {
+            search(val) {
+                this.$refs.apiTree.filter(val);
+            },
         }
     }
 
@@ -229,7 +290,7 @@
 
     #header {
         height: 60px;
-        z-index: 10000;
+        z-index: 200;
     }
 
     #header .head-user-box {
@@ -253,5 +314,33 @@
 
     #main .comment, .uri, .return {
         padding: 20px;
+    }
+
+    #test {
+        right: 0px;
+        padding: 20px 20px;
+        position: absolute;
+        width : 20px;
+        top: 60px;
+        bottom: 0px;
+        overflow: hidden;
+        background-color:#FFF;
+        border-left : 2px solid #eef1f6;
+        transition:all .2s ease;
+        -webkit-transition:all .2s ease;
+        z-index : 1;
+    }
+
+    #test:hover {
+        width : 800px;
+    }
+
+    .test-form {
+        width : 80%;
+    }
+
+    .btn-div {
+        width : 700px;
+        text-align : center;
     }
 </style>
