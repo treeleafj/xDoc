@@ -1,0 +1,1 @@
+mvn install:install-file -DgroupId=sun -DartifactId=javadoc -Dversion=1.0 -Dpackaging=jar -Dfile=javadoc.jar
