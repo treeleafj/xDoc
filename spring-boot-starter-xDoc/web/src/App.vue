@@ -85,7 +85,7 @@
             this.$http.get('apis').then(response => {
                 return response.json();
             }, response => {
-                _this.$message.error('系统错误');
+                this.$message.error('系统错误');
             }).then(data => {
                 this.apiModules = data;
                 if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
