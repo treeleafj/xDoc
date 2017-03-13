@@ -6,6 +6,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.test.vo.User;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 /**
  * 用户模块
  *
@@ -17,35 +21,40 @@ import org.treeleafj.xdoc.test.vo.User;
 public class UserController {
 
     /**
-     * 查询当前登录用户的基本信息
+     * 登录
      *
-     * @param user 当前登录用户
+     * @param username 用户名|必填
+     * @param password 密码
      * @return 当前登录用户的基本信息
-     * @see User
+     * @resp code 返回码(0000表示登录成功,其它表示失败)|string|必填
+     * @resp msg 登录信息|string
+     * @resp username 登录成功后返回的用户名|string
      */
     @ResponseBody
-    @RequestMapping("info")
-    public User info(User user) {
-        return new User();
+    @RequestMapping("login")
+    public Map<String, String> login(String username, String password) {
+        Map<String, String> model = new HashMap<>();
+        model.put("code", "0000");
+        model.put("msg", "登录成功");
+        model.put("username", username);
+        return model;
     }
 
 
     /**
-     * 用户注册接口
+     * 用户注册
      *
      * @param user :username 用户名|必填
-     * @param user :password 密码|必填
-     * @return 当前登录用户的基本信息
-     * @title 用户注册
+     * @param user :password 密码
+     * @return 注册后生成的用户的基本信息
      * @respbody {"id":"123","password":"123456","username":"admin"}
-     * @resp id 新生成的用户名|string|必填
-     * @resp username 用户名|string|必填
-     * @resp password 用户密码|string|非必填
+     * @title 注册
      * @see User
      */
     @ResponseBody
     @RequestMapping(value = "register", method = {RequestMethod.POST, RequestMethod.PUT})
     User register(User user) {
-        return new User();
+        user.setId(UUID.randomUUID().toString());
+        return user;
     }
 }
