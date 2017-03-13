@@ -47,15 +47,17 @@ public class XDocController {
         }
 
         log.info("源码路径:{}", path);
+        try {
+            SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, null);
+            XDoc xDoc = new XDoc(path, output);
+            xDoc.build();
+            log.info("启动XDoc完成");
 
-        org.treeleafj.xdoc.spring.SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());
-        XDoc xDoc = new XDoc(path, output);
-        xDoc.build();
-
-        log.info("启动XDoc完成");
-
-        apiModules = ApiModulesHolder.getCurrentApiModules();
-        json = JSON.toJSONString(apiModules, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
+            apiModules = ApiModulesHolder.getCurrentApiModules();
+            json = JSON.toJSONString(apiModules, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
+        } catch (Exception e) {
+            log.error("生成接口文档失败", e);
+        }
     }
 
     /**

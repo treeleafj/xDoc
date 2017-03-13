@@ -7,8 +7,6 @@
                 <el-submenu index="1" class="head-user-box">
                     <template slot="title">版本</template>
                     <el-menu-item index="1-1">V1</el-menu-item>
-                    <el-menu-item index="1-2">V1.1</el-menu-item>
-                    <el-menu-item index="1-3">V1.2</el-menu-item>
                 </el-submenu>
                 <el-menu-item index="2" class="head-user-box">
                     <el-input placeholder="请输入搜索内容" icon="search" v-model="search"></el-input>

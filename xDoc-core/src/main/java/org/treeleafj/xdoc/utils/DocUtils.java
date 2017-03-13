@@ -25,7 +25,8 @@ public class DocUtils {
 
     public static boolean isController(ClassDoc classDoc) {
         for (AnnotationDesc annotationDesc : classDoc.annotations()) {
-            if (annotationDesc.annotationType().name().equals("Controller")) {
+            String name = annotationDesc.annotationType().name();
+            if (name.equals("Controller") || name.equals("RestController")) {
                 return true;
             }
         }

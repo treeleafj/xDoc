@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class SpringXDocOutputImpl implements XDocOutput {
 
-    private Format format = new MarkdownFormat();
+    private Format format;
 
     private OutputStream out;
 
@@ -45,7 +45,10 @@ public class SpringXDocOutputImpl implements XDocOutput {
 
     @Override
     public void output(List<ApiModule> apiModules) {
-        List<ApiModule> list = new ArrayList<ApiModule>(apiModules.size());
+        if (apiModules == null) {
+            return;
+        }
+        List<ApiModule> list = new ArrayList<>(apiModules.size());
         for (ApiModule apiModule : apiModules) {
             SpringApiModule sam = new SpringApiModule();
 
@@ -55,13 +58,19 @@ public class SpringXDocOutputImpl implements XDocOutput {
             sam.setJson(isjson);
 
             RequestMapping classRequestMappingAnno = apiModule.getType().getAnnotation(RequestMapping.class);
-
-            sam.setUris(this.getUris(classRequestMappingAnno));
-            sam.setMethods(this.getMethods(classRequestMappingAnno));
+            if (classRequestMappingAnno != null) {
+                sam.setUris(this.getUris(classRequestMappingAnno));
+                sam.setMethods(this.getMethods(classRequestMappingAnno));
+            } else {
+                sam.setUris(new ArrayList<>(0));
+                sam.setMethods(new ArrayList<>(0));
+            }
 
             for (ApiAction apiAction : apiModule.getApiActions()) {
                 SpringApiAction saa = this.buildSpringApiAction(apiAction, isjson);
-                sam.getApiActions().add(saa);
+                if (saa != null) {
+                    sam.getApiActions().add(saa);
+                }
             }
 
             list.add(sam);
@@ -69,7 +78,7 @@ public class SpringXDocOutputImpl implements XDocOutput {
 
         ApiModulesHolder.setCurrentApiModules(list);
 
-        if (out != null) {
+        if (out != null && format != null) {
             String s = format.format(list);
             try {
                 IOUtils.write(s, out, "utf-8");
@@ -102,7 +111,9 @@ public class SpringXDocOutputImpl implements XDocOutput {
         saa.setRespbody(getRespbody(saa));
 
         RequestMapping methodRequestMappingAnno = apiAction.getMethod().getAnnotation(RequestMapping.class);
-
+        if (methodRequestMappingAnno == null) {
+            return null;
+        }
         saa.setUris(this.getUris(methodRequestMappingAnno));
         saa.setMethods(this.getMethods(methodRequestMappingAnno));
         saa.setParam(this.getParams(saa));
