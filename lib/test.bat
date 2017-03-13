@@ -1,1 +1,1 @@
-java -jar -Dfile.encoding="UTF-8" xDoc-spring-test-1.0-SNAPSHOT.jar --xdoc.sourceAbsolutePath=E:\project\xDoc\xDoc-test\src\main\java
+java -jar -Dfile.encoding="UTF-8" xDoc-spring-test-1.0-SNAPSHOT.jar --xdoc.sourceAbsolutePath=E:\project\xDoc\xDoc-spring-test\src\main\java

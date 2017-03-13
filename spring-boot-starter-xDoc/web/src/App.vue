@@ -68,19 +68,22 @@
             <h2>测试</h2>
             <br/>
             <div class="test-main">
-                <el-form ref="form" :model="testForm" label-width="120px" class="test-form">
+                <el-form ref="testForm" :model="testForm" label-width="120px" class="test-form">
+
                     <el-form-item v-if="currentApiAction.methods.length > 0" label="请求方式">
                         <el-radio-group v-model="request.type">
                             <el-radio v-for="m in currentApiAction.methods" :label="m">{{m}}</el-radio>
                         </el-radio-group>
                     </el-form-item>
 
-                    <el-form-item v-for="param in reverseParam" :label="param.paramDesc">
+                    <el-form-item v-for="param in reverseParam" :label="param.paramDesc" :prop="param.paramName">
                         <el-input v-model="testForm[param.paramName]"></el-input>
                     </el-form-item>
-                    <div class="btn-div">
+
+                    <el-form-item>
                         <el-button type="primary" @click="onTest">测试</el-button>
-                    </div>
+                        <el-button @click="resetTestForm">重置</el-button>
+                    </el-form-item>
                 </el-form>
                 
                 <h3>返回内容</h3>
@@ -162,10 +165,11 @@
             reverseParam() {
                 if (this.currentApiAction) {
                     var data = [];
-
+                    this.testForm = {};
                     for (var i = 0; i < this.currentApiAction.param.length; i++) {
                         var par = this.currentApiAction.param[i];
                         data.push(par);
+                        this.$set(this.testForm, par.paramName, '');//动态绑定监控
                     }
                     return data;
                 }
@@ -216,6 +220,9 @@
                 if (array) {
                     this.currentApiModule = array[0];
                     this.currentApiAction = array[1];
+                    this.request.type = 'get';
+                    this.resetTestForm();
+                    console.log('OK');
                 }
             },
 
@@ -244,6 +251,10 @@
                  this.testClassName = 'test-off';
             },
 
+            resetTestForm() {
+                this.$refs.testForm.resetFields();
+            },
+
             onTest() {
                 
                 var uri = '';
@@ -254,12 +265,27 @@
                 if (this.currentApiAction.uris.length > 0) {
                     uri += '/' + this.currentApiAction.uris[0];
                 }
-                this.$http[this.request.type.toLocaleLowerCase()](uri, this.testForm).then(response => {
-                    return response.text();
-                }, response => {
-                    this.$message.error('系统错误:' + response);
-                }).then(response => {
-                    this.testRespbody = response;
+                var requestType = this.request.type.toLocaleLowerCase();
+
+                console.log('请求方式:', requestType, '请求数据:', this.testForm);
+
+                var http;
+                if ('get' == requestType) {
+                    http = this.$http.get(uri, {params : { username : '123'}});
+                } else {
+                    http = this.$http[requestType](uri, this.testForm, {emulateJSON:true})
+                }
+
+                http.then((resp) => {
+                    return resp.text();
+                }, (resp) => {
+                    return resp.text();
+                }).then((resp) => {
+                    this.testRespbody = resp;
+                }, (resp) => {
+                    console.log(resp);
+                    window.resp = resp;
+                    this.$message.error('系统错误:' + resp);
                 });
             }
         },
@@ -360,11 +386,6 @@
 
     .test-form {
         width : 80%;
-    }
-
-    .btn-div {
-        width : 700px;
-        text-align : center;
     }
 
     .test-respbody {
