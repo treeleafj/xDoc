@@ -20,13 +20,14 @@ public class AccountController {
     /**
      * 获取当前登录用户的账户资产信息,用户不存在会返回code为9999的错误信息
      *
+     * @param type 账户类型(1-普通账户)|必填
      * @return 用户的资产
      * @title 查询用户资产
      * @see Account
      */
     @ResponseBody
     @RequestMapping("info")
-    Account info() {
+    Account info(String type) {
         Account account = new Account();
         account.setId(UUID.randomUUID().toString());
         account.setBalance(100D);

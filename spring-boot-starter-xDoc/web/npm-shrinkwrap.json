@@ -1098,7 +1098,7 @@
       "resolved": "https://registry.npm.taobao.org/ee-first/download/ee-first-1.1.1.tgz"
     },
     "element-ui": {
-      "version": "1.1.4",
+      "version": "1.2.3",
       "from": "element-ui@latest",
       "resolved": "https://registry.npm.taobao.org/element-ui/download/element-ui-1.1.4.tgz"
     },

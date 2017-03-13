@@ -1,7 +1,7 @@
 {
-  "name": "chuanghe",
+  "name": "xdoc",
   "version": "0.0.1-3",
-  "description": "和创集团",
+  "description": "xdoc",
   "main": "index.js",
   "scripts": {
     "dev": "cooking watch",
@@ -21,7 +21,7 @@
     "cooking-less": "^1.0.5",
     "cooking-vue2": "^0.3.0",
     "css-loader": "^0.24.0",
-    "element-ui": "^1.1.4",
+    "element-ui": "^1.2.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.9.0",
     "html-loader": "^0.4.4",

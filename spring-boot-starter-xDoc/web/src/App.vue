@@ -69,19 +69,21 @@
             <br/>
             <div class="test-main">
                 <el-form ref="testForm" :model="testForm" label-width="120px" class="test-form">
+
                     <el-form-item v-if="currentApiAction.methods.length > 0" label="请求方式">
                         <el-radio-group v-model="request.type">
                             <el-radio v-for="m in currentApiAction.methods" :label="m">{{m}}</el-radio>
                         </el-radio-group>
                     </el-form-item>
 
-                    <el-form-item v-for="param in reverseParam" :label="param.paramDesc">
+                    <el-form-item v-for="param in reverseParam" :label="param.paramDesc" :prop="param.paramName">
                         <el-input v-model="testForm[param.paramName]"></el-input>
                     </el-form-item>
-                    <div class="btn-div">
+
+                    <el-form-item>
                         <el-button type="primary" @click="onTest">测试</el-button>
                         <el-button @click="resetTestForm">重置</el-button>
-                    </div>
+                    </el-form-item>
                 </el-form>
                 
                 <h3>返回内容</h3>
@@ -163,10 +165,11 @@
             reverseParam() {
                 if (this.currentApiAction) {
                     var data = [];
-
+                    this.testForm = {};
                     for (var i = 0; i < this.currentApiAction.param.length; i++) {
                         var par = this.currentApiAction.param[i];
                         data.push(par);
+                        this.$set(this.testForm, par.paramName, '');//动态绑定监控
                     }
                     return data;
                 }
@@ -383,11 +386,6 @@
 
     .test-form {
         width : 80%;
-    }
-
-    .btn-div {
-        width : 700px;
-        text-align : center;
     }
 
     .test-respbody {
