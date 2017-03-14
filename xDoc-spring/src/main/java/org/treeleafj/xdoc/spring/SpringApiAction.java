@@ -3,7 +3,6 @@ package org.treeleafj.xdoc.spring;
 import lombok.Data;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ObjectInfo;
-import org.treeleafj.xdoc.tag.ParamTagImpl;
 
 import java.util.ArrayList;
 import java.util.List;

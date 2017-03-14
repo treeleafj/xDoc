@@ -12,13 +12,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class XDocProperties {
 
     /**
-     * 源码相对路径
+     * 是否启动XDOC,此值便于在生产等环境启动程序时增加参数进行控制
      */
-    private String sourcePath;
+    private boolean enable = true;
 
     /**
-     * 源码决定路径
+     * 源码相对路径(支持多个,用英文逗号隔开)
      */
-    private String sourceAbsolutePath;
+    private String sourcePath;
 
 }

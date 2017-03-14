@@ -11,7 +11,7 @@
 <dependency>
     <groupId>com.github.treeleafj</groupId>
     <artifactId>spring-boot-starter-xDoc</artifactId>
-    <version>0.0.2</version>
+    <version>0.0.3</version>
 </dependency>
 ```
 ```java
@@ -26,9 +26,9 @@ public class TestApplication {
 ```
 
 ```
-#在application.properties配置项目源码的位置,直接在项目里启动时,如果是maven项目,可以不配置
-xdoc.sourcePath=/xDoc-spring-test/src/main/java   #基于项目根目录的源码相对路径
-#xdoc.sourceAbsolutePath=E:/project/xDoc/xDoc-test/src/main/java   #项目源码的绝对路径
+#在application.properties配置项目源码的位置,直接在项目里启动时,如果是单模块的maven项目,默认可以不配置
+xdoc.enable=true #是否启动XDoc,默认是true,因为可以不填
+xdoc.sourcePath=xDoc-spring-test/src/main/java   #源码路径,多个时用英文逗号隔开
 ```
 
 **以上配置就都写好了**

@@ -11,7 +11,6 @@ import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.ObjectInfo;
 import org.treeleafj.xdoc.output.XDocOutput;
 import org.treeleafj.xdoc.spring.format.Format;
-import org.treeleafj.xdoc.spring.format.MarkdownFormat;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
 import org.treeleafj.xdoc.tag.RespTagImpl;

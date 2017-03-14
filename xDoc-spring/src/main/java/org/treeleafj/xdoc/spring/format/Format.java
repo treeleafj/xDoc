@@ -1,7 +1,6 @@
 package org.treeleafj.xdoc.spring.format;
 
 import org.treeleafj.xdoc.model.ApiModule;
-import org.treeleafj.xdoc.spring.SpringApiModule;
 
 import java.util.List;
 

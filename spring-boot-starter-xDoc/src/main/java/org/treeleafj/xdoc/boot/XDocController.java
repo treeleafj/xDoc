@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.XDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.spring.SpringXDocOutputImpl;
-import org.treeleafj.xdoc.spring.format.MarkdownFormat;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,27 +36,32 @@ public class XDocController {
 
     @PostConstruct
     public void init() {
+        if (!xDocProperties.isEnable()) {
+            return;
+        }
         log.info("开始启动XDoc");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String path = xDocProperties.getSourceAbsolutePath();
+        String path = xDocProperties.getSourcePath();
 
-        String rootDir = System.getProperty("user.dir");
         if (StringUtils.isBlank(path)) {
-            path = rootDir + StringUtils.defaultIfBlank(xDocProperties.getSourcePath(), "/java/main/src");
+            path = ".";//默认为当前目录
         }
 
-        log.info("源码路径:{}", path);
+        List<String> paths = Arrays.asList(path.split(","));
+
+        log.debug("源码路径:{}", paths);
+
         try {
             SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, null);
-            XDoc xDoc = new XDoc(path, output);
+            XDoc xDoc = new XDoc(paths, output);
             xDoc.build();
             log.info("启动XDoc完成");
 
             apiModules = ApiModulesHolder.getCurrentApiModules();
             json = JSON.toJSONString(apiModules, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
         } catch (Exception e) {
-            log.error("生成接口文档失败", e);
+            log.error("启动XDoc失败,生成接口文档失败", e);
         }
     }
 
