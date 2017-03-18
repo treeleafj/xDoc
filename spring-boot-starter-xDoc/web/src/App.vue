@@ -118,17 +118,17 @@
         },
 
         mounted() {
-            this.$http.get('apis').then(response => {
-                return response.json();
-            }, response => {
-                this.$message.error('系统错误,请求api列表 接口失败');
-            }).then(data => {
-                this.apiModules = data;
-                if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
-                    this.currentApiModule = this.apiModules[0];
-                    this.currentApiAction = this.apiModules[0].apiActions[0];
-                }
-            });
+            if (!window.apis) {
+                this.$http.get('apis').then(response => {
+                    return response.json();
+                }, response => {
+                    this.$message.error('系统错误,请求api列表 接口失败');
+                }).then(data => {
+                    this.fullData(data);
+                });
+            } else {
+                this.fullData(window.apis);
+            }
         },
 
         computed: {
@@ -213,6 +213,15 @@
         },
 
         methods: {
+
+            fullData(data) {
+                this.apiModules = data;
+                if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
+                    this.currentApiModule = this.apiModules[0];
+                    this.currentApiAction = this.apiModules[0].apiActions[0];
+                }
+            },
+
             checkChangeHandle(data, checked, indeterminate) {
                 var array = this.findModuleAndActionById(data.id);
                 if (array) {

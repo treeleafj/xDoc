@@ -11,7 +11,7 @@
 <dependency>
     <groupId>com.github.treeleafj</groupId>
     <artifactId>spring-boot-starter-xDoc</artifactId>
-    <version>0.0.3</version>
+    <version>0.0.4</version>
 </dependency>
 ```
 ```java
@@ -125,8 +125,16 @@ public class AccountController {
 
 <img alt="XDoc" src="https://raw.githubusercontent.com/treeleafj/xDoc/master/doc/2.jpg">
 
+**如果想生成离线文档怎么办? 支持html:**
+```java
+FileOutputStream out = new FileOutputStream(new File("E:/api.html"));
+String rootDir = System.getProperty("user.dir");
+org.treeleafj.xdoc.spring.SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new HtmlForamt());
+XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
+xDoc.build();
+```
 
-**如果想生成离线文档怎么办? 暂优先支持markdown:**
+**或者生成markdown:**
 ```java
 @Test
 public void test() {
