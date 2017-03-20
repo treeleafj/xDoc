@@ -126,7 +126,8 @@ public class AccountController {
 
 <img alt="XDoc" src="https://raw.githubusercontent.com/treeleafj/xDoc/master/doc/2.jpg">
 
-**如果想生成离线文档怎么办? 支持html:**
+### 2.如果想生成离线文档怎么办?
+**支持html:**
 ```java
 @Test
 public void test() {
