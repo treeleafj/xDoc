@@ -5,7 +5,7 @@
 - **支持spring mvc规范**
 - **支持spring-boot直接内嵌启动**
 
-###1. 基于SpringBoot直接使用:
+### 1. 基于SpringBoot直接使用:
 ```xml
 <!--加入maven依赖-->
 <dependency>
@@ -14,6 +14,7 @@
     <version>0.0.4</version>
 </dependency>
 ```
+
 ```java
 @EnableXDoc //<--- 加上此注解以便启用XDOC在线HTML文档
 @SpringBootApplication
@@ -127,21 +128,25 @@ public class AccountController {
 
 **如果想生成离线文档怎么办? 支持html:**
 ```java
-FileOutputStream out = new FileOutputStream(new File("E:/api.html"));
-String rootDir = System.getProperty("user.dir");
-org.treeleafj.xdoc.spring.SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new HtmlForamt());
-XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
-xDoc.build();
+@Test
+public void test() {
+    FileOutputStream out = new FileOutputStream(new File("E:/api.html"));//文档输出保存位置
+    String rootDir = System.getProperty("user.dir");
+    SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new HtmlForamt());
+    //两个参数,一个是指定源码的绝对路径,另外一个是指定输出的方式,这里采用基SpringMvc扩展的接口文档+html格式的输出
+    XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
+    xDoc.build();
+}
 ```
 
-**或者生成markdown:**
+**也支持markdown:**
 ```java
 @Test
 public void test() {
-	ByteArrayOutputStream out = new ByteArrayOutputStream();
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
     String rootDir = System.getProperty("user.dir");
-    SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());
-    //两个参数,一个是指定源码的绝对路径,另外一个是指定输出的方式,这里采用基SpringMvc扩展的接口文档+markdown格式的输出
+    SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());//这里换成MarkdownFormat
+    //两个参数,一个是指定源码的绝对路径,另外一个是指定输出的方式,这里采用基SpringMvc扩展的接口文档+markdown格式的输出
     XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
     xDoc.build();
     System.out.println(out.toString());
