@@ -153,3 +153,4 @@ public void test() {
     System.out.println(out.toString());
 }
 ```
+**本项目底层使用到了sun的javadoc类库,本身是包含在jdk/lib下的tools.jar中,但因为比较jar包比较大,所以对其进行了一个删减,在项目根目的lib里,有删减后的jar包(基于JDK8),还有通过maven install到本地仓库的脚本,直接执行就可以了. 生产环境不推荐开启此文档**
