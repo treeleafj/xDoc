@@ -278,7 +278,7 @@
 
                 var http;
                 if ('get' == requestType) {
-                    http = this.$http.get(uri, {params : { username : '123'}});
+                    http = this.$http.get(uri, {params : this.testForm});
                 } else {
                     http = this.$http[requestType](uri, this.testForm, {emulateJSON:true})
                 }

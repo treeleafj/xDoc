@@ -1,14 +1,11 @@
 package org.treeleafj.xdoc.test.vo;
 
-import lombok.Data;
-
 /**
  * 用户
  *
  * @author leaf
  * @date 2017-03-03 10:13
  */
-@Data
 public class User {
 
     /**
@@ -26,4 +23,30 @@ public class User {
      */
     private String password;
 
+    public String getId() {
+        return id;
+    }
+
+    public User setId(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public User setUsername(String username) {
+        this.username = username;
+        return this;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public User setPassword(String password) {
+        this.password = password;
+        return this;
+    }
 }
