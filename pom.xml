@@ -12,7 +12,7 @@
     <groupId>com.github.treeleafj</groupId>
     <artifactId>xDoc</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.4</version>
+    <version>0.0.5</version>
 
     <modules>
         <module>xDoc-core</module>
@@ -171,7 +171,6 @@
             <version>2.5</version>
         </dependency>
 
-
         <!--fastjson -->
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -184,6 +183,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.16.10</version>
+            <scope>provided</scope>
         </dependency>
 
     </dependencies>
