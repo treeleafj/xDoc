@@ -206,6 +206,12 @@
 
             reverseRespbody() {
                 if (this.currentApiAction && this.currentApiAction.respbody) {
+                    try {
+                        var obj = JSON.parse(this.currentApiAction.respbody);
+                        return JSON.stringify(obj, null, 4);
+                    } catch(e) {
+
+                    }
                     return this.currentApiAction.respbody;
                 }
             }
@@ -354,7 +360,7 @@
         top: 60px;
         bottom: 0px;
         right: 0px;
-        overflow: hidden;
+        overflow: auto;
     }
 
     #main .comment, .uri, .return {
@@ -367,7 +373,7 @@
         position: absolute;
         top: 60px;
         bottom: 0px;
-        overflow: hidden;
+        overflow: auto;
         background-color:#FFF;
         border-left : 2px solid #eef1f6;
         transition:all .2s ease;
