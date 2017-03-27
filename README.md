@@ -5,6 +5,7 @@
 - **支持spring mvc规范**
 - **支持spring-boot直接内嵌启动**
 
+
 ### 1. 基于SpringBoot直接使用:
 ```xml
 <!--加入maven依赖-->
@@ -131,8 +132,8 @@ public class AccountController {
 ```java
 @Test
 public void test() {
-    FileOutputStream out = new FileOutputStream(new File("E:/api.html"));//文档输出保存位置
-    String rootDir = System.getProperty("user.dir");
+    FileOutputStream out = new FileOutputStream(new File("E:/api.html"));//文档输出保存位置
+    String rootDir = System.getProperty("user.dir");
     SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new HtmlForamt());
     //两个参数,一个是指定源码的绝对路径,另外一个是指定输出的方式,这里采用基SpringMvc扩展的接口文档+html格式的输出
     XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
@@ -146,11 +147,16 @@ public void test() {
 public void test() {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     String rootDir = System.getProperty("user.dir");
-    SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());//这里换成MarkdownFormat
-    //两个参数,一个是指定源码的绝对路径,另外一个是指定输出的方式,这里采用基SpringMvc扩展的接口文档+markdown格式的输出
+    SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());//这里换成MarkdownFormat
+    //两个参数,一个是指定源码的绝对路径,另外一个是指定输出的方式,这里采用基SpringMvc扩展的接口文档+markdown格式的输出
     XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
     xDoc.build();
     System.out.println(out.toString());
 }
 ```
-**本项目底层使用到了sun的javadoc类库,本身是包含在jdk/lib下的tools.jar中,但因为比较jar包比较大,所以对其进行了一个删减,在项目根目的lib里,有删减后的jar包(基于JDK8),还有通过maven install到本地仓库的脚本,直接执行就可以了. 生产环境不推荐开启此文档**
+
+### javadoc类库的问题:由于本项目底层使用到了sun的javadoc类库,在maven中央仓库是下载不到的,解决方法:
+>sun javadoc本身是包含在JAVA_HOEM/lib下的tools.jar中,通过在此目录下执行mvn install:install-file -DgroupId=sun -DartifactId=javadoc -Dversion=1.0 -Dpackaging=jar -Dfile=tools.jar执行就可以了.
+>因为tools.jar比较大的原因,对其大小进行了一个删减,删减后只有几MB,在项目根目的lib里,但基于JDK8做的删减,JDK7无法适用,请自己去JAVA_HOEM/lib获取
+
+**tip:生产环境不推荐开启此文档**
