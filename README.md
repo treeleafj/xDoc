@@ -156,7 +156,11 @@ public void test() {
 ```
 
 ### javadoc类库的问题:由于本项目底层使用到了sun的javadoc类库,在maven中央仓库是下载不到的,解决方法:
->sun javadoc本身是包含在JAVA_HOEM/lib下的tools.jar中,通过在此目录下执行mvn install:install-file -DgroupId=sun -DartifactId=javadoc -Dversion=1.0 -Dpackaging=jar -Dfile=tools.jar执行就可以了.
+>sun javadoc本身是包含在JAVA_HOEM/lib下的tools.jar中,通过在此目录下执行
+```shell
+mvn install:install-file -DgroupId=sun -DartifactId=javadoc -Dversion=1.0 -Dpackaging=jar -Dfile=tools.jar
+```
+就可以了.
 >因为tools.jar比较大的原因,对其大小进行了一个删减,删减后只有几MB,在项目根目的lib里,但基于JDK8做的删减,JDK7无法适用,请自己去JAVA_HOEM/lib获取
 
 **tip:生产环境不推荐开启此文档**
