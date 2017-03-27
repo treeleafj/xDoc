@@ -81,7 +81,7 @@ public class DocUtils {
     public static DocTags getDocsForTag(ProgramElementDoc elementDoc) {
         Tag[] tags = elementDoc.tags();
 
-        DocTags docTags = new DocTags(new ArrayList<>(tags.length));
+        DocTags docTags = new DocTags(new ArrayList<DocTag>(tags.length));
         for (Tag tag : tags) {
 
             TagConverter tagConverter = XDocConfig.getConverter(tag.name());

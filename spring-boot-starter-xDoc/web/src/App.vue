@@ -1,6 +1,5 @@
 <template>
     <div id="app">
-
         <div>
             <el-menu id="header" mode="horizontal">
                 <h2 class="logo-text">XDoc 接口文档</h2>
@@ -227,9 +226,12 @@
                 if (array) {
                     this.currentApiModule = array[0];
                     this.currentApiAction = array[1];
-                    this.request.type = 'get';
+                    if (this.currentApiAction.methods.length > 0) {
+                        this.request.type = this.currentApiAction.methods[0];
+                    } else {
+                        this.request.type = 'get';
+                    }
                     this.resetTestForm();
-                    console.log('OK');
                 }
             },
 

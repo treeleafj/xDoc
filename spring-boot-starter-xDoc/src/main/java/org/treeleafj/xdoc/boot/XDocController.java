@@ -68,7 +68,7 @@ public class XDocController {
     /**
      * 获取所有文档api
      *
-     * @return
+     * @return 系统所有文档接口的数据(json格式)
      */
     @ResponseBody
     @RequestMapping("apis")
@@ -76,9 +76,14 @@ public class XDocController {
         return json;
     }
 
+    /**
+     * 重新构建文档
+     *
+     * @return 文档页面
+     */
     @RequestMapping("rebuild")
     String rebuild() {
         init();
-        return "redirect:apis";
+        return "redirect:index.html";
     }
 }

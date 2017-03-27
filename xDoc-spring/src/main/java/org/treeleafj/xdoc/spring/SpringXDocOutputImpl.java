@@ -61,8 +61,8 @@ public class SpringXDocOutputImpl implements XDocOutput {
                 sam.setUris(this.getUris(classRequestMappingAnno));
                 sam.setMethods(this.getMethods(classRequestMappingAnno));
             } else {
-                sam.setUris(new ArrayList<>(0));
-                sam.setMethods(new ArrayList<>(0));
+                sam.setUris(new ArrayList<String>(0));
+                sam.setMethods(new ArrayList<String>(0));
             }
 
             for (ApiAction apiAction : apiModule.getApiActions()) {
