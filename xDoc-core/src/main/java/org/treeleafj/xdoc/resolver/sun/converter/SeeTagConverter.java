@@ -1,4 +1,4 @@
-package org.treeleafj.xdoc.converter;
+package org.treeleafj.xdoc.resolver.sun.converter;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;

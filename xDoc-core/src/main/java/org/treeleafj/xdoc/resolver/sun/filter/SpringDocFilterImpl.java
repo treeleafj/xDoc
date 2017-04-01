@@ -1,7 +1,7 @@
-package org.treeleafj.xdoc.filter;
+package org.treeleafj.xdoc.resolver.sun.filter;
 
 import com.sun.javadoc.ClassDoc;
-import org.treeleafj.xdoc.utils.DocUtils;
+import org.treeleafj.xdoc.utils.SunDocUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class SpringDocFilterImpl implements DocFilter {
     public ClassDoc[] filter(ClassDoc[] classDocs) {
         List<ClassDoc> list = new ArrayList();
         for (ClassDoc classDoc : classDocs) {
-            if (DocUtils.isController(classDoc)) {
+            if (SunDocUtils.isController(classDoc)) {
                 list.add(classDoc);
             }
         }

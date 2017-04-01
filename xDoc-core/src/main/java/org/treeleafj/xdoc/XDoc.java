@@ -2,6 +2,8 @@ package org.treeleafj.xdoc;
 
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.output.XDocOutput;
+import org.treeleafj.xdoc.resolver.DocTagResolver;
+import org.treeleafj.xdoc.resolver.SunDocTagResovler;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.FileUtils;
 
@@ -26,15 +28,17 @@ public class XDoc {
     private XDocOutput output;
 
     /**
-     * 默认的文档处理类(基于sun javadoc)
+     * 默认的java注释解析实现
+     * @see org.treeleafj.xdoc.resolver.SunDocTagResovler
+     * @see org.treeleafj.xdoc.resolver.JavaParserDocTagResolver
      */
-    private Class<?> docHandlerClass = CoreDocHandler.class;
+    private DocTagResolver docTagResolver = new SunDocTagResovler();
 
     /**
      * 构建XDoc对象
      *
      * @param srcPath 源码路径
-     * @param output 输出方式
+     * @param output  输出方式
      */
     public XDoc(String srcPath, XDocOutput output) {
         List<String> srcPaths = new ArrayList(1);
@@ -47,13 +51,16 @@ public class XDoc {
      * 构建XDoc对象
      *
      * @param srcPaths 源码路径,支持多个
-     * @param output 输出方式
+     * @param output   输出方式
      */
     public XDoc(List<String> srcPaths, XDocOutput output) {
         this.srcPaths = srcPaths;
         this.output = output;
     }
 
+    /**
+     * 构建接口文档
+     */
     public void build() {
 
         List<String> files = new ArrayList<>();
@@ -61,21 +68,7 @@ public class XDoc {
             files.addAll(FileUtils.getAllFiles(new File(srcPath)));
         }
 
-        StringBuilder sb = new StringBuilder();
-        for (Object o : files) {
-            sb.append(o).append(" ");
-        }
-
-        if (sb.length() > 0) {
-            sb.deleteCharAt(sb.length() - 1);
-        }
-
-        files.add(0, "-doclet");
-        files.add(1, docHandlerClass.getName());
-
-        String[] docArgs = files.toArray(new String[files.size()]);
-
-        com.sun.tools.javadoc.Main.execute(docArgs);
+        docTagResolver.resolve(files);
 
         List<ApiModule> currentApiModules = ApiModulesHolder.getCurrentApiModules();
 

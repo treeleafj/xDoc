@@ -1,4 +1,4 @@
-package org.treeleafj.xdoc.converter;
+package org.treeleafj.xdoc.resolver.sun.converter;
 
 import com.sun.javadoc.ParamTag;
 import org.treeleafj.xdoc.tag.DocTag;

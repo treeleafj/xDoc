@@ -1,28 +1,28 @@
-package org.treeleafj.xdoc;
+package org.treeleafj.xdoc.resolver.sun;
 
 import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
 import com.sun.javadoc.RootDoc;
-import org.treeleafj.xdoc.filter.DocFilter;
-import org.treeleafj.xdoc.filter.FilterFactory;
+import org.treeleafj.xdoc.resolver.sun.filter.DocFilter;
+import org.treeleafj.xdoc.resolver.sun.filter.FilterFactory;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.DocTags;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
-import org.treeleafj.xdoc.utils.DocUtils;
+import org.treeleafj.xdoc.utils.SunDocUtils;
 
 import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 核心解析器,负责将类上的注释,类属性,方法属性等解析出来
+ * 基于tools.jar中的sun javadoc的核心解析器,负责将类上的注释,类属性,方法属性等解析出来
  *
  * @author leaf
  * @date 2017-03-03 17:02
  */
-public class CoreDocHandler {
+public class SunDocHandler {
 
     public static boolean start(RootDoc root) throws ClassNotFoundException, NoSuchMethodException {
         DocFilter filter = FilterFactory.getDefaultFilter();
@@ -43,7 +43,7 @@ public class CoreDocHandler {
             for (MethodDoc method : methods) {
                 Class[] paramTypes = paramTypes(method);
                 Method m = moduleType.getDeclaredMethod(method.name(), paramTypes);
-                DocTags docTags = DocUtils.getDocsForTag(method);
+                DocTags docTags = SunDocUtils.getDocsForTag(method);
 
                 ApiAction apiAction = new ApiAction();
                 apiAction.setComment(method.commentText());

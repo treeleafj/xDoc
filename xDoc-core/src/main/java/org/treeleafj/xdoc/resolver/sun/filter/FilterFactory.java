@@ -1,4 +1,4 @@
-package org.treeleafj.xdoc.filter;
+package org.treeleafj.xdoc.resolver.sun.filter;
 
 /**
  * @author leaf
