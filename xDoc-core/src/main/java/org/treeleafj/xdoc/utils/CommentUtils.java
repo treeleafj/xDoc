@@ -56,7 +56,30 @@ public class CommentUtils {
                 .replaceAll("\\*\\/", "").trim();
         String[] array = coment.split("\n");
         List<String> comments = new ArrayList(array.length);
-        for (int i = 0; i < array.length; i++) {
+        int index = 0;
+        StringBuilder sb = new StringBuilder();
+        for (; index < array.length; index++) {
+            String c = array[index].trim();
+
+            if (StringUtils.isBlank(c)) {
+                continue;
+            }
+
+            String tagType = CommentUtils.findTagType(c);
+            if (StringUtils.isBlank(tagType)) {
+                sb.append(c);
+                sb.append("\n");
+            } else {
+                break;
+            }
+        }
+
+        if (sb.length() > 0) {
+            sb.deleteCharAt(sb.length() - 1);
+            comments.add(sb.toString());
+        }
+
+        for (int i = index; i < array.length; i++) {
             String c = array[i].trim();
             if (StringUtils.isNotBlank(c)) {
                 comments.add(c);
