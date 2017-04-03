@@ -5,6 +5,7 @@
 - **支持spring mvc规范**
 - **支持spring-boot直接内嵌启动**
 
+- #最新版本去掉了对sun java doc的依赖
 
 ### 1. 基于SpringBoot直接使用:
 ```xml
@@ -12,7 +13,7 @@
 <dependency>
     <groupId>com.github.treeleafj</groupId>
     <artifactId>spring-boot-starter-xDoc</artifactId>
-    <version>0.0.6</version>
+    <version>0.0.7</version>
 </dependency>
 ```
 
@@ -154,13 +155,5 @@ public void test() {
     System.out.println(out.toString());
 }
 ```
-
-### javadoc类库的问题:由于本项目底层使用到了sun的javadoc类库,在maven中央仓库是下载不到的,解决方法:
->sun javadoc本身是包含在JAVA_HOEM/lib下的tools.jar中,通过在此目录下执行
-```shell
-mvn install:install-file -DgroupId=sun -DartifactId=javadoc -Dversion=1.0 -Dpackaging=jar -Dfile=tools.jar
-```
-就可以了.
->因为tools.jar比较大的原因,对其大小进行了一个删减,删减后只有几MB,在项目根目的lib里,但基于JDK8做的删减,JDK7无法适用,请自己去JAVA_HOEM/lib获取
 
 **tip:生产环境不推荐开启此文档**
