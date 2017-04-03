@@ -7,7 +7,7 @@ import org.treeleafj.xdoc.tag.ParamTagImpl;
 /**
  * Created by leaf on 2017/3/4.
  */
-public class ParamTagConverter implements TagConverter<ParamTag> {
+public class ParamTagConverter implements SunTagConverter<ParamTag> {
 
     @Override
     public DocTag converter(ParamTag o) {

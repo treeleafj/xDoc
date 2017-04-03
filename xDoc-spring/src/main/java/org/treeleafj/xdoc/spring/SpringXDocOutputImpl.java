@@ -6,10 +6,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.treeleafj.xdoc.filter.ClassFilterFactory;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.ObjectInfo;
 import org.treeleafj.xdoc.output.XDocOutput;
+import org.treeleafj.xdoc.spring.filter.SpringClassFilter;
 import org.treeleafj.xdoc.spring.format.Format;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
@@ -28,6 +30,10 @@ import java.util.List;
  * Created by leaf on 2017/3/4.
  */
 public class SpringXDocOutputImpl implements XDocOutput {
+
+    static {
+        ClassFilterFactory.setDefaultFilter(new SpringClassFilter());//类过滤方式采用Spring Web注解
+    }
 
     private Format format;
 

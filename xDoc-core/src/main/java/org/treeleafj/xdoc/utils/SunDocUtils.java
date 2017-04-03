@@ -1,16 +1,11 @@
 package org.treeleafj.xdoc.utils;
 
-import com.sun.javadoc.AnnotationDesc;
-import com.sun.javadoc.AnnotationValue;
-import com.sun.javadoc.ClassDoc;
-import com.sun.javadoc.FieldDoc;
-import com.sun.javadoc.ProgramElementDoc;
-import com.sun.javadoc.Tag;
+import com.sun.javadoc.*;
 import com.sun.tools.javadoc.AnnotationValueImpl;
 import org.apache.commons.collections.map.HashedMap;
-import org.treeleafj.xdoc.resolver.sun.converter.TagConverter;
-import org.treeleafj.xdoc.resolver.sun.converter.XDocConfig;
 import org.treeleafj.xdoc.model.DocTags;
+import org.treeleafj.xdoc.resolver.sun.converter.SunTagConverter;
+import org.treeleafj.xdoc.resolver.sun.converter.SunTagConverterManager;
 import org.treeleafj.xdoc.tag.DocTag;
 
 import java.util.ArrayList;
@@ -24,22 +19,6 @@ import java.util.Map;
  * @date 2017-03-03 10:34
  */
 public class SunDocUtils {
-
-    /**
-     * 判断类是否一个Controller
-     *
-     * @param classDoc
-     * @return
-     */
-    public static boolean isController(ClassDoc classDoc) {
-        for (AnnotationDesc annotationDesc : classDoc.annotations()) {
-            String name = annotationDesc.annotationType().name();
-            if (name.equals("Controller") || name.equals("RestController") || name.equals("RequestMapping")) {
-                return true;
-            }
-        }
-        return false;
-    }
 
     public static Map<String, Object> getRequestMapperingMeta(ProgramElementDoc elementDoc) {
         AnnotationDesc annotationDesc = null;
@@ -92,9 +71,9 @@ public class SunDocUtils {
         DocTags docTags = new DocTags(new ArrayList<DocTag>(tags.length));
         for (Tag tag : tags) {
 
-            TagConverter tagConverter = XDocConfig.getConverter(tag.name());
+            SunTagConverter tagConverter = SunTagConverterManager.getConverter(tag.name());
             if (tagConverter == null) {
-                tagConverter = XDocConfig.getDefaultConverter();
+                tagConverter = SunTagConverterManager.getDefaultConverter();
             }
 
             DocTag docTag = tagConverter.converter(tag);

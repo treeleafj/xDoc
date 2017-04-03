@@ -6,7 +6,7 @@ import org.treeleafj.xdoc.tag.DocTag;
 /**
  * Created by leaf on 2017/3/4.
  */
-public interface TagConverter<T extends Tag> {
+public interface SunTagConverter<T extends Tag> {
 
     DocTag converter(T o);
 

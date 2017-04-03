@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by leaf on 2017/3/4.
  */
-public class SeeTagConverter implements TagConverter<SeeTag> {
+public class SeeTagConverter implements SunTagConverter<SeeTag> {
 
     @Override
     public DocTag converter(SeeTag o) {

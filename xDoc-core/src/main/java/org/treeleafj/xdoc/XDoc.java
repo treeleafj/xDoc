@@ -3,7 +3,7 @@ package org.treeleafj.xdoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.output.XDocOutput;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
-import org.treeleafj.xdoc.resolver.SunDocTagResovler;
+import org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.FileUtils;
 
@@ -29,10 +29,11 @@ public class XDoc {
 
     /**
      * 默认的java注释解析实现
-     * @see org.treeleafj.xdoc.resolver.SunDocTagResovler
-     * @see org.treeleafj.xdoc.resolver.JavaParserDocTagResolver
+     *
+     * @see org.treeleafj.xdoc.resolver.sun.SunDocTagResovler
+     * @see org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver
      */
-    private DocTagResolver docTagResolver = new SunDocTagResovler();
+    private DocTagResolver docTagResolver = new JavaParserDocTagResolver();
 
     /**
      * 构建XDoc对象
@@ -73,5 +74,16 @@ public class XDoc {
         List<ApiModule> currentApiModules = ApiModulesHolder.getCurrentApiModules();
 
         output.output(currentApiModules);
+    }
+
+    /**
+     * 设置源码解析方式
+     *
+     * @param docTagResolver
+     * @return
+     */
+    public XDoc setDocTagResolver(DocTagResolver docTagResolver) {
+        this.docTagResolver = docTagResolver;
+        return this;
     }
 }

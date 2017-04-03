@@ -1,6 +1,6 @@
-package org.treeleafj.xdoc.resolver;
+package org.treeleafj.xdoc.resolver.sun;
 
-import org.treeleafj.xdoc.resolver.sun.SunDocHandler;
+import org.treeleafj.xdoc.resolver.DocTagResolver;
 
 import java.util.List;
 

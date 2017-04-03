@@ -1,21 +1,20 @@
-package org.treeleafj.xdoc.resolver.sun.converter;
+package org.treeleafj.xdoc.resolver.javaparser.converter;
 
-import com.sun.javadoc.Tag;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.RespTagImpl;
 
 /**
  * Created by leaf on 2017/3/12 0012.
  */
-public class RespTagConverter implements SunTagConverter<Tag> {
+public class RespTagConverter extends DefaultJavaParserTagConverterImpl {
 
     @Override
-    public DocTag converter(Tag tag) {
-
+    public DocTag converter(String o) {
+        DocTag _docTag = super.converter(o);
         RespTagImpl respTag = new RespTagImpl();
-        respTag.setName(tag.name());
+        respTag.setName(_docTag.getName());
 
-        String v = tag.text().replaceAll("\\s{1,}", " ");//将多个空格替换成一个
+        String v = _docTag.getValues().toString().replaceAll("\\s{1,}", " ");//将多个空格替换成一个
 
         String[] split = v.split(" ");
         if (split.length >= 2) {

@@ -7,7 +7,7 @@ import org.treeleafj.xdoc.tag.DocTagImpl;
 /**
  * Created by leaf on 2017/3/4.
  */
-public class DefaultTagConverterImpl implements TagConverter<Tag> {
+public class DefaultSunTagConverterImpl implements SunTagConverter<Tag> {
     @Override
     public DocTag converter(Tag o) {
         return new DocTagImpl(o.name(), o.text());

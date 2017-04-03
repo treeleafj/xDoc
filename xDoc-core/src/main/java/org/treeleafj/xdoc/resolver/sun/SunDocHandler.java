@@ -4,12 +4,13 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.MethodDoc;
 import com.sun.javadoc.Parameter;
 import com.sun.javadoc.RootDoc;
-import org.treeleafj.xdoc.resolver.sun.filter.DocFilter;
-import org.treeleafj.xdoc.resolver.sun.filter.FilterFactory;
+import org.treeleafj.xdoc.filter.ClassFilter;
+import org.treeleafj.xdoc.filter.ClassFilterFactory;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.DocTags;
 import org.treeleafj.xdoc.utils.ApiModulesHolder;
+import org.treeleafj.xdoc.utils.ClassUtils;
 import org.treeleafj.xdoc.utils.SunDocUtils;
 
 import java.lang.reflect.Method;
@@ -25,16 +26,18 @@ import java.util.List;
 public class SunDocHandler {
 
     public static boolean start(RootDoc root) throws ClassNotFoundException, NoSuchMethodException {
-        DocFilter filter = FilterFactory.getDefaultFilter();
-        ClassDoc[] classDocs = filter.filter(root.classes());
-
-        List<ApiModule> apiModules = new LinkedList<ApiModule>();
+        ClassDoc[] classDocs = root.classes();
+        List<ApiModule> apiModules = new LinkedList<>();
         for (int i = 0; i < classDocs.length; i++) {
             ClassDoc aClass = classDocs[i];
 
-            ApiModule apiModule = new ApiModule();
             Class<?> moduleType = Class.forName(aClass.qualifiedTypeName());
+            ClassFilter classFilter = ClassFilterFactory.getDefaultFilter();
+            if (!classFilter.filter(moduleType)) {
+                continue;
+            }
 
+            ApiModule apiModule = new ApiModule();
             apiModule.setType(moduleType);
             apiModule.setComment(aClass.commentText());
 
@@ -71,39 +74,11 @@ public class SunDocHandler {
         Class[] types = new Class[parameters.length];
         for (int i = 0; i < parameters.length; i++) {
             String className = parameters[i].type().qualifiedTypeName();
-            types[i] = toBae(className);
+            types[i] = ClassUtils.toBae(className);
             if (types[i] == null) {
                 types[i] = Class.forName(className);
             }
         }
         return types;
-    }
-
-    /**
-     * 将基本类型的转为class类型
-     *
-     * @param className
-     * @return
-     */
-    private static Class toBae(String className) {
-        if ("byte".equals(className)) {
-            return byte.class;
-        } else if ("short".equals(className)) {
-            return short.class;
-        } else if ("int".equals(className)) {
-            return int.class;
-        } else if ("long".equals(className)) {
-            return long.class;
-        } else if ("float".equals(className)) {
-            return float.class;
-        } else if ("double".equals(className)) {
-            return double.class;
-        } else if ("boolean".equals(className)) {
-            return boolean.class;
-        } else if ("char".equals(className)) {
-            return char.class;
-        } else {
-            return null;
-        }
     }
 }

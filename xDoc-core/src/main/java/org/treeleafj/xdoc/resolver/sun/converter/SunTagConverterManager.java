@@ -5,15 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 标签转换器注册器
+ * 基于sun javadoc的标签转换管理器
  * <p>
  * Created by leaf on 2017/3/4.
  */
-public class XDocConfig {
+public class SunTagConverterManager {
 
-    private static Map<String, TagConverter> registrator = new HashMap<>();
+    private static Map<String, SunTagConverter> registrator = new HashMap<>();
 
-    private static TagConverter defaultTagConverter = new DefaultTagConverterImpl();
+    private static SunTagConverter defaultTagConverter = new DefaultSunTagConverterImpl();
 
     static {
         registerConverter("@param", new ParamTagConverter());
@@ -21,12 +21,12 @@ public class XDocConfig {
         registerConverter("@resp", new RespTagConverter());
     }
 
-    public static void registerConverter(String tagName, TagConverter tagConverter) {
+    public static void registerConverter(String tagName, SunTagConverter tagConverter) {
         registrator.put(tagName, tagConverter);
     }
 
-    public static TagConverter getConverter(String tagName) {
-        for (Map.Entry<String, TagConverter> entry : registrator.entrySet()) {
+    public static SunTagConverter getConverter(String tagName) {
+        for (Map.Entry<String, SunTagConverter> entry : registrator.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(tagName)) {
                 return entry.getValue();
             }
@@ -34,7 +34,7 @@ public class XDocConfig {
         return null;
     }
 
-    public static TagConverter getDefaultConverter() {
+    public static SunTagConverter getDefaultConverter() {
         return defaultTagConverter;
     }
 }

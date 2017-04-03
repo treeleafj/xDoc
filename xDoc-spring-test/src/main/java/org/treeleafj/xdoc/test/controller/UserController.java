@@ -53,7 +53,7 @@ public class UserController {
      */
     @ResponseBody
     @RequestMapping(value = "register", method = {RequestMethod.POST, RequestMethod.PUT})
-    User register(User user) {
+    User register(org.treeleafj.xdoc.test.vo.User user) {
         user.setId(UUID.randomUUID().toString());
         return user;
     }
