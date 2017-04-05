@@ -103,7 +103,11 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                                 converter = JavaParserTagConverterManager.getDefaultConverter();
                             }
                             DocTag docTag = converter.converter(c);
-                            docTagList.add(docTag);
+                            if (docTag != null) {
+                                docTagList.add(docTag);
+                            } else {
+                                log.error("识别不了:{}", c);
+                            }
                         }
 
                         DocTags docTags = new DocTags(docTagList);
