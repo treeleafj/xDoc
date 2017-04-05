@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div id="test" :class="testClassName" v-if="currentApiAction != null" @click="showTest">
+        <div id="test" :class="testClassName" v-if="currentApiAction != null && isOnline" @click="showTest">
             <h2>测试</h2>
             <br/>
             <div class="test-main">
@@ -103,13 +103,14 @@
                 testRespbody: '',
                 apiModules: [],
                 testForm : {},
+                isOnline : true,
                 testClassName : 'test-off',
                 defaultProps: {
                     children: 'children',
                     label: 'label'
                 },
                 request : {
-                    type : 'get'
+                    type : 'GET'
                 },
                 currentApiModule: null,
                 currentApiAction: null
@@ -126,6 +127,7 @@
                     this.fullData(data);
                 });
             } else {
+                this.isOnline = false;
                 this.fullData(window.apis);
             }
         },
@@ -224,6 +226,9 @@
                 if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
                     this.currentApiModule = this.apiModules[0];
                     this.currentApiAction = this.apiModules[0].apiActions[0];
+                    if (this.currentApiAction.methods.length > 0) {
+                        this.request.type = this.currentApiAction.methods[0];
+                    }
                 }
             },
 
@@ -267,7 +272,9 @@
             },
 
             resetTestForm() {
-                this.$refs.testForm.resetFields();
+                if (this.$refs.testForm) {
+                    this.$refs.testForm.resetFields();
+                }
             },
 
             onTest() {

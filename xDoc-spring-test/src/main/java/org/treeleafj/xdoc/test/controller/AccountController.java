@@ -2,6 +2,7 @@ package org.treeleafj.xdoc.test.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.test.vo.Account;
 
@@ -26,7 +27,7 @@ public class AccountController {
      * @see Account
      */
     @ResponseBody
-    @RequestMapping("info")
+    @RequestMapping(value = "info", method = RequestMethod.POST)
     Account info(String type) {
         Account account = new Account();
         account.setId(UUID.randomUUID().toString());
