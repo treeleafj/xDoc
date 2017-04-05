@@ -41,7 +41,7 @@ public class CommentUtils {
                 return s;
             }
         }
-        return coment;
+        return "";
     }
 
     /**
