@@ -142,8 +142,6 @@ public class JavaParserDocTagResolver implements DocTagResolver {
         parameters = parameters == null ? new ArrayList<Parameter>(0) : parameters;
         Method[] methods = type.getDeclaredMethods();
         for (Method m : methods) {
-
-
             if (!m.getName().equals(declaration.getName())) {
                 continue;
             }
@@ -164,6 +162,12 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 if (index > 0) {
                     paranTypeName = paranTypeName.substring(index + 1);
                 }
+                //处理泛型
+                index = paranTypeName.indexOf("<");
+                if (index > 0) {
+                    paranTypeName = paranTypeName.substring(0, index);
+                }
+
                 if (!paramClass.getSimpleName().equals(paranTypeName)) {
                     b = false;
                     break;
