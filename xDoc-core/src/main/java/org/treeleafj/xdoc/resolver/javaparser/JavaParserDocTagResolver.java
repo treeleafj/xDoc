@@ -78,6 +78,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 apiModule.setType(moduleType);
                 if (typeDeclaration.getComment() != null) {
                     String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().toString());
+                    commentText = commentText.split("\n")[0].split("\r")[0];
                     apiModule.setComment(commentText);
                 }
 

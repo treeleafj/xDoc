@@ -16,7 +16,9 @@ import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author leaf
@@ -31,8 +33,6 @@ public class XDocController {
     private XDocProperties xDocProperties;
 
     private List<ApiModule> apiModules;
-
-    private String json;
 
     @PostConstruct
     public void init() {
@@ -58,8 +58,7 @@ public class XDocController {
             xDoc.build();
             log.info("启动XDoc完成");
 
-            apiModules = ApiModulesHolder.getCurrentApiModules();
-            json = JSON.toJSONString(apiModules, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
+            this.apiModules = ApiModulesHolder.getCurrentApiModules();
         } catch (Exception e) {
             log.error("启动XDoc失败,生成接口文档失败", e);
         }
@@ -73,7 +72,10 @@ public class XDocController {
     @ResponseBody
     @RequestMapping("apis")
     Object apis() {
-        return json;
+        Map<String, Object> model = new HashMap<>();
+        model.put("title", xDocProperties.getTitle());
+        model.put("apiModules", apiModules);
+        return JSON.toJSONString(model, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
     }
 
     /**

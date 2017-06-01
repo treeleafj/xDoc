@@ -32,6 +32,7 @@ public class TestApplication {
 #在application.properties配置项目源码的位置,直接在项目里启动时,如果是单模块的maven项目,默认可以不配置
 xdoc.enable=true #是否启动XDoc,默认是true,因为可以不填
 xdoc.sourcePath=xDoc-spring-test/src/main/java   #源码路径,多个时用英文逗号隔开
+xdoc.title=测试接口文档   #用于配置文档页面标题
 ```
 
 **以上配置就都写好了**

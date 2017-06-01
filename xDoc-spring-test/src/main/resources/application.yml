@@ -1,3 +1,4 @@
 xdoc:
   enable: true
+  title: 测试文档
   sourcePath: xDoc-spring-test/src/main/java

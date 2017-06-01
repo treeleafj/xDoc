@@ -20,7 +20,7 @@ import java.util.UUID;
  * @date 2017-03-03 10:11
  */
 @Controller
-@RequestMapping("api/user")
+@RequestMapping("user")
 public class UserController {
 
     /**

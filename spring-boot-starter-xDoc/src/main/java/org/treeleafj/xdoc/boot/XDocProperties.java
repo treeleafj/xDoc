@@ -17,6 +17,11 @@ public class XDocProperties {
     private boolean enable = true;
 
     /**
+     * 界面标题描述
+     */
+    private String title = "XDoc 接口文档";
+
+    /**
      * 源码相对路径(支持多个,用英文逗号隔开)
      */
     private String sourcePath;

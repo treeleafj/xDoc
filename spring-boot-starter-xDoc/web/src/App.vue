@@ -2,7 +2,7 @@
     <div id="app">
         <div>
             <el-menu id="header" mode="horizontal">
-                <h2 class="logo-text">XDoc 接口文档</h2>
+                <h2 class="logo-text">{{title}}</h2>
                 <el-submenu index="1" class="head-user-box">
                     <template slot="title">版本</template>
                     <el-menu-item index="1-1">V1</el-menu-item>
@@ -24,7 +24,7 @@
             <p class="uri" v-if="currentApiAction.methods.length > 0">只支持:
                 <span v-for="m in currentApiAction.methods">{{m}} </span>
             </p>
-            <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{currentApiModule.uris[0] + '/' + uri}}</p>
+            <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{(currentApiModule.uris[0] ? currentApiModule.uris[0] + '/' : '') + uri}}</p>
             <p class="return">接口返回: {{currentApiAction.returnDesc}}</p>
 
             <div>
@@ -112,6 +112,7 @@
                 request : {
                     type : 'GET'
                 },
+                title : 'XDoc 接口文档',
                 currentApiModule: null,
                 currentApiAction: null
             }
@@ -124,6 +125,9 @@
                 }, response => {
                     this.$message.error('系统错误,请求api列表 接口失败');
                 }).then(data => {
+                    if (typeof(data) == 'string') {//兼容后端返回数据出问题
+                        data = JSON.parse(data);
+                    }
                     this.fullData(data);
                 });
             } else {
@@ -222,7 +226,8 @@
         methods: {
 
             fullData(data) {
-                this.apiModules = data;
+                this.title = data.title;
+                this.apiModules = data.apiModules;
                 if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
                     this.currentApiModule = this.apiModules[0];
                     this.currentApiAction = this.apiModules[0].apiActions[0];
