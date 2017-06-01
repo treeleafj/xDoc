@@ -5,7 +5,7 @@
     <parent>
         <artifactId>xDoc</artifactId>
         <groupId>com.github.treeleafj</groupId>
-        <version>0.0.8</version>
+        <version>0.0.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>com.github.treeleafj</groupId>
             <artifactId>xDoc-core</artifactId>
-            <version>0.0.8</version>
+            <version>0.0.9</version>
         </dependency>
 
         <!--velocity-->

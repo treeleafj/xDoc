@@ -12,7 +12,7 @@
     <groupId>com.github.treeleafj</groupId>
     <artifactId>xDoc</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.8</version>
+    <version>0.0.9</version>
 
     <modules>
         <module>xDoc-core</module>
