@@ -19,6 +19,11 @@ public class FieldInfo {
 
     private String comment;
 
+    /**
+     * 是否必填,默认false
+     */
+    private boolean require;
+
     private List<FieldInfo> fieldInfos;
 
 }

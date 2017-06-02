@@ -68,7 +68,16 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
         final Map<String, String> commentMap = new HashMap();
         new VoidVisitorAdapter<Void>() {
             public void visit(FieldDeclaration n, Void arg) {
-                String name = String.valueOf(n.getChildrenNodes().get(1));
+                int i = 1;
+                String name =  String.valueOf(n.getChildrenNodes().get(i));
+                while (String.valueOf(n.getChildrenNodes().get(i - 1)).startsWith("@")) {
+                    i++;
+                    if (i >= n.getChildrenNodes().size()) {
+                        break;
+                    }
+                    name = String.valueOf(n.getChildrenNodes().get(i));
+                }
+
                 String comment = n.getComment() != null ? n.getComment().toString() : "";
                 commentMap.put(name, CommentUtils.parseCommentText(comment));
             }
@@ -84,7 +93,18 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
             field.setSimpleTypeName(propertyDescriptor.getPropertyType().getSimpleName());
             field.setName(propertyDescriptor.getName());
             String comment = commentMap.get(propertyDescriptor.getName());
+
+            boolean require = false;
+            if (comment.contains("|")) {
+                int endIndex = comment.lastIndexOf("|必填");
+                require = endIndex > 0;
+                if (require) {
+                    comment = comment.substring(0, endIndex);
+                }
+            }
+
             field.setComment(comment);
+            field.setRequire(require);
             fields.add(field);
         }
         return fields;

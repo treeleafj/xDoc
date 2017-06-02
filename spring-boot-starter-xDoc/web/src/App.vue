@@ -203,7 +203,8 @@
                         data.push({
                             paramName: par.name,
                             paramDesc: par.comment,
-                            type: par.simpleTypeName
+                            type: par.simpleTypeName,
+                            require : par.require
                         });
                     }
                     return data;
