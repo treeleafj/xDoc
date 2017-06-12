@@ -8,7 +8,9 @@ import org.treeleafj.xdoc.model.ApiModule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by leaf on 2017/3/18 0018.
@@ -20,7 +22,12 @@ public class HtmlForamt implements Format {
         if (in != null) {
             try {
                 String s = IOUtils.toString(in, "utf-8");
-                return s.replace("_apis_json", JSON.toJSONString(list, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect}));
+
+                Map<String, Object> model = new HashMap<>();
+                model.put("title", "接口文档");
+                model.put("apiModules", list);
+
+                return s.replace("_apis_json", JSON.toJSONString(model, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect}));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -73,7 +73,7 @@
                         </el-radio-group>
                     </el-form-item>
 
-                    <el-form-item v-for="param in reverseParam" :label="param.paramDesc" :prop="param.paramName">
+                    <el-form-item v-for="param in reverseParam" :label="param.paramName" :prop="param.paramName">
                         <el-input v-model="testForm[param.paramName]"></el-input>
                     </el-form-item>
 
