@@ -1,6 +1,7 @@
 package org.treeleafj.xdoc.resolver.sun.converter;
 
 import com.sun.javadoc.ParamTag;
+import org.apache.commons.lang3.StringUtils;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
 
@@ -23,7 +24,7 @@ public class ParamTagConverter implements SunTagConverter<ParamTag> {
             }
         }
 
-        String paramName = o.parameterName();
+        String paramName = StringUtils.defaultString(o.parameterName());
         if (paramDesc.startsWith(":")) {
             int index = paramDesc.indexOf(" ");
             if (index > 0) {
