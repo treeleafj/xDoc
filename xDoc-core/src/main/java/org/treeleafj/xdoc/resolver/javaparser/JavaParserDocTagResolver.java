@@ -87,7 +87,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                     public void visit(MethodDeclaration m, Void arg) {
                         Method method = parseToMenthod(moduleType, m);
                         if (method == null) {
-                            log.error("查找不到方法:{}.{}", moduleType.getSimpleName(), m.getName());
+                            log.warn("查找不到方法:{}.{}", moduleType.getSimpleName(), m.getName());
                             return;
                         }
                         List<String> comments = CommentUtils.asCommentList(m.getComment() != null ? m.getComment().toString() : "");
@@ -107,7 +107,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                             if (docTag != null) {
                                 docTagList.add(docTag);
                             } else {
-                                log.error("识别不了:{}", c);
+                                log.warn("识别不了:{}", c);
                             }
                         }
 
