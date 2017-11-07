@@ -12,7 +12,7 @@
     <groupId>com.github.treeleafj</groupId>
     <artifactId>xDoc</artifactId>
     <packaging>pom</packaging>
-    <version>0.0.9</version>
+    <version>0.1.0</version>
 
     <modules>
         <module>xDoc-core</module>
@@ -224,8 +224,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.6.1</version>
                 <configuration>
-                    <source>7</source>
-                    <target>7</target>
+                    <source>8</source>
+                    <target>8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>

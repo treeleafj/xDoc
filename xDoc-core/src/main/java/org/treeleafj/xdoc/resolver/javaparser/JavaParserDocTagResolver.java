@@ -48,7 +48,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 }
 
                 TypeDeclaration typeDeclaration = cu.getTypes().get(0);
-                final Class<?> moduleType = Class.forName(cu.getPackage().getName().toString() + "." + typeDeclaration.getName());
+                final Class<?> moduleType = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + typeDeclaration.getNameAsString());
 
                 ClassMapperUtils.put(moduleType.getName(), file);//缓存路径
                 ClassMapperUtils.put(moduleType.getSimpleName(), file);//缓存路径
@@ -68,7 +68,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 }
 
                 TypeDeclaration typeDeclaration = cu.getTypes().get(0);
-                final Class<?> moduleType = Class.forName(cu.getPackage().getName().toString() + "." + typeDeclaration.getName());
+                final Class<?> moduleType = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + typeDeclaration.getNameAsString());
 
                 if (!ClassFilterFactory.getDefaultFilter().filter(moduleType)) {
                     continue;
@@ -76,8 +76,8 @@ public class JavaParserDocTagResolver implements DocTagResolver {
 
                 final ApiModule apiModule = new ApiModule();
                 apiModule.setType(moduleType);
-                if (typeDeclaration.getComment() != null) {
-                    String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().toString());
+                if (typeDeclaration.getComment().isPresent()) {
+                    String commentText = CommentUtils.parseCommentText(typeDeclaration.getComment().get().getContent());
                     commentText = commentText.split("\n")[0].split("\r")[0];
                     apiModule.setComment(commentText);
                 }
@@ -87,10 +87,10 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                     public void visit(MethodDeclaration m, Void arg) {
                         Method method = parseToMenthod(moduleType, m);
                         if (method == null) {
-                            log.warn("查找不到方法:{}.{}", moduleType.getSimpleName(), m.getName());
+                            log.warn("查找不到方法:{}.{}", moduleType.getSimpleName(), m.getNameAsString());
                             return;
                         }
-                        List<String> comments = CommentUtils.asCommentList(m.getComment() != null ? m.getComment().toString() : "");
+                        List<String> comments = CommentUtils.asCommentList(StringUtils.defaultIfBlank(m.getComment().get().getContent(), ""));
                         List<DocTag> docTagList = new ArrayList<>(comments.size());
 
                         for (int i = 0; i < comments.size(); i++) {
@@ -113,10 +113,10 @@ public class JavaParserDocTagResolver implements DocTagResolver {
 
                         DocTags docTags = new DocTags(docTagList);
                         ApiAction apiAction = new ApiAction();
-                        if (m.getComment() != null) {
-                            apiAction.setComment(CommentUtils.parseCommentText(m.getComment().toString()));
+                        if (m.getComment().isPresent()) {
+                            apiAction.setComment(CommentUtils.parseCommentText(m.getComment().get().getContent()));
                         }
-                        apiAction.setName(m.getName());
+                        apiAction.setName(m.getNameAsString());
                         apiAction.setDocTags(docTags);
                         apiAction.setMethod(method);
                         apiModule.getApiActions().add(apiAction);
@@ -147,7 +147,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
         parameters = parameters == null ? new ArrayList<Parameter>(0) : parameters;
         Method[] methods = type.getDeclaredMethods();
         for (Method m : methods) {
-            if (!m.getName().equals(declaration.getName())) {
+            if (!m.getName().equals(declaration.getNameAsString())) {
                 continue;
             }
             if (m.getParameterTypes().length != parameters.size()) {
