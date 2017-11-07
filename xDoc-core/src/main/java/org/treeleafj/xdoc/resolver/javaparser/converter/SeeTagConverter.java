@@ -93,7 +93,9 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
             field.setSimpleTypeName(propertyDescriptor.getPropertyType().getSimpleName());
             field.setName(propertyDescriptor.getName());
             String comment = commentMap.get(propertyDescriptor.getName());
-
+            if (StringUtils.isBlank(comment)) {
+                continue;
+            }
             boolean require = false;
             if (comment.contains("|")) {
                 int endIndex = comment.lastIndexOf("|必填");
