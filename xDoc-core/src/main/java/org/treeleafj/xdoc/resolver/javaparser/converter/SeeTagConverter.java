@@ -94,20 +94,23 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
             field.setName(propertyDescriptor.getName());
             String comment = commentMap.get(propertyDescriptor.getName());
             if (StringUtils.isBlank(comment)) {
-                continue;
-            }
-            boolean require = false;
-            if (comment.contains("|")) {
-                int endIndex = comment.lastIndexOf("|必填");
-                require = endIndex > 0;
-                if (require) {
-                    comment = comment.substring(0, endIndex);
+                field.setComment("");
+                field.setRequire(false);
+                fields.add(field);
+            } else {
+                boolean require = false;
+                if (comment.contains("|")) {
+                    int endIndex = comment.lastIndexOf("|必填");
+                    require = endIndex > 0;
+                    if (require) {
+                        comment = comment.substring(0, endIndex);
+                    }
                 }
-            }
 
-            field.setComment(comment);
-            field.setRequire(require);
-            fields.add(field);
+                field.setComment(comment);
+                field.setRequire(require);
+                fields.add(field);
+            }
         }
         return fields;
     }
