@@ -15,6 +15,7 @@ import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.DocTags;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
+import org.treeleafj.xdoc.resolver.IgnoreApi;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverter;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverterManager;
 import org.treeleafj.xdoc.tag.DocTag;
@@ -49,9 +50,11 @@ public class JavaParserDocTagResolver implements DocTagResolver {
 
                 TypeDeclaration typeDeclaration = cu.getTypes().get(0);
                 final Class<?> moduleType = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + typeDeclaration.getNameAsString());
-
-                ClassMapperUtils.put(moduleType.getName(), file);//缓存路径
-                ClassMapperUtils.put(moduleType.getSimpleName(), file);//缓存路径
+                IgnoreApi ignoreApi = moduleType.getAnnotation(IgnoreApi.class);
+                if (ignoreApi == null) {
+                    ClassMapperUtils.put(moduleType.getName(), file);//缓存路径
+                    ClassMapperUtils.put(moduleType.getSimpleName(), file);//缓存路径
+                }
             } catch (Exception e) {
                 log.error("读取文件失败:{}", file, e);
             }
@@ -74,6 +77,11 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                     continue;
                 }
 
+                IgnoreApi ignoreApi = moduleType.getAnnotation(IgnoreApi.class);
+                if (ignoreApi != null) {
+                    continue;
+                }
+
                 final ApiModule apiModule = new ApiModule();
                 apiModule.setType(moduleType);
                 if (typeDeclaration.getComment().isPresent()) {
@@ -90,6 +98,12 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                             log.warn("查找不到方法:{}.{}", moduleType.getSimpleName(), m.getNameAsString());
                             return;
                         }
+
+                        IgnoreApi ignoreApi = method.getAnnotation(IgnoreApi.class);
+                        if (ignoreApi != null) {
+                            return;
+                        }
+
                         List<String> comments = CommentUtils.asCommentList(StringUtils.defaultIfBlank(m.getComment().get().getContent(), ""));
                         List<DocTag> docTagList = new ArrayList<>(comments.size());
 
