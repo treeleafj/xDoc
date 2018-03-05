@@ -51,9 +51,7 @@ public class CommentUtils {
      * @return
      */
     public static List<String> asCommentList(String coment) {
-        coment = coment.replaceAll("\\*", "")
-                .replaceAll("\\/*", "")
-                .replaceAll("\\*\\/", "").trim();
+        coment = coment.replaceAll("\\*", "").trim();
         String[] array = coment.split("\n");
         List<String> comments = new ArrayList(array.length);
         int index = 0;

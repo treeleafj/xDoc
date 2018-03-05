@@ -45,14 +45,14 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
             if (cu.getTypes().size() <= 0) {
                 return null;
             }
-            returnClassz = Class.forName(cu.getPackage().getName().toString() + "." + cu.getTypes().get(0).getName());
+            returnClassz = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + cu.getTypes().get(0).getNameAsString());
 
         } catch (Exception e) {
             log.error("读取java原文件失败:{}", path, e);
             return null;
         }
 
-        String text = cu.getComment() != null ? CommentUtils.parseCommentText(cu.getComment().toString()) : "";
+        String text = cu.getComment().isPresent() ? CommentUtils.parseCommentText(cu.getComment().get().getContent()) : "";
 
         List<FieldInfo> fields = analysisFields(returnClassz, cu);
         ObjectInfo objectInfo = new ObjectInfo();
@@ -67,18 +67,14 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
 
         final Map<String, String> commentMap = new HashMap();
         new VoidVisitorAdapter<Void>() {
+            @Override
             public void visit(FieldDeclaration n, Void arg) {
-                int i = 1;
-                String name =  String.valueOf(n.getChildrenNodes().get(i));
-                while (String.valueOf(n.getChildrenNodes().get(i - 1)).startsWith("@")) {
-                    i++;
-                    if (i >= n.getChildrenNodes().size()) {
-                        break;
-                    }
-                    name = String.valueOf(n.getChildrenNodes().get(i));
-                }
+                String name =  n.getVariable(0).getName().asString();
 
-                String comment = n.getComment() != null ? n.getComment().toString() : "";
+                String comment = "";
+                if (n.getComment().isPresent()) {
+                    comment = n.getComment().get().getContent();
+                }
                 commentMap.put(name, CommentUtils.parseCommentText(comment));
             }
         }.visit(compilationUnit, null);
