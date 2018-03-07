@@ -56,7 +56,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                     ClassMapperUtils.put(moduleType.getSimpleName(), file);//缓存路径
                 }
             } catch (Exception e) {
-                log.error("读取文件失败:{}", file, e);
+                log.warn("读取文件失败:{}, {}", file, e.getMessage());
             }
         }
 
@@ -142,7 +142,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 apiModules.add(apiModule);
 
             } catch (Exception e) {
-                log.error("解析{}失败", file, e);
+                log.warn("解析{}失败:{}", file, e.getMessage());
                 continue;
             }
         }

@@ -4,6 +4,8 @@ import com.sun.javadoc.ClassDoc;
 import com.sun.javadoc.FieldDoc;
 import com.sun.javadoc.SeeTag;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.treeleafj.xdoc.model.FieldInfo;
 import org.treeleafj.xdoc.model.ObjectInfo;
 import org.treeleafj.xdoc.tag.DocTag;
@@ -17,6 +19,8 @@ import java.util.List;
  * Created by leaf on 2017/3/4.
  */
 public class SeeTagConverter implements SunTagConverter<SeeTag> {
+
+    private Logger log = LoggerFactory.getLogger(SeeTagConverter.class);
 
     @Override
     public DocTag converter(SeeTag o) {
@@ -32,7 +36,7 @@ public class SeeTagConverter implements SunTagConverter<SeeTag> {
             objectInfo.setComment(text);
             return new SeeTagImpl(o.name(), objectInfo);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.warn("加载类失败:{}", e.getMessage());
         }
         return null;
     }

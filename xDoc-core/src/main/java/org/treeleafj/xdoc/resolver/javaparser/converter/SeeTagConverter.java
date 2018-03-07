@@ -48,7 +48,7 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
             returnClassz = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + cu.getTypes().get(0).getNameAsString());
 
         } catch (Exception e) {
-            log.error("读取java原文件失败:{}", path, e);
+            log.warn("读取java原文件失败:{}", path, e.getMessage());
             return null;
         }
 
