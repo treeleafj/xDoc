@@ -5,7 +5,7 @@ import lombok.Data;
 import java.lang.reflect.Method;
 
 /**
- * 接口信息
+ * 接口信息,一个接口类里面会有多个接口,每个接口都抽象成ApiAction
  *
  * @author leaf
  * @date 2017-03-03 11:09

@@ -1,5 +1,6 @@
 package org.treeleafj.xdoc;
 
+import lombok.Setter;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.output.XDocOutput;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * XDoc主入口,核心处理从这里开始
+ *
  * @author leaf
  * @date 2017-03-03 16:25
  */
@@ -28,11 +31,11 @@ public class XDoc {
     private XDocOutput output;
 
     /**
-     * 默认的java注释解析实现
+     * 默认的java注释解析器实现
      *
-     * @see org.treeleafj.xdoc.resolver.sun.SunDocTagResovler
      * @see org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver
      */
+    @Setter
     private DocTagResolver docTagResolver = new JavaParserDocTagResolver();
 
     /**
@@ -66,7 +69,7 @@ public class XDoc {
 
         List<String> files = new ArrayList<>();
         for (String srcPath : srcPaths) {
-            files.addAll(FileUtils.getAllFiles(new File(srcPath)));
+            files.addAll(FileUtils.getAllJavaFiles(new File(srcPath)));
         }
 
         docTagResolver.resolve(files);
@@ -74,16 +77,5 @@ public class XDoc {
         List<ApiModule> currentApiModules = ApiModulesHolder.getCurrentApiModules();
 
         output.output(currentApiModules);
-    }
-
-    /**
-     * 设置源码解析方式
-     *
-     * @param docTagResolver
-     * @return
-     */
-    public XDoc setDocTagResolver(DocTagResolver docTagResolver) {
-        this.docTagResolver = docTagResolver;
-        return this;
     }
 }

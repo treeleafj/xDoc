@@ -24,7 +24,7 @@ public class XDocTest {
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String rootDir = System.getProperty("user.dir");
-        org.treeleafj.xdoc.spring.SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());
+        SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new MarkdownFormat());
         XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
         xDoc.build();
 
@@ -35,7 +35,7 @@ public class XDocTest {
     public void buildHtml() throws Exception {
         FileOutputStream out = new FileOutputStream(new File("E:/api.html"));
         String rootDir = System.getProperty("user.dir");
-        org.treeleafj.xdoc.spring.SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new HtmlForamt());
+        SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, new HtmlForamt());
         XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", output);
         xDoc.build();
     }
