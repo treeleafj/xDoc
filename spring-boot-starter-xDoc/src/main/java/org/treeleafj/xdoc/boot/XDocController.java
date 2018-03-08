@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * XDoc的Spring Web入口
+ *
  * @author leaf
  * @date 2017-03-09 15:36
  */
@@ -37,7 +39,6 @@ public class XDocController {
         if (!xDocProperties.isEnable()) {
             return;
         }
-        log.info("开始启动XDoc");
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String path = xDocProperties.getSourcePath();
@@ -48,24 +49,24 @@ public class XDocController {
 
         List<String> paths = Arrays.asList(path.split(","));
 
-        log.debug("源码路径:{}", paths);
+        log.debug("src path:{}", paths);
 
         try {
             SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, null);
             XDoc xDoc = new XDoc(paths, output);
-            log.info("启动XDoc完成");
 
             Thread thread = new Thread(() -> {
                 try {
                     apiModules = xDoc.build();
+                    log.info("start up XDoc");
                 } catch (Exception e) {
-                    log.error("启动XDoc失败,生成接口文档失败", e);
+                    log.error("start up XDoc error", e);
                 }
             });
             thread.start();
 
         } catch (Exception e) {
-            log.error("启动XDoc失败,生成接口文档失败", e);
+            log.error("start up XDoc error", e);
         }
     }
 
