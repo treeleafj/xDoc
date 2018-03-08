@@ -9,5 +9,5 @@ import java.util.List;
  */
 public interface XDocOutput {
 
-    void output(List<ApiModule> apiModules);
+    List<ApiModule> output(List<ApiModule> apiModules);
 }

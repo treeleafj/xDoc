@@ -10,9 +10,9 @@ import org.treeleafj.xdoc.utils.CommentUtils;
 public class DefaultJavaParserTagConverterImpl implements JavaParserTagConverter<String> {
 
     @Override
-    public DocTag converter(String o) {
-        String tagType = CommentUtils.findTagType(o);
-        String coment = o.substring(tagType.length()).trim();
+    public DocTag converter(String comment) {
+        String tagType = CommentUtils.getTagType(comment);
+        String coment = comment.substring(tagType.length()).trim();
         return new DocTagImpl(tagType, coment);
     }
 }

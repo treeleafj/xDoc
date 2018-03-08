@@ -1,6 +1,8 @@
 package org.treeleafj.xdoc.spring;
 
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +19,6 @@ import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
 import org.treeleafj.xdoc.tag.RespTagImpl;
 import org.treeleafj.xdoc.tag.SeeTagImpl;
-import org.treeleafj.xdoc.utils.ApiModulesHolder;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,6 +36,8 @@ public class SpringXDocOutputImpl implements XDocOutput {
         ClassFilterFactory.setDefaultFilter(new SpringClassFilter());//类过滤方式采用Spring Web注解
     }
 
+    private Logger log = LoggerFactory.getLogger(SpringXDocOutputImpl.class);
+
     private Format format;
 
     private OutputStream out;
@@ -49,9 +52,9 @@ public class SpringXDocOutputImpl implements XDocOutput {
     }
 
     @Override
-    public void output(List<ApiModule> apiModules) {
+    public List<ApiModule> output(List<ApiModule> apiModules) {
         if (apiModules == null) {
-            return;
+            return new ArrayList<>(0);
         }
         List<ApiModule> list = new ArrayList<>(apiModules.size());
         for (ApiModule apiModule : apiModules) {
@@ -81,17 +84,18 @@ public class SpringXDocOutputImpl implements XDocOutput {
             list.add(sam);
         }
 
-        ApiModulesHolder.setCurrentApiModules(list);
-
         if (out != null && format != null) {
             String s = format.format(list);
             try {
                 IOUtils.write(s, out, "utf-8");
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("写入文件失败", e);
+            } finally {
+                IOUtils.closeQuietly(out);
             }
         }
 
+        return list;
     }
 
     /**
@@ -162,7 +166,7 @@ public class SpringXDocOutputImpl implements XDocOutput {
             paramInfo.setParamName(respTag.getParamName());
             paramInfo.setRequire(respTag.isRequire());
             paramInfo.setParamDesc(respTag.getParamDesc());
-            paramInfo.setType(respTag.getType());
+            paramInfo.setType(respTag.getParamType());
             list.add(paramInfo);
         }
         return list;

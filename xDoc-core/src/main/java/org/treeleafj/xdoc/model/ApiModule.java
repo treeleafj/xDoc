@@ -1,5 +1,6 @@
 package org.treeleafj.xdoc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.LinkedList;
@@ -17,6 +18,7 @@ public class ApiModule {
     /**
      * 源码在哪个类
      */
+    @JsonIgnore
     private transient Class<?> type;
 
     /**
@@ -27,5 +29,5 @@ public class ApiModule {
     /**
      * 此业务模块下有哪些接口
      */
-    private List<ApiAction> apiActions = new LinkedList<ApiAction>();
+    private List<ApiAction> apiActions = new LinkedList<>();
 }

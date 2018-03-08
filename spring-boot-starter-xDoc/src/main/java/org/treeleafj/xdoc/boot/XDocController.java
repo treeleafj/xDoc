@@ -1,7 +1,5 @@
 package org.treeleafj.xdoc.boot;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.XDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.spring.SpringXDocOutputImpl;
-import org.treeleafj.xdoc.utils.ApiModulesHolder;
+import org.treeleafj.xdoc.utils.JsonUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +30,7 @@ public class XDocController {
     @Autowired
     private XDocProperties xDocProperties;
 
-    private List<ApiModule> apiModules;
+    private static List<ApiModule> apiModules;
 
     @PostConstruct
     public void init() {
@@ -55,10 +53,17 @@ public class XDocController {
         try {
             SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, null);
             XDoc xDoc = new XDoc(paths, output);
-            xDoc.build();
             log.info("启动XDoc完成");
 
-            this.apiModules = ApiModulesHolder.getCurrentApiModules();
+            Thread thread = new Thread(() -> {
+                try {
+                    apiModules = xDoc.build();
+                } catch (Exception e) {
+                    log.error("启动XDoc失败,生成接口文档失败", e);
+                }
+            });
+            thread.start();
+
         } catch (Exception e) {
             log.error("启动XDoc失败,生成接口文档失败", e);
         }
@@ -75,7 +80,7 @@ public class XDocController {
         Map<String, Object> model = new HashMap<>();
         model.put("title", xDocProperties.getTitle());
         model.put("apiModules", apiModules);
-        return JSON.toJSONString(model, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
+        return JsonUtils.toJson(model);
     }
 
     /**

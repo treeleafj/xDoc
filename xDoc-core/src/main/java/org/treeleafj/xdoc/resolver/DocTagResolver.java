@@ -1,5 +1,7 @@
 package org.treeleafj.xdoc.resolver;
 
+import org.treeleafj.xdoc.model.ApiModule;
+
 import java.util.List;
 
 /**
@@ -16,5 +18,5 @@ public interface DocTagResolver {
      *
      * @param files 要解析的所有java源代码文件的绝对路径
      */
-    void resolve(List<String> files);
+    List<ApiModule> resolve(List<String> files);
 }

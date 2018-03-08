@@ -1,22 +1,17 @@
 package org.treeleafj.xdoc.tag;
 
 /**
+ * 简单文本型注释标签实现
+ * <p>
  * Created by leaf on 2017/3/4.
  */
 public class DocTagImpl extends DocTag {
 
-    private String name;
-
     private String value;
 
-    public DocTagImpl(String name, String value) {
-        this.name = name;
+    public DocTagImpl(String tagName, String value) {
+        super(tagName);
         this.value = value;
-    }
-
-    @Override
-    public String getName() {
-        return name;
     }
 
     @Override

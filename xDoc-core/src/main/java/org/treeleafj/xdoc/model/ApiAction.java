@@ -1,5 +1,6 @@
 package org.treeleafj.xdoc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.lang.reflect.Method;
@@ -26,6 +27,7 @@ public class ApiAction {
     /**
      * 接口方法
      */
+    @JsonIgnore
     private transient Method method;
 
     /**

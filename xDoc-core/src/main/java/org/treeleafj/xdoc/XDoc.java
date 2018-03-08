@@ -5,7 +5,6 @@ import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.output.XDocOutput;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
 import org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver;
-import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.FileUtils;
 
 import java.io.File;
@@ -65,17 +64,14 @@ public class XDoc {
     /**
      * 构建接口文档
      */
-    public void build() {
+    public List<ApiModule> build() {
 
         List<String> files = new ArrayList<>();
-        for (String srcPath : srcPaths) {
+        for (String srcPath : this.srcPaths) {
             files.addAll(FileUtils.getAllJavaFiles(new File(srcPath)));
         }
 
-        docTagResolver.resolve(files);
-
-        List<ApiModule> currentApiModules = ApiModulesHolder.getCurrentApiModules();
-
-        output.output(currentApiModules);
+        List<ApiModule> apiModules = this.docTagResolver.resolve(files);
+        return this.output.output(apiModules);
     }
 }

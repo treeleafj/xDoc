@@ -30,8 +30,8 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
     private Logger log = LoggerFactory.getLogger(SeeTagConverter.class);
 
     @Override
-    public DocTag converter(String o) {
-        DocTag _docTag = super.converter(o);
+    public DocTag converter(String comment) {
+        DocTag _docTag = super.converter(comment);
 
         String path = ClassMapperUtils.getPath((String) _docTag.getValues());
         if (StringUtils.isBlank(path)) {
@@ -59,7 +59,7 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
         objectInfo.setType(returnClassz);
         objectInfo.setFieldInfos(fields);
         objectInfo.setComment(text);
-        return new SeeTagImpl(_docTag.getName(), objectInfo);
+        return new SeeTagImpl(_docTag.getTagName(), objectInfo);
     }
 
     private List<FieldInfo> analysisFields(Class classz, CompilationUnit compilationUnit) {
@@ -69,7 +69,7 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
         new VoidVisitorAdapter<Void>() {
             @Override
             public void visit(FieldDeclaration n, Void arg) {
-                String name =  n.getVariable(0).getName().asString();
+                String name = n.getVariable(0).getName().asString();
 
                 String comment = "";
                 if (n.getComment().isPresent()) {
@@ -97,7 +97,11 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
                 boolean require = false;
                 if (comment.contains("|")) {
                     int endIndex = comment.lastIndexOf("|必填");
+                    if (endIndex < 0) {
+                        endIndex = comment.lastIndexOf("|Y");
+                    }
                     require = endIndex > 0;
+
                     if (require) {
                         comment = comment.substring(0, endIndex);
                     }

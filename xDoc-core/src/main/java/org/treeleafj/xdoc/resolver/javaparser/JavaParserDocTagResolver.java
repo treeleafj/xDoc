@@ -19,7 +19,6 @@ import org.treeleafj.xdoc.resolver.IgnoreApi;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverter;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverterManager;
 import org.treeleafj.xdoc.tag.DocTag;
-import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.ClassMapperUtils;
 import org.treeleafj.xdoc.utils.CommentUtils;
 
@@ -39,7 +38,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
     private Logger log = LoggerFactory.getLogger(JavaParserDocTagResolver.class);
 
     @Override
-    public void resolve(List<String> files) {
+    public List<ApiModule> resolve(List<String> files) {
 
         for (String file : files) {//缓存文件
             try (FileInputStream in = new FileInputStream(file)) {
@@ -109,14 +108,11 @@ public class JavaParserDocTagResolver implements DocTagResolver {
 
                         for (int i = 0; i < comments.size(); i++) {
                             String c = comments.get(i);
-                            String tagType = CommentUtils.findTagType(c);
+                            String tagType = CommentUtils.getTagType(c);
                             if (StringUtils.isBlank(tagType)) {
                                 continue;
                             }
                             JavaParserTagConverter converter = JavaParserTagConverterManager.getConverter(tagType);
-                            if (converter == null) {
-                                converter = JavaParserTagConverterManager.getDefaultConverter();
-                            }
                             DocTag docTag = converter.converter(c);
                             if (docTag != null) {
                                 docTagList.add(docTag);
@@ -146,8 +142,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 continue;
             }
         }
-
-        ApiModulesHolder.setCurrentApiModules(apiModules);//设置当前的解析结果
+        return apiModules;
     }
 
     /**

@@ -1,9 +1,8 @@
 package org.treeleafj.xdoc.spring.format;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.io.IOUtils;
 import org.treeleafj.xdoc.model.ApiModule;
+import org.treeleafj.xdoc.utils.JsonUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +15,7 @@ import java.util.Map;
  * Created by leaf on 2017/3/18 0018.
  */
 public class HtmlForamt implements Format {
+
     @Override
     public String format(List<ApiModule> list) {
         InputStream in = HtmlForamt.class.getResourceAsStream("html.vm");
@@ -27,12 +27,13 @@ public class HtmlForamt implements Format {
                 model.put("title", "接口文档");
                 model.put("apiModules", list);
 
-                return s.replace("_apis_json", JSON.toJSONString(model, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect}));
+                return s.replace("_apis_json", JsonUtils.toJson(model));
             } catch (IOException e) {
                 throw new RuntimeException(e);
+            } finally {
+                IOUtils.closeQuietly(in);
             }
         }
-        IOUtils.closeQuietly(in);
         return "";
     }
 
