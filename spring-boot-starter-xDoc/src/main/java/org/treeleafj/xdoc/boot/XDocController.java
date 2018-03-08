@@ -49,7 +49,7 @@ public class XDocController {
 
         List<String> paths = Arrays.asList(path.split(","));
 
-        log.debug("src path:{}", paths);
+        log.debug("source path:{}", paths);
 
         try {
             SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, null);
