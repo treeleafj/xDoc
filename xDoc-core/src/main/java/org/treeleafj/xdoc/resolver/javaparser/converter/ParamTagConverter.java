@@ -14,7 +14,7 @@ public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
         String _val = (String) _docTag.getValues();
         String[] array = _val.split("[ \t]");
         String paramName = null;
-        String paramDesc = null;
+        String paramDesc = "";
         //解析 "@param user :username 用户名|必填" 这种注释
         boolean require = false;
 
