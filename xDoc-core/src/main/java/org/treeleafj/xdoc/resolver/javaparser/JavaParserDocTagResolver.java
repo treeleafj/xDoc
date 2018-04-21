@@ -99,7 +99,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                         }
 
                         IgnoreApi ignoreApi = method.getAnnotation(IgnoreApi.class);
-                        if (ignoreApi != null) {
+                        if (ignoreApi != null || !m.getComment().isPresent()) {
                             return;
                         }
 
