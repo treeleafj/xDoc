@@ -26,8 +26,8 @@ public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
             if (array.length > 1) {
 
                 int start = 1;
-                if (array[1].startsWith(":")) {
-                    paramName = array[1];//获取 :username这种类型的参数名称
+                if (array[1].startsWith(":") && array[1].length() > 1) {
+                    paramName = array[1].substring(1);//获取 :username这种类型的参数名称
                     start = 2;
                 }
 
