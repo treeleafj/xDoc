@@ -12,7 +12,7 @@ public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
     public DocTag converter(String comment) {
         DocTag _docTag = super.converter(comment);
         String _val = (String) _docTag.getValues();
-        String[] array = _val.split("[ \t]");
+        String[] array = _val.split("[ \t]+");
         String paramName = null;
         String paramDesc = "";
         String paramType = "String";
