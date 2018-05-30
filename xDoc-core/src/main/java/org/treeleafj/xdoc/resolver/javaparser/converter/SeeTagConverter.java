@@ -75,6 +75,11 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
                 if (n.getComment().isPresent()) {
                     comment = n.getComment().get().getContent();
                 }
+
+                if (name.contains("=")) {
+                    name = name.substring(0, name.indexOf("=")).trim();
+                }
+
                 commentMap.put(name, CommentUtils.parseCommentText(comment));
             }
         }.visit(compilationUnit, null);
