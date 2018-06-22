@@ -1,4 +1,4 @@
-package org.treeleafj.xdoc.spring;
+package org.treeleafj.xdoc.spring.framework;
 
 import lombok.Data;
 

@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.treeleafj.xdoc.format.Formater;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
-import org.treeleafj.xdoc.spring.SpringApiAction;
+import org.treeleafj.xdoc.spring.framework.SpringApiAction;
 import org.treeleafj.xdoc.utils.JsonFormatUtils;
 
 import java.util.List;
