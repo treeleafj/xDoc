@@ -10,7 +10,7 @@ import java.util.List;
  * <p>
  * Created by leaf on 2018/6/22.
  */
-public interface Formater {
+public interface Format {
 
     String format(ApiDoc apiDoc);
 }

@@ -4,20 +4,19 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.treeleafj.xdoc.format.Formater;
+import org.treeleafj.xdoc.format.Format;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.spring.framework.SpringApiAction;
 import org.treeleafj.xdoc.utils.JsonFormatUtils;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * Created by leaf on 2017/3/4.
  */
-public class MarkdownFormater implements Formater {
+public class MarkdownFormat implements Format {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 

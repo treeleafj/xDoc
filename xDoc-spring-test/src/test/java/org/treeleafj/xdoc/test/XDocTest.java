@@ -2,8 +2,8 @@ package org.treeleafj.xdoc.test;
 
 import org.junit.Test;
 import org.treeleafj.xdoc.XDoc;
-import org.treeleafj.xdoc.spring.format.HtmlForamter;
-import org.treeleafj.xdoc.spring.format.MarkdownFormater;
+import org.treeleafj.xdoc.spring.format.HtmlForamt;
+import org.treeleafj.xdoc.spring.format.MarkdownFormat;
 import org.treeleafj.xdoc.spring.framework.SpringWebFramework;
 
 import java.io.ByteArrayOutputStream;
@@ -20,7 +20,7 @@ public class XDocTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String rootDir = System.getProperty("user.dir");
         XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
-        xDoc.build(out, new MarkdownFormater());
+        xDoc.build(out, new MarkdownFormat());
 
         System.out.println(out.toString());
     }
@@ -30,6 +30,6 @@ public class XDocTest {
         FileOutputStream out = new FileOutputStream(new File("E:/api.html"));
         String rootDir = System.getProperty("user.dir");
         XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
-        xDoc.build(out, new HtmlForamter());
+        xDoc.build(out, new HtmlForamt());
     }
 }

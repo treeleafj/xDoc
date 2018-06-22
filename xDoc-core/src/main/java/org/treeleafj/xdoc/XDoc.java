@@ -4,7 +4,7 @@ import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.treeleafj.xdoc.format.Formater;
+import org.treeleafj.xdoc.format.Format;
 import org.treeleafj.xdoc.framework.Framework;
 import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.model.ApiModule;
@@ -93,15 +93,29 @@ public class XDoc {
 
     /**
      * 构建接口文档
+     *
+     * @param out    输出位置
+     * @param format 文档格式
      */
-    public void build(OutputStream out, Formater formater, Map<String, Object> properties) {
+    public void build(OutputStream out, Format format) {
+        this.build(out, format, null);
+    }
+
+    /**
+     * 构建接口文档
+     *
+     * @param out        输出位置
+     * @param format     文档格式
+     * @param properties 文档属性
+     */
+    public void build(OutputStream out, Format format, Map<String, Object> properties) {
         ApiDoc apiDoc = this.resolve();
         if (properties != null) {
             apiDoc.getProperties().putAll(properties);
         }
 
-        if (apiDoc.getApiModules() != null && out != null && formater != null) {
-            String s = formater.format(apiDoc);
+        if (apiDoc.getApiModules() != null && out != null && format != null) {
+            String s = format.format(apiDoc);
             try {
                 IOUtils.write(s, out, CHARSET);
             } catch (IOException e) {
