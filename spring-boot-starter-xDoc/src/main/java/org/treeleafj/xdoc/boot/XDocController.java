@@ -4,15 +4,15 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.XDoc;
 import org.treeleafj.xdoc.model.ApiModule;
-import org.treeleafj.xdoc.spring.SpringXDocOutputImpl;
+import org.treeleafj.xdoc.spring.framework.SpringWebFramework;
 import org.treeleafj.xdoc.utils.JsonUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +40,6 @@ public class XDocController {
             return;
         }
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
         String path = xDocProperties.getSourcePath();
 
         if (StringUtils.isBlank(path)) {
@@ -49,25 +48,31 @@ public class XDocController {
 
         List<String> paths = Arrays.asList(path.split(","));
 
-        log.debug("source path:{}", paths);
+        log.debug("starting XDoc, source path:{}", paths);
 
         try {
-            SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, null);
-            XDoc xDoc = new XDoc(paths, output);
+            XDoc xDoc = new XDoc(paths, new SpringWebFramework());
 
             Thread thread = new Thread(() -> {
                 try {
-                    apiModules = xDoc.build();
+                    apiModules = xDoc.resolve();
                     log.info("start up XDoc");
                 } catch (Exception e) {
                     log.error("start up XDoc error", e);
                 }
             });
             thread.start();
-
         } catch (Exception e) {
             log.error("start up XDoc error", e);
         }
+    }
+
+    /**
+     * 跳转到xdoc接口文档首页
+     */
+    @GetMapping
+    public String index() {
+        return "redirect:index.html";
     }
 
     /**
@@ -77,9 +82,10 @@ public class XDocController {
      */
     @ResponseBody
     @RequestMapping("apis")
-    Object apis() {
+    public Object apis() {
         Map<String, Object> model = new HashMap<>();
         model.put("title", xDocProperties.getTitle());
+        model.put("version", xDocProperties.getVersion());
         model.put("apiModules", apiModules);
         return JsonUtils.toJson(model);
     }
@@ -89,8 +95,8 @@ public class XDocController {
      *
      * @return 文档页面
      */
-    @RequestMapping("rebuild")
-    String rebuild() {
+    @GetMapping("rebuild")
+    public String rebuild() {
         init();
         return "redirect:index.html";
     }

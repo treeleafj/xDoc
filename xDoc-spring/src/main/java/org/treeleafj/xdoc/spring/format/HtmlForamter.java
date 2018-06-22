@@ -1,12 +1,12 @@
 package org.treeleafj.xdoc.spring.format;
 
 import org.apache.commons.io.IOUtils;
+import org.treeleafj.xdoc.format.Formater;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.utils.JsonUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +14,11 @@ import java.util.Map;
 /**
  * Created by leaf on 2017/3/18 0018.
  */
-public class HtmlForamt implements Format {
+public class HtmlForamter implements Formater {
 
     @Override
     public String format(List<ApiModule> list) {
-        InputStream in = HtmlForamt.class.getResourceAsStream("html.vm");
+        InputStream in = HtmlForamter.class.getResourceAsStream("html.vm");
         if (in != null) {
             try {
                 String s = IOUtils.toString(in, "utf-8");
@@ -35,12 +35,5 @@ public class HtmlForamt implements Format {
             }
         }
         return "";
-    }
-
-    @Override
-    public String format(ApiModule apiModule) {
-        List<ApiModule> list = new ArrayList<>();
-        list.add(apiModule);
-        return format(list);
     }
 }

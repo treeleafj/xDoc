@@ -14,6 +14,7 @@ import org.treeleafj.xdoc.utils.CommentUtils;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.SeeTagImpl;
 import org.treeleafj.xdoc.utils.ClassMapperUtils;
+import org.treeleafj.xdoc.utils.Constant;
 
 import java.beans.PropertyDescriptor;
 import java.io.FileInputStream;
@@ -101,9 +102,9 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
             } else {
                 boolean require = false;
                 if (comment.contains("|")) {
-                    int endIndex = comment.lastIndexOf("|必填");
+                    int endIndex = comment.lastIndexOf("|" + Constant.YES_ZH);
                     if (endIndex < 0) {
-                        endIndex = comment.lastIndexOf("|Y");
+                        endIndex = comment.lastIndexOf("|" + Constant.YES_EN);
                     }
                     require = endIndex > 0;
 

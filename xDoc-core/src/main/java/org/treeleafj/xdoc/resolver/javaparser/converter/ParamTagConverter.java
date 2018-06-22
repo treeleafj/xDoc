@@ -2,6 +2,7 @@ package org.treeleafj.xdoc.resolver.javaparser.converter;
 
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
+import org.treeleafj.xdoc.utils.Constant;
 
 /**
  * Created by leaf on 2017/3/4.
@@ -20,6 +21,7 @@ public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
         //解析 "user :username 用户名|必填" 这种注释内容
         //或者 "username 用户名|必填" 这种注释内容
         //或者 "username 用户名|String|必填" 这种注释内容
+        //上面的"必填"两个字也可以换成英文的"Y"
 
         if (array.length > 0) {
             paramName = array[0];//先将第一个认为是参数名称
@@ -45,13 +47,13 @@ public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
             if (descs.length > 2) {
                 paramType = descs[1];
                 String requireString = descs[descs.length - 1].trim();
-                require = requireString.equals("必填") || requireString.equalsIgnoreCase("Y");
+                require = Constant.YES_ZH.equals(requireString) || Constant.YES_EN.equalsIgnoreCase(requireString);
             } else if (descs.length == 2) {
                 String requireString = descs[1].trim();
-                require = requireString.equals("必填") || requireString.equalsIgnoreCase("Y");
+                require = Constant.YES_ZH.equals(requireString) || Constant.YES_EN.equalsIgnoreCase(requireString);
 
                 //如果最后一个不是是否必填的描述,则认为是类型描述
-                if (!require && !(requireString.equalsIgnoreCase("N") || requireString.equals("非必填"))) {
+                if (!require && !(Constant.NOT_EN.equalsIgnoreCase(requireString) || Constant.NOT_ZH.equals(requireString))) {
                     paramType = requireString;
                 }
             }

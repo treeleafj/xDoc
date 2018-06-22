@@ -10,7 +10,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.treeleafj.xdoc.filter.ClassFilterFactory;
+import org.treeleafj.xdoc.framework.Framework;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.DocTags;
@@ -38,7 +38,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
     private Logger log = LoggerFactory.getLogger(JavaParserDocTagResolver.class);
 
     @Override
-    public List<ApiModule> resolve(List<String> files) {
+    public List<ApiModule> resolve(List<String> files, Framework framework) {
 
         for (String file : files) {//缓存文件
             try (FileInputStream in = new FileInputStream(file)) {
@@ -72,7 +72,8 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 TypeDeclaration typeDeclaration = cu.getTypes().get(0);
                 final Class<?> moduleType = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + typeDeclaration.getNameAsString());
 
-                if (!ClassFilterFactory.getDefaultFilter().filter(moduleType)) {
+
+                if (!framework.support(moduleType)) {
                     continue;
                 }
 

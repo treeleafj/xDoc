@@ -1,14 +1,21 @@
 package org.treeleafj.xdoc;
 
 import lombok.Setter;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.treeleafj.xdoc.format.Formater;
+import org.treeleafj.xdoc.framework.Framework;
 import org.treeleafj.xdoc.model.ApiModule;
-import org.treeleafj.xdoc.output.XDocOutput;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
 import org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver;
 import org.treeleafj.xdoc.utils.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -19,18 +26,25 @@ import java.util.List;
  */
 public class XDoc {
 
+    private static final String CHARSET = "utf-8";
+
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     /**
      * 源码路径
      */
     private List<String> srcPaths;
 
     /**
-     * 输出方式
+     * api框架类型
      */
-    private XDocOutput output;
+    @Setter
+    private Framework framework;
 
     /**
      * 默认的java注释解析器实现
+     * <p>
+     * 备注:基于sun doc的解析方式已经废弃,若需要请参考v1.0之前的版本
      *
      * @see org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver
      */
@@ -41,37 +55,55 @@ public class XDoc {
      * 构建XDoc对象
      *
      * @param srcPath 源码路径
-     * @param output  输出方式
      */
-    public XDoc(String srcPath, XDocOutput output) {
-        List<String> srcPaths = new ArrayList(1);
-        srcPaths.add(srcPath);
-        this.srcPaths = srcPaths;
-        this.output = output;
+    public XDoc(String srcPath, Framework framework) {
+        this(Arrays.asList(srcPath), framework);
     }
 
     /**
      * 构建XDoc对象
      *
      * @param srcPaths 源码路径,支持多个
-     * @param output   输出方式
      */
-    public XDoc(List<String> srcPaths, XDocOutput output) {
+    public XDoc(List<String> srcPaths, Framework framework) {
         this.srcPaths = srcPaths;
-        this.output = output;
+        this.framework = framework;
     }
 
     /**
-     * 构建接口文档
+     * 解析源码并返回对应的接口数据
+     *
+     * @return API接口数据
      */
-    public List<ApiModule> build() {
-
+    public List<ApiModule> resolve() {
         List<String> files = new ArrayList<>();
         for (String srcPath : this.srcPaths) {
             files.addAll(FileUtils.getAllJavaFiles(new File(srcPath)));
         }
 
-        List<ApiModule> apiModules = this.docTagResolver.resolve(files);
-        return this.output.output(apiModules);
+        List<ApiModule> apiModules = this.docTagResolver.resolve(files, framework);
+
+        if (framework != null) {
+            apiModules = framework.extend(apiModules);
+        }
+        return apiModules;
+    }
+
+    /**
+     * 构建接口文档
+     */
+    public void build(OutputStream out, Formater formater) {
+        List<ApiModule> apiModules = this.resolve();
+
+        if (apiModules != null && out != null && formater != null) {
+            String s = formater.format(apiModules);
+            try {
+                IOUtils.write(s, out, CHARSET);
+            } catch (IOException e) {
+                log.error("接口文档写入文件失败", e);
+            } finally {
+                IOUtils.closeQuietly(out);
+            }
+        }
     }
 }

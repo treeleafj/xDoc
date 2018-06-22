@@ -1,58 +1,40 @@
-package org.treeleafj.xdoc.spring;
+package org.treeleafj.xdoc.spring.framework;
 
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.treeleafj.xdoc.filter.ClassFilterFactory;
+import org.springframework.web.bind.annotation.*;
+import org.treeleafj.xdoc.framework.Framework;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.ObjectInfo;
-import org.treeleafj.xdoc.output.XDocOutput;
-import org.treeleafj.xdoc.spring.filter.SpringClassFilter;
-import org.treeleafj.xdoc.spring.format.Format;
+import org.treeleafj.xdoc.spring.ParamInfo;
+import org.treeleafj.xdoc.spring.SpringApiAction;
+import org.treeleafj.xdoc.spring.SpringApiModule;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
 import org.treeleafj.xdoc.tag.RespTagImpl;
 import org.treeleafj.xdoc.tag.SeeTagImpl;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 基于spring-web的接口文档生成工具
+ * 基于spirng web框架,扩展api数据
  * <p>
- * Created by leaf on 2017/3/4.
+ * Created by leaf on 2018/6/22.
  */
-public class SpringXDocOutputImpl implements XDocOutput {
+public class SpringWebFramework extends Framework {
 
-    static {
-        ClassFilterFactory.setDefaultFilter(new SpringClassFilter());//类过滤方式采用Spring Web注解
-    }
-
-    private Logger log = LoggerFactory.getLogger(SpringXDocOutputImpl.class);
-
-    private Format format;
-
-    private OutputStream out;
-
-    public SpringXDocOutputImpl(OutputStream out) {
-        this.out = out;
-    }
-
-    public SpringXDocOutputImpl(OutputStream out, Format format) {
-        this.out = out;
-        this.format = format;
+    @Override
+    public boolean support(Class<?> classz) {
+        if (classz.getAnnotation(Controller.class) != null
+                || classz.getAnnotation(RestController.class) != null) {
+            return true;
+        }
+        return false;
     }
 
     @Override
-    public List<ApiModule> output(List<ApiModule> apiModules) {
+    public List<ApiModule> extend(List<ApiModule> apiModules) {
         if (apiModules == null) {
             return new ArrayList<>(0);
         }
@@ -66,9 +48,10 @@ public class SpringXDocOutputImpl implements XDocOutput {
             sam.setJson(isjson);
 
             RequestMapping classRequestMappingAnno = apiModule.getType().getAnnotation(RequestMapping.class);
+
             if (classRequestMappingAnno != null) {
-                sam.setUris(this.getUris(classRequestMappingAnno));
-                sam.setMethods(this.getMethods(classRequestMappingAnno));
+                sam.setUris(this.getUris(classRequestMappingAnno.value()));
+                sam.setMethods(this.getMethods(classRequestMappingAnno.method()));
             } else {
                 sam.setUris(new ArrayList<String>(0));
                 sam.setMethods(new ArrayList<String>(0));
@@ -83,18 +66,6 @@ public class SpringXDocOutputImpl implements XDocOutput {
 
             list.add(sam);
         }
-
-        if (out != null && format != null) {
-            String s = format.format(list);
-            try {
-                IOUtils.write(s, out, "utf-8");
-            } catch (IOException e) {
-                log.error("写入文件失败", e);
-            } finally {
-                IOUtils.closeQuietly(out);
-            }
-        }
-
         return list;
     }
 
@@ -119,18 +90,63 @@ public class SpringXDocOutputImpl implements XDocOutput {
         saa.setTitle(getTitile(saa));
         saa.setRespbody(getRespbody(saa));
 
-        RequestMapping methodRequestMappingAnno = apiAction.getMethod().getAnnotation(RequestMapping.class);
-        if (methodRequestMappingAnno == null) {
+        boolean isMappingMethod = this.setUrisAndMethods(apiAction, saa);
+
+        if (!isMappingMethod) {
             return null;
         }
-        saa.setUris(this.getUris(methodRequestMappingAnno));
-        saa.setMethods(this.getMethods(methodRequestMappingAnno));
+
         saa.setParam(this.getParams(saa));
         saa.setRespParam(this.getRespParam(saa));
         saa.setReturnObj(this.getReturnObj(saa));
         saa.setReturnDesc(this.getReturnDesc(saa));
 
         return saa;
+    }
+
+    private boolean setUrisAndMethods(ApiAction apiAction, SpringApiAction saa) {
+        RequestMapping methodRequestMappingAnno = apiAction.getMethod().getAnnotation(RequestMapping.class);
+        if (methodRequestMappingAnno != null) {
+            saa.setUris(this.getUris(methodRequestMappingAnno.value()));
+            saa.setMethods(this.getMethods(methodRequestMappingAnno.method()));
+            return true;
+        }
+
+        PostMapping postMapping = apiAction.getMethod().getAnnotation(PostMapping.class);
+        if (postMapping != null) {
+            saa.setUris(this.getUris(postMapping.value()));
+            saa.setMethods(this.getMethods(RequestMethod.POST));
+            return true;
+        }
+
+        GetMapping getMapping = apiAction.getMethod().getAnnotation(GetMapping.class);
+        if (getMapping != null) {
+            saa.setUris(this.getUris(getMapping.value()));
+            saa.setMethods(this.getMethods(RequestMethod.GET));
+            return true;
+        }
+
+        PutMapping putMapping = apiAction.getMethod().getAnnotation(PutMapping.class);
+        if (putMapping != null) {
+            saa.setUris(this.getUris(putMapping.value()));
+            saa.setMethods(this.getMethods(RequestMethod.PUT));
+            return true;
+        }
+
+        DeleteMapping deleteMapping = apiAction.getMethod().getAnnotation(DeleteMapping.class);
+        if (deleteMapping != null) {
+            saa.setUris(this.getUris(deleteMapping.value()));
+            saa.setMethods(this.getMethods(RequestMethod.DELETE));
+            return true;
+        }
+
+        PatchMapping patchMapping = apiAction.getMethod().getAnnotation(PatchMapping.class);
+        if (patchMapping != null) {
+            saa.setUris(this.getUris(patchMapping.value()));
+            saa.setMethods(this.getMethods(RequestMethod.PATCH));
+            return true;
+        }
+        return false;
     }
 
     protected String getReturnDesc(SpringApiAction saa) {
@@ -192,11 +208,9 @@ public class SpringXDocOutputImpl implements XDocOutput {
     /**
      * 获取接口的uri
      *
-     * @param requestMappingAnno
      * @return
      */
-    protected List<String> getUris(RequestMapping requestMappingAnno) {
-        String[] values = requestMappingAnno.value();
+    protected List<String> getUris(String[] values) {
         List<String> uris = new ArrayList<String>();
         for (String value : values) {
             uris.add(value);
@@ -207,16 +221,14 @@ public class SpringXDocOutputImpl implements XDocOutput {
     /**
      * 获取接口上允许的访问方式
      *
-     * @param requestMappingAnno
      * @return
      */
-    protected List<String> getMethods(RequestMapping requestMappingAnno) {
-        List<String> methods = new ArrayList<String>();
-        RequestMethod[] method = requestMappingAnno.method();
-        for (RequestMethod requestMethod : method) {
-            methods.add(requestMethod.name());
+    protected List<String> getMethods(RequestMethod... methods) {
+        List<String> methodStrs = new ArrayList<String>();
+        for (RequestMethod requestMethod : methods) {
+            methodStrs.add(requestMethod.name());
         }
-        return methods;
+        return methodStrs;
     }
 
     /**
