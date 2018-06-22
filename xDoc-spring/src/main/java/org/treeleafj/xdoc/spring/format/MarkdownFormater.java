@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.treeleafj.xdoc.format.Formater;
 import org.treeleafj.xdoc.model.ApiAction;
+import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.spring.framework.SpringApiAction;
 import org.treeleafj.xdoc.utils.JsonFormatUtils;
@@ -23,9 +24,9 @@ public class MarkdownFormater implements Formater {
     private VelocityTemplater templater = new VelocityTemplater("org/treeleafj/xdoc/spring/format/api.vm");
 
     @Override
-    public String format(List<ApiModule> list) {
+    public String format(ApiDoc apiDoc) {
         StringBuilder sb = new StringBuilder();
-        for (ApiModule apiModule : list) {
+        for (ApiModule apiModule : apiDoc.getApiModules()) {
             sb.append(format(apiModule)).append("\n\n");
         }
         return sb.toString();

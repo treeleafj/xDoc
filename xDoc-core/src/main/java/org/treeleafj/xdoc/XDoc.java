@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.treeleafj.xdoc.format.Formater;
 import org.treeleafj.xdoc.framework.Framework;
+import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
 import org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver;
@@ -17,6 +18,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * XDoc主入口,核心处理从这里开始
@@ -75,7 +77,7 @@ public class XDoc {
      *
      * @return API接口数据
      */
-    public List<ApiModule> resolve() {
+    public ApiDoc resolve() {
         List<String> files = new ArrayList<>();
         for (String srcPath : this.srcPaths) {
             files.addAll(FileUtils.getAllJavaFiles(new File(srcPath)));
@@ -86,17 +88,20 @@ public class XDoc {
         if (framework != null) {
             apiModules = framework.extend(apiModules);
         }
-        return apiModules;
+        return new ApiDoc(apiModules);
     }
 
     /**
      * 构建接口文档
      */
-    public void build(OutputStream out, Formater formater) {
-        List<ApiModule> apiModules = this.resolve();
+    public void build(OutputStream out, Formater formater, Map<String, Object> properties) {
+        ApiDoc apiDoc = this.resolve();
+        if (properties != null) {
+            apiDoc.getProperties().putAll(properties);
+        }
 
-        if (apiModules != null && out != null && formater != null) {
-            String s = formater.format(apiModules);
+        if (apiDoc.getApiModules() != null && out != null && formater != null) {
+            String s = formater.format(apiDoc);
             try {
                 IOUtils.write(s, out, CHARSET);
             } catch (IOException e) {

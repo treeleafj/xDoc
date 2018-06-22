@@ -1,5 +1,6 @@
 package org.treeleafj.xdoc.format;
 
+import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 
 import java.util.List;
@@ -11,5 +12,5 @@ import java.util.List;
  */
 public interface Formater {
 
-    String format(List<ApiModule> list);
+    String format(ApiDoc apiDoc);
 }

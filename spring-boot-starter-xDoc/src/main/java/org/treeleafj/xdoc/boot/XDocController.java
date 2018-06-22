@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.XDoc;
-import org.treeleafj.xdoc.model.ApiModule;
+import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.spring.framework.SpringWebFramework;
 import org.treeleafj.xdoc.utils.JsonUtils;
 
@@ -16,7 +16,6 @@ import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * XDoc的Spring Web入口
@@ -32,7 +31,7 @@ public class XDocController {
     @Autowired
     private XDocProperties xDocProperties;
 
-    private static List<ApiModule> apiModules;
+    private static ApiDoc apiDoc;
 
     @PostConstruct
     public void init() {
@@ -55,7 +54,12 @@ public class XDocController {
 
             Thread thread = new Thread(() -> {
                 try {
-                    apiModules = xDoc.resolve();
+                    apiDoc = xDoc.resolve();
+                    HashMap<String, Object> properties = new HashMap<>();
+                    properties.put("version", xDocProperties.getVersion());
+                    properties.put("title", xDocProperties.getTitle());
+                    apiDoc.setProperties(properties);
+
                     log.info("start up XDoc");
                 } catch (Exception e) {
                     log.error("start up XDoc error", e);
@@ -83,11 +87,7 @@ public class XDocController {
     @ResponseBody
     @RequestMapping("apis")
     public Object apis() {
-        Map<String, Object> model = new HashMap<>();
-        model.put("title", xDocProperties.getTitle());
-        model.put("version", xDocProperties.getVersion());
-        model.put("apiModules", apiModules);
-        return JsonUtils.toJson(model);
+        return JsonUtils.toJson(apiDoc);
     }
 
     /**

@@ -1,7 +1,9 @@
 package org.treeleafj.xdoc.spring.format;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.treeleafj.xdoc.format.Formater;
+import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.utils.JsonUtils;
 
@@ -17,15 +19,15 @@ import java.util.Map;
 public class HtmlForamter implements Formater {
 
     @Override
-    public String format(List<ApiModule> list) {
+    public String format(ApiDoc apiDoc) {
         InputStream in = HtmlForamter.class.getResourceAsStream("html.vm");
         if (in != null) {
             try {
                 String s = IOUtils.toString(in, "utf-8");
 
                 Map<String, Object> model = new HashMap<>();
-                model.put("title", "接口文档");
-                model.put("apiModules", list);
+                model.put("title", StringUtils.defaultString((String) apiDoc.getProperties().get("title"), "接口文档"));
+                model.put("apiModules", apiDoc.getApiModules());
 
                 return s.replace("_apis_json", JsonUtils.toJson(model));
             } catch (IOException e) {
