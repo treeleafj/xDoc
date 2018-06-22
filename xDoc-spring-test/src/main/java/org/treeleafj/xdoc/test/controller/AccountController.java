@@ -39,7 +39,7 @@ public class AccountController {
      * @param type 账户类型(1-普通账户)|必填
      * @return 用户的资产
      * @title 查询用户资产
-     * @see Account
+     * @see org.treeleafj.xdoc.test.vo.AccountEx
      */
     @ResponseBody
     @RequestMapping(value = "info", method = RequestMethod.POST)

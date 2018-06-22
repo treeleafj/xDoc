@@ -18,10 +18,7 @@ import org.treeleafj.xdoc.utils.Constant;
 
 import java.beans.PropertyDescriptor;
 import java.io.FileInputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by leaf on 2017/3/4.
@@ -55,12 +52,29 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
 
         String text = cu.getComment().isPresent() ? CommentUtils.parseCommentText(cu.getComment().get().getContent()) : "";
 
-        List<FieldInfo> fields = analysisFields(returnClassz, cu);
+        List<FieldInfo> fields = this.analysisFields(returnClassz, cu);
+
+        //进行排重
+        this.filter(fields);
+
         ObjectInfo objectInfo = new ObjectInfo();
         objectInfo.setType(returnClassz);
         objectInfo.setFieldInfos(fields);
         objectInfo.setComment(text);
         return new SeeTagImpl(_docTag.getTagName(), objectInfo);
+    }
+
+    private void filter(List<FieldInfo> fields) {
+        Set<String> fieldSet = new HashSet<>();
+
+        for (int i = fields.size() - 1; i >= 0; i--) {
+            FieldInfo fieldInfo = fields.get(i);
+            if (fieldSet.contains(fieldInfo.getName())) {
+                fields.remove(i);
+            } else {
+                fieldSet.add(fieldInfo.getName());
+            }
+        }
     }
 
     private List<FieldInfo> analysisFields(Class classz, CompilationUnit compilationUnit) {
@@ -86,8 +100,28 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
         }.visit(compilationUnit, null);
 
         List<FieldInfo> fields = new ArrayList<>();
+
+        //说明有父类,那么从父类中获取注释
+        if (!Object.class.equals(classz.getSuperclass())) {
+            String path = ClassMapperUtils.getPath(classz.getSuperclass().getSimpleName());
+            if (StringUtils.isNotBlank(path)) {
+                log.debug("读取父类的注释:{}", path);
+                try (FileInputStream in = new FileInputStream(path)) {
+                    CompilationUnit cu = JavaParser.parse(in);
+                    List<FieldInfo> superClassFields = this.analysisFields(classz.getSuperclass(), cu);
+                    fields.addAll(superClassFields);
+                } catch (Exception e) {
+                    log.warn("读取java原文件失败:{}", path, e.getMessage(), e);
+                }
+            }
+        }
+
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             if (propertyDescriptor.getName().equals("class")) {
+                continue;
+            }
+            //排除掉父类的属性
+            if (!classz.equals(propertyDescriptor.getReadMethod().getDeclaringClass())) {
                 continue;
             }
             FieldInfo field = new FieldInfo();
@@ -120,4 +154,5 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
         }
         return fields;
     }
+
 }
