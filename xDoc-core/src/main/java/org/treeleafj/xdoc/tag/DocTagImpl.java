@@ -5,7 +5,7 @@ package org.treeleafj.xdoc.tag;
  * <p>
  * Created by leaf on 2017/3/4.
  */
-public class DocTagImpl extends DocTag {
+public class DocTagImpl extends DocTag<String> {
 
     private String value;
 

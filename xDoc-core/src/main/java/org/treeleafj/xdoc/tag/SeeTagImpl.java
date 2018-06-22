@@ -7,7 +7,7 @@ import org.treeleafj.xdoc.model.ObjectInfo;
  * <p>
  * Created by leaf on 2017/3/4.
  */
-public class SeeTagImpl extends DocTag {
+public class SeeTagImpl extends DocTag<ObjectInfo> {
 
     private ObjectInfo objectInfo;
 

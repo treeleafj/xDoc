@@ -8,7 +8,7 @@ import lombok.Data;
  * Created by leaf on 2017/3/4.
  */
 @Data
-public class ParamTagImpl extends DocTag {
+public class ParamTagImpl extends DocTag<String> {
 
     /**
      * 参数名
@@ -39,7 +39,7 @@ public class ParamTagImpl extends DocTag {
     }
 
     @Override
-    public Object getValues() {
+    public String getValues() {
         return paramName + " " + this.paramDesc;
     }
 
