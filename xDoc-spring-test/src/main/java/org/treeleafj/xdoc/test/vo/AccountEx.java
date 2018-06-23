@@ -1,9 +1,7 @@
 package org.treeleafj.xdoc.test.vo;
 
 import lombok.Data;
-import org.apache.commons.beanutils.PropertyUtils;
 
-import java.beans.PropertyDescriptor;
 import java.util.Date;
 
 /**
@@ -23,8 +21,8 @@ public class AccountEx extends Account {
      */
     private Integer level;
 
-    public static void main(String[] args) {
-        PropertyDescriptor[] propertyDescriptors = PropertyUtils.getPropertyDescriptors(AccountEx.class);
-        System.out.println(propertyDescriptors);
-    }
+    /**
+     * 重写父类的注释,新的含义是:已消费的积分
+     */
+    private Integer score;
 }
