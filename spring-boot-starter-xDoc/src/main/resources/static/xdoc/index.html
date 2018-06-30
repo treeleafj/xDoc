@@ -13,12 +13,11 @@
 <body>
 <div id="app">
     <div>
-        <el-menu id="header" mode="horizontal">
+        <el-menu id="header" mode="horizontal" background-color="#303133" text-color="#fff" active-text-color="#303133">
             <h2 class="logo-text">{{title}}</h2>
-            <el-submenu index="1" class="head-user-box">
-                <template slot="title">版本</template>
-                <el-menu-item index="1-1">V1</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="1" disabled class="head-user-box">
+                <template slot="title">版本 {{version}}</template>
+            </el-menu-item>
             <el-menu-item index="2" class="head-user-box">
                 <el-input placeholder="请输入搜索内容" icon="search" v-model="search"></el-input>
             </el-menu-item>
@@ -198,6 +197,7 @@
                     type : 'GET'
                 },
                 title : 'XDoc 接口文档',
+                version: 'v1.0',
                 currentApiModule: null,
                 currentApiAction: null
             }
@@ -314,7 +314,10 @@
 
             fullData(data) {
                 if (data.title != null) {
-                    this.title = data.title;
+                    this.title = data.properties.title;
+                }
+                if (data.properties && data.properties.version != null) {
+                    this.version = data.properties.version;
                 }
                 this.apiModules = data.apiModules;
                 if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
@@ -409,14 +412,19 @@
     * {
         padding: 0;
         margin: 0;
+        font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
     }
 
     .logo-text {
         float: left;
-        color: rgba(102, 102, 102, 0.7);
         height: 60px;
+        color: #fff;
         line-height: 60px;
         padding-left: 32px;
+    }
+
+    #header .el-input__inner {
+        background: #303133;
     }
 
     .left-menu {
@@ -427,6 +435,7 @@
         bottom: 0px;
         z-index: 102;
         top: 60px;
+        padding-top: 7px;
         overflow-x: hidden;
     }
 
@@ -498,6 +507,7 @@
         padding-left : 50px;
         width : 700px;
     }
+
     .action-title {
         background: #EEE;
         height: 50px;
