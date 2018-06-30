@@ -27,9 +27,9 @@ public class XDocTest {
 
     @Test
     public void buildHtml() throws Exception {
-        FileOutputStream out = new FileOutputStream(new File("E:/api.html"));
-        String rootDir = System.getProperty("user.dir");
-        XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
+        String userDir = System.getProperty("user.dir");
+        FileOutputStream out = new FileOutputStream(new File(new File(userDir).getParentFile(), "api.html"));
+        XDoc xDoc = new XDoc(userDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
         xDoc.build(out, new HtmlForamt());
     }
 }
