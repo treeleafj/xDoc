@@ -1,104 +1,189 @@
-<template>
-    <div id="app">
-        <div>
-            <el-menu id="header" mode="horizontal">
-                <h2 class="logo-text">{{title}}</h2>
-                <el-submenu index="1" class="head-user-box">
-                    <template slot="title">版本</template>
-                    <el-menu-item index="1-1">V1</el-menu-item>
-                </el-submenu>
-                <el-menu-item index="2" class="head-user-box">
-                    <el-input placeholder="请输入搜索内容" icon="search" v-model="search"></el-input>
-                </el-menu-item>
-            </el-menu>
-        </div>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>接口文档</title>
+    <!--<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">-->
+    <!--<script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>-->
+    <!--<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>-->
+    <link rel="stylesheet" href="element-ui.css">
+    <script type="text/javascript" src="vue.min.js"></script>
+    <script src="element-ui.js"></script>
+</head>
+<body>
+<div id="app">
+    <div>
+        <el-menu id="header" mode="horizontal">
+            <h2 class="logo-text">{{title}}</h2>
+            <el-submenu index="1" class="head-user-box">
+                <template slot="title">版本</template>
+                <el-menu-item index="1-1">V1</el-menu-item>
+            </el-submenu>
+            <el-menu-item index="2" class="head-user-box">
+                <el-input placeholder="请输入搜索内容" icon="search" v-model="search"></el-input>
+            </el-menu-item>
+        </el-menu>
+    </div>
 
-		
-        <div class="app-menu left-menu" id="left-menu">
-            <el-tree ref="apiTree" highlight-current default-expand-all :data="reverseMenus" :props="defaultProps"
-                     @current-change="checkChangeHandle" :filter-node-method="filterNode"></el-tree>
-        </div>
-        <div id="main" v-if="currentApiAction != null" @click="hideTest">
-            <h2>{{currentApiAction.title}}</h2>
-            <p class="comment">{{currentApiAction.comment}}</p>
-            <p class="uri" v-if="currentApiAction.methods.length > 0">只支持:
-                <span v-for="m in currentApiAction.methods">{{m}} </span>
-            </p>
-            <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{(currentApiModule.uris[0] ? currentApiModule.uris[0] + '/' : '') + uri}}</p>
-            <p class="return">接口返回: {{currentApiAction.returnDesc}}</p>
 
-            <div>
-                <h2>入参</h2>
-                <br/>
-                <el-table :data="reverseParam" style="width: 60%">
+    <div class="app-menu left-menu" id="left-menu">
+        <el-tree ref="apiTree" highlight-current default-expand-all :data="reverseMenus" :props="defaultProps"
+                 @current-change="checkChangeHandle" :filter-node-method="filterNode"></el-tree>
+    </div>
+    <div id="main" v-if="currentApiAction != null" @click="hideTest">
+        <h2 class="action-title">{{currentApiAction.title}}</h2>
+        <p class="comment">描述:  {{currentApiAction.comment}}</p>
+        <p class="uri" v-if="currentApiAction.methods.length > 0">只支持:
+            <span v-for="m in currentApiAction.methods">{{m}} </span>
+        </p>
+        <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{(currentApiModule.uris[0] ? currentApiModule.uris[0] + '/' : '') + uri}}</p>
+        <p class="return">接口返回: {{currentApiAction.returnDesc}}</p>
+
+        <el-collapse v-model="activeNames">
+            <el-collapse-item name="1">
+                <template slot="title">
+                    <h2>请求参数&nbsp;&nbsp;<i class="header-icon el-icon-edit"></i></h2>
+                </template>
+                <el-table :data="reverseParam">
                     <el-table-column prop="paramName" label="参数名" width="180"></el-table-column>
                     <el-table-column prop="paramDesc" label="描述" width="180"></el-table-column>
+                    <el-table-column prop="paramType" label="类型"></el-table-column>
                     <el-table-column prop="require" label="是否必填">
                         <template scope="scope">{{scope.row.require ? '是' : '否'}}</template>
                     </el-table-column>
                 </el-table>
-            </div>
+            </el-collapse-item>
 
-            <br/>
-            <div>
-                <h2>出参</h2>
-                <br/>
-                <el-table :data="reverseResponse" style="width: 60%">
+            <el-collapse-item name="2">
+                <template slot="title">
+                    <h2>返回参数&nbsp;&nbsp;<i class="header-icon el-icon-check"></i></h2>
+                </template>
+                <el-table :data="reverseResponse">
                     <el-table-column prop="paramName" label="参数名" width="180"></el-table-column>
                     <el-table-column prop="paramDesc" label="描述" width="180"></el-table-column>
-                    <el-table-column prop="type" label="类型"></el-table-column>
+                    <el-table-column prop="paramType" label="类型"></el-table-column>
                     <el-table-column prop="require" label="是否必填">
                         <template scope="scope">{{scope.row.require ? '是' : '否'}}</template>
                     </el-table-column>
                 </el-table>
-            </div>
+            </el-collapse-item>
 
-            <br/>
-            <div v-if="currentApiAction.respbody != null">
-                <h2>例子</h2>
-                <br/>
+            <el-collapse-item name="3" v-if="currentApiAction.respbody != null">
+                <template slot="title">
+                    <h2>返回例子&nbsp;&nbsp;<i class="header-icon el-icon-view"></i></h2>
+                </template>
                 <pre>{{reverseRespbody}}</pre>
-            </div>
-        </div>
+            </el-collapse-item>
+        </el-collapse>
+    </div>
 
-        <div id="test" :class="testClassName" v-if="currentApiAction != null && isOnline" @click="showTest">
-            <h2>测试</h2>
+    <div id="test" :class="testClassName" v-if="currentApiAction != null && isOnline" @click="showTest">
+        <h2>测试</h2>
+        <br/>
+        <div class="test-main">
+            <el-form ref="testForm" :model="testForm" label-width="120px" class="test-form">
+
+                <el-form-item v-if="currentApiAction.methods.length > 0" label="请求方式">
+                    <el-radio-group v-model="request.type">
+                        <el-radio v-for="m in currentApiAction.methods" :label="m">{{m}}</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+
+                <el-form-item v-for="param in reverseParam" :label="param.paramName" :prop="param.paramName">
+                    <el-input v-model="testForm[param.paramName]"></el-input>
+                </el-form-item>
+
+                <el-form-item>
+                    <el-button type="primary" @click="onTest">测试</el-button>
+                    <el-button @click="resetTestForm">重置</el-button>
+                </el-form-item>
+            </el-form>
+
+            <h3>返回内容</h3>
             <br/>
-            <div class="test-main">
-                <el-form ref="testForm" :model="testForm" label-width="120px" class="test-form">
-
-                    <el-form-item v-if="currentApiAction.methods.length > 0" label="请求方式">
-                        <el-radio-group v-model="request.type">
-                            <el-radio v-for="m in currentApiAction.methods" :label="m">{{m}}</el-radio>
-                        </el-radio-group>
-                    </el-form-item>
-
-                    <el-form-item v-for="param in reverseParam" :label="param.paramName" :prop="param.paramName">
-                        <el-input v-model="testForm[param.paramName]"></el-input>
-                    </el-form-item>
-
-                    <el-form-item>
-                        <el-button type="primary" @click="onTest">测试</el-button>
-                        <el-button @click="resetTestForm">重置</el-button>
-                    </el-form-item>
-                </el-form>
-                
-                <h3>返回内容</h3>
-                <br/>
-                <div class="test-respbody">
-                    <el-input ref="respbpdy" v-model="testRespbody" type="textarea" :rows="10" placeholder="返回内容..."></el-input>
-                </div>
+            <div class="test-respbody">
+                <el-input ref="respbpdy" v-model="testRespbody" type="textarea" :rows="10" placeholder="返回内容..."></el-input>
             </div>
         </div>
     </div>
-</template>
+</div>
 
 <script>
-    export default {
-        name: 'app',
+    window.Http = {};
+    Http.ajax = function(url, params, method) {
+
+        var config = {
+            method: method,
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            cache: 'no-store'
+        };
+
+        var search = '';
+        if (params) {
+            for (var p in params) {
+                if (params[p] == null || typeof(params[p]) === 'undefined') {
+                    delete params[p];
+                } else {
+                    search += p + '=' + encodeURIComponent(params[p]) + '&';
+                }
+            }
+
+            if (search) {
+                search = search.substr(0, search.length - 1);
+
+                if (method.toLocaleLowerCase() === 'get') {
+                    if (url.indexOf('?') > 0) {
+                        url += '&' + search;
+                    } else {
+                        url += '?' + search;
+                    }
+                } else {
+                    config.body = search;
+                }
+            }
+        }
+
+        return new Promise(function (resolve, reject) {
+            fetch(url, config).then(function (response) {
+                return response.text();
+            }).then(function (data) {
+                resolve(data);
+            }).catch(function (e) {
+                reject(e);
+            });
+        });
+    }
+
+    /**
+     * 发起Post请求
+     *
+     * @param {String} url 请求地址
+     * @param {object} params 请求参数
+     */
+    Http.Post = function(url, params) {
+        return Http.ajax(url, params, 'POST');
+    }
+
+    /**
+     * 发起Get请求
+     *
+     * @param {String} url 请求地址
+     * @param {Object} params 请求参数
+     */
+    Http.Get = function(url, params) {
+        return Http.ajax(url, params, 'GET');
+    }
+</script>
+<script>
+    new Vue({
+        el: '#app',
         data() {
             return {
                 search: '',
+                activeNames: ['1', '2', '3'],
                 radio2: '1',
                 testRespbody: '',
                 apiModules: [],
@@ -120,15 +205,16 @@
 
         mounted() {
             if (!window.apis) {
-                this.$http.get('apis').then(response => {
+                var self = this;
+                fetch('apis').then(function(response) {
                     return response.json();
-                }, response => {
-                    this.$message.error('系统错误,请求api列表 接口失败');
-                }).then(data => {
+                }).then(function(data) {
                     if (typeof(data) == 'string') {//兼容后端返回数据出问题
                         data = JSON.parse(data);
                     }
-                    this.fullData(data);
+                    self.fullData(data);
+                }).catch(function(e) {
+                    self.$message.error('系统错误,请求api列表 接口失败');
                 });
             } else {
                 this.isOnline = false;
@@ -188,7 +274,7 @@
                         data.push({
                             paramName: par.paramName,
                             paramDesc: par.paramDesc,
-                            type: par.type,
+                            paramType: par.paramType,
                             require: par.require
                         });
                     }
@@ -203,7 +289,7 @@
                         data.push({
                             paramName: par.name,
                             paramDesc: par.comment,
-                            type: par.simpleTypeName,
+                            paramType: par.simpleTypeName,
                             require : par.require
                         });
                     }
@@ -227,7 +313,9 @@
         methods: {
 
             fullData(data) {
-                this.title = data.title;
+                if (data.title != null) {
+                    this.title = data.title;
+                }
                 this.apiModules = data.apiModules;
                 if (this.apiModules.length > 0 && this.apiModules[0].apiActions.length > 0) {
                     this.currentApiModule = this.apiModules[0];
@@ -274,7 +362,7 @@
             },
 
             hideTest() {
-                 this.testClassName = 'test-off';
+                this.testClassName = 'test-off';
             },
 
             resetTestForm() {
@@ -284,7 +372,8 @@
             },
 
             onTest() {
-                
+                var self = this;
+
                 var uri = '';
                 if (this.currentApiModule.uris.length > 0) {
                     uri += '/' + this.currentApiModule.uris[0];
@@ -297,23 +386,12 @@
 
                 console.log('请求方式:', requestType, '请求数据:', this.testForm);
 
-                var http;
-                if ('get' == requestType) {
-                    http = this.$http.get(uri, {params : this.testForm});
-                } else {
-                    http = this.$http[requestType](uri, this.testForm, {emulateJSON:true})
-                }
-
-                http.then((resp) => {
-                    return resp.text();
-                }, (resp) => {
-                    return resp.text();
-                }).then((resp) => {
-                    this.testRespbody = resp;
-                }, (resp) => {
-                    console.log(resp);
-                    window.resp = resp;
-                    this.$message.error('系统错误:' + resp);
+                Http.ajax(uri, this.testForm, requestType).then((data) => {
+                    self.testRespbody = data;
+                }).catch((e) => {
+                    console.log(e);
+                    window.resp = e;
+                    self.$message.error('系统错误:' + e);
                 });
             }
         },
@@ -323,9 +401,9 @@
                 this.$refs.apiTree.filter(val);
             },
         }
-    }
-
+    })
 </script>
+</body>
 
 <style>
     * {
@@ -367,7 +445,7 @@
 
     #main {
         left: 403px;
-        padding: 20px 20px;
+        padding: 20px 70px 0 20px;
         width: auto;
         position: absolute;
         top: 60px;
@@ -420,4 +498,13 @@
         padding-left : 50px;
         width : 700px;
     }
+    .action-title {
+        background: #EEE;
+        height: 50px;
+        line-height: 50px;
+        padding-left: 10px;
+        border-radius: 4px;
+    }
 </style>
+
+</html>

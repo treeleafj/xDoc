@@ -26,5 +26,5 @@ public class ParamInfo {
     /**
      * 类型
      */
-    private String type;
+    private String paramType;
 }

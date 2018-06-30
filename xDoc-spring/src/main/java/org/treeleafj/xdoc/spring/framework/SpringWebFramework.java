@@ -164,6 +164,7 @@ public class SpringWebFramework extends Framework {
             ParamInfo paramInfo = new ParamInfo();
             paramInfo.setParamName(paramTag.getParamName());
             paramInfo.setParamDesc(paramTag.getParamDesc());
+            paramInfo.setParamType(paramTag.getParamType());
             paramInfo.setRequire(paramTag.isRequire());
             paramInfos.add(paramInfo);
         }
@@ -179,7 +180,7 @@ public class SpringWebFramework extends Framework {
             paramInfo.setParamName(respTag.getParamName());
             paramInfo.setRequire(respTag.isRequire());
             paramInfo.setParamDesc(respTag.getParamDesc());
-            paramInfo.setType(respTag.getParamType());
+            paramInfo.setParamType(respTag.getParamType());
             list.add(paramInfo);
         }
         return list;
