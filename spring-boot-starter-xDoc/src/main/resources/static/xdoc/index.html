@@ -19,6 +19,9 @@
                 <template slot="title">版本 {{version}}</template>
             </el-menu-item>
             <el-menu-item index="2" class="head-user-box">
+                <el-button type="text" style="color:#FFF" @click="rebuild">重新生成文档</el-button>
+            </el-menu-item>
+            <el-menu-item index="3" class="head-user-box">
                 <el-input placeholder="请输入搜索内容" icon="search" v-model="search"></el-input>
             </el-menu-item>
         </el-menu>
@@ -266,23 +269,9 @@
 
             reverseResponse() {
 
-                if (this.currentApiAction && this.currentApiAction.respParam && this.currentApiAction.respParam.length > 0) {
-                    var data = [];
-
-                    for (var i = 0; i < this.currentApiAction.respParam.length; i++) {
-                        var par = this.currentApiAction.respParam[i];
-                        data.push({
-                            paramName: par.paramName,
-                            paramDesc: par.paramDesc,
-                            paramType: par.paramType,
-                            require: par.require
-                        });
-                    }
-                    return data;
-                }
+                var data = [];
 
                 if (this.currentApiAction && this.currentApiAction.returnObj) {
-                    var data = [];
 
                     for (var i = 0; i < this.currentApiAction.returnObj.fieldInfos.length; i++) {
                         var par = this.currentApiAction.returnObj.fieldInfos[i];
@@ -293,8 +282,20 @@
                             require : par.require
                         });
                     }
-                    return data;
                 }
+
+                if (this.currentApiAction && this.currentApiAction.respParam && this.currentApiAction.respParam.length > 0) {
+                    for (var i = 0; i < this.currentApiAction.respParam.length; i++) {
+                        var par = this.currentApiAction.respParam[i];
+                        data.push({
+                            paramName: par.paramName,
+                            paramDesc: par.paramDesc,
+                            paramType: par.paramType,
+                            require: par.require
+                        });
+                    }
+                }
+                return data;
             },
 
             reverseRespbody() {
@@ -366,6 +367,10 @@
 
             hideTest() {
                 this.testClassName = 'test-off';
+            },
+
+            rebuild() {
+                window.location = 'rebuild.html';
             },
 
             resetTestForm() {

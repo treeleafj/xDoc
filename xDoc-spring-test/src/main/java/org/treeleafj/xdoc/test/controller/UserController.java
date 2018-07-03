@@ -50,6 +50,7 @@ public class UserController {
      * @respbody {"id":"123","password":"123456","username":"admin"}
      * @title 注册
      * @see User
+     * @resp score 分数
      */
     @ResponseBody
     @RequestMapping(value = "register", method = {RequestMethod.POST, RequestMethod.PUT})
