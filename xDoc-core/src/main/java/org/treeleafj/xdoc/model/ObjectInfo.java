@@ -21,6 +21,6 @@ public class ObjectInfo {
 
     private String comment;
 
-    private List<FieldInfo> fieldInfos = new ArrayList<FieldInfo>();
+    private List<FieldInfo> fieldInfos = new ArrayList<>();
 
 }

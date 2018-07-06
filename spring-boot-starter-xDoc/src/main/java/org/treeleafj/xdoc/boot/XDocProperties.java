@@ -26,4 +26,9 @@ public class XDocProperties {
      */
     private String sourcePath;
 
+    /**
+     * 文档版本号
+     */
+    private String version;
+
 }

@@ -10,7 +10,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.treeleafj.xdoc.filter.ClassFilterFactory;
+import org.treeleafj.xdoc.framework.Framework;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.DocTags;
@@ -19,7 +19,6 @@ import org.treeleafj.xdoc.resolver.IgnoreApi;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverter;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverterManager;
 import org.treeleafj.xdoc.tag.DocTag;
-import org.treeleafj.xdoc.utils.ApiModulesHolder;
 import org.treeleafj.xdoc.utils.ClassMapperUtils;
 import org.treeleafj.xdoc.utils.CommentUtils;
 
@@ -39,7 +38,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
     private Logger log = LoggerFactory.getLogger(JavaParserDocTagResolver.class);
 
     @Override
-    public void resolve(List<String> files) {
+    public List<ApiModule> resolve(List<String> files, Framework framework) {
 
         for (String file : files) {//缓存文件
             try (FileInputStream in = new FileInputStream(file)) {
@@ -73,7 +72,8 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 TypeDeclaration typeDeclaration = cu.getTypes().get(0);
                 final Class<?> moduleType = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + typeDeclaration.getNameAsString());
 
-                if (!ClassFilterFactory.getDefaultFilter().filter(moduleType)) {
+
+                if (!framework.support(moduleType)) {
                     continue;
                 }
 
@@ -100,7 +100,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                         }
 
                         IgnoreApi ignoreApi = method.getAnnotation(IgnoreApi.class);
-                        if (ignoreApi != null) {
+                        if (ignoreApi != null || !m.getComment().isPresent()) {
                             return;
                         }
 
@@ -109,14 +109,11 @@ public class JavaParserDocTagResolver implements DocTagResolver {
 
                         for (int i = 0; i < comments.size(); i++) {
                             String c = comments.get(i);
-                            String tagType = CommentUtils.findTagType(c);
+                            String tagType = CommentUtils.getTagType(c);
                             if (StringUtils.isBlank(tagType)) {
                                 continue;
                             }
                             JavaParserTagConverter converter = JavaParserTagConverterManager.getConverter(tagType);
-                            if (converter == null) {
-                                converter = JavaParserTagConverterManager.getDefaultConverter();
-                            }
                             DocTag docTag = converter.converter(c);
                             if (docTag != null) {
                                 docTagList.add(docTag);
@@ -146,8 +143,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 continue;
             }
         }
-
-        ApiModulesHolder.setCurrentApiModules(apiModules);//设置当前的解析结果
+        return apiModules;
     }
 
     /**

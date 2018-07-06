@@ -1,12 +1,13 @@
 package org.treeleafj.xdoc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.util.LinkedList;
 import java.util.List;
 
 /**
- * 接口业务模块
+ * 接口业务模块,一个接口类为一个模块
  *
  * @author leaf
  * @date 2017-03-03 10:32
@@ -17,6 +18,7 @@ public class ApiModule {
     /**
      * 源码在哪个类
      */
+    @JsonIgnore
     private transient Class<?> type;
 
     /**
@@ -27,5 +29,5 @@ public class ApiModule {
     /**
      * 此业务模块下有哪些接口
      */
-    private List<ApiAction> apiActions = new LinkedList<ApiAction>();
+    private List<ApiAction> apiActions = new LinkedList<>();
 }

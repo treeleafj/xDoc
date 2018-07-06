@@ -3,9 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>接口文档</title>
-    <link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">
-    <script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>
-    <script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>
+    <!--<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">-->
+    <!--<script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>-->
+    <!--<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>-->
+    <link rel="stylesheet" href="element-ui.css">
+    <script type="text/javascript" src="vue.min.js"></script>
+    <script src="element-ui.js"></script>
 </head>
 <body>
 <div id="app">
@@ -16,6 +19,9 @@
                 <template slot="title">版本 {{version}}</template>
             </el-menu-item>
             <el-menu-item index="2" class="head-user-box">
+                <el-button type="text" @click="rebuild">重新生成文档</el-button>
+            </el-menu-item>
+            <el-menu-item index="3" class="head-user-box">
                 <el-input placeholder="请输入搜索内容" icon="search" v-model="search"></el-input>
             </el-menu-item>
         </el-menu>
@@ -104,10 +110,7 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    window.apis = _apis_json;
-</script>
-<script type="text/javascript">
+<script>
     window.Http = {};
     Http.ajax = function(url, params, method) {
 
@@ -175,7 +178,7 @@
     Http.Get = function(url, params) {
         return Http.ajax(url, params, 'GET');
     }
-</script type="text/javascript">
+</script>
 <script>
     new Vue({
         el: '#app',
@@ -414,6 +417,7 @@
     * {
         padding: 0;
         margin: 0;
+        font-family: Helvetica Neue,Helvetica,PingFang SC,Hiragino Sans GB,Microsoft YaHei,SimSun,sans-serif;
     }
 
     .logo-text {

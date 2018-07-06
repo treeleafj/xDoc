@@ -2,14 +2,15 @@ package org.treeleafj.xdoc.tag;
 
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
+import org.treeleafj.xdoc.utils.Constant;
 
 /**
+ * 针对@Resp注释的内容封装
+ *
  * Created by leaf on 2017/3/12 0012.
  */
 @Data
-public class RespTagImpl extends DocTag {
-
-    private String name;
+public class RespTagImpl extends DocTag<String> {
 
     /**
      * 参数名
@@ -29,20 +30,23 @@ public class RespTagImpl extends DocTag {
     /**
      * 类型
      */
-    private String type;
+    private String paramType;
 
-    @Override
-    public String getName() {
-        return name;
+    public RespTagImpl(String tagName, String paramName, String paramDesc, String paramType, boolean require) {
+        super(tagName);
+        this.paramName = paramName;
+        this.paramDesc = paramDesc;
+        this.paramType = paramType;
+        this.require = require;
     }
 
     @Override
-    public Object getValues() {
+    public String getValues() {
         String s = paramName + " " + paramDesc;
-        if (StringUtils.isNotBlank(type)) {
-            s += " " + type;
+        if (StringUtils.isNotBlank(paramType)) {
+            s += " " + paramType;
         }
-        s += " " + (require ? "必填" : "非必填");
+        s += " " + (require ? Constant.YES_ZH : Constant.NOT_ZH);
         return s;
     }
 }

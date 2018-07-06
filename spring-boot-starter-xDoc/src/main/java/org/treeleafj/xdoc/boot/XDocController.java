@@ -1,26 +1,25 @@
 package org.treeleafj.xdoc.boot;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.treeleafj.xdoc.XDoc;
-import org.treeleafj.xdoc.model.ApiModule;
-import org.treeleafj.xdoc.spring.SpringXDocOutputImpl;
-import org.treeleafj.xdoc.utils.ApiModulesHolder;
+import org.treeleafj.xdoc.model.ApiDoc;
+import org.treeleafj.xdoc.spring.framework.SpringWebFramework;
+import org.treeleafj.xdoc.utils.JsonUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
+ * XDoc的Spring Web入口
+ *
  * @author leaf
  * @date 2017-03-09 15:36
  */
@@ -32,16 +31,14 @@ public class XDocController {
     @Autowired
     private XDocProperties xDocProperties;
 
-    private List<ApiModule> apiModules;
+    private static ApiDoc apiDoc;
 
     @PostConstruct
     public void init() {
         if (!xDocProperties.isEnable()) {
             return;
         }
-        log.info("开始启动XDoc");
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
         String path = xDocProperties.getSourcePath();
 
         if (StringUtils.isBlank(path)) {
@@ -50,18 +47,36 @@ public class XDocController {
 
         List<String> paths = Arrays.asList(path.split(","));
 
-        log.debug("源码路径:{}", paths);
+        log.debug("starting XDoc, source path:{}", paths);
 
         try {
-            SpringXDocOutputImpl output = new SpringXDocOutputImpl(out, null);
-            XDoc xDoc = new XDoc(paths, output);
-            xDoc.build();
-            log.info("启动XDoc完成");
+            XDoc xDoc = new XDoc(paths, new SpringWebFramework());
 
-            this.apiModules = ApiModulesHolder.getCurrentApiModules();
+            Thread thread = new Thread(() -> {
+                try {
+                    apiDoc = xDoc.resolve();
+                    HashMap<String, Object> properties = new HashMap<>();
+                    properties.put("version", xDocProperties.getVersion());
+                    properties.put("title", xDocProperties.getTitle());
+                    apiDoc.setProperties(properties);
+
+                    log.info("start up XDoc");
+                } catch (Exception e) {
+                    log.error("start up XDoc error", e);
+                }
+            });
+            thread.start();
         } catch (Exception e) {
-            log.error("启动XDoc失败,生成接口文档失败", e);
+            log.error("start up XDoc error", e);
         }
+    }
+
+    /**
+     * 跳转到xdoc接口文档首页
+     */
+    @GetMapping
+    public String index() {
+        return "redirect:index.html";
     }
 
     /**
@@ -71,11 +86,8 @@ public class XDocController {
      */
     @ResponseBody
     @RequestMapping("apis")
-    Object apis() {
-        Map<String, Object> model = new HashMap<>();
-        model.put("title", xDocProperties.getTitle());
-        model.put("apiModules", apiModules);
-        return JSON.toJSONString(model, new SerializerFeature[]{SerializerFeature.DisableCircularReferenceDetect});
+    public Object apis() {
+        return JsonUtils.toJson(apiDoc);
     }
 
     /**
@@ -83,8 +95,8 @@ public class XDocController {
      *
      * @return 文档页面
      */
-    @RequestMapping("rebuild")
-    String rebuild() {
+    @GetMapping("rebuild")
+    public String rebuild() {
         init();
         return "redirect:index.html";
     }

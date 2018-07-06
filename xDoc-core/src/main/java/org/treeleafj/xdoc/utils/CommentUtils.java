@@ -18,7 +18,7 @@ public class CommentUtils {
      * @param coment
      * @return @see @param @resp @return等
      */
-    public static String findTagType(String coment) {
+    public static String getTagType(String coment) {
         Pattern compile = Pattern.compile("^@[\\w]+[\\t ]");
         Matcher m = compile.matcher(coment);
         if (m.find()) {
@@ -63,7 +63,7 @@ public class CommentUtils {
                 continue;
             }
 
-            String tagType = CommentUtils.findTagType(c);
+            String tagType = CommentUtils.getTagType(c);
             if (StringUtils.isBlank(tagType)) {
                 sb.append(c);
                 sb.append("\n");

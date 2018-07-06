@@ -1,10 +1,7 @@
 package org.treeleafj.xdoc.test.controller;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.treeleafj.xdoc.test.vo.User;
 
@@ -34,7 +31,7 @@ public class UserController {
      * @resp username 登录成功后返回的用户名|string
      */
     @ResponseBody
-    @RequestMapping("login")
+    @PostMapping("login")
     public Map<String, String> login(String username, String password) {
         Map<String, String> model = new HashMap<>();
         model.put("code", "0000");
@@ -53,6 +50,7 @@ public class UserController {
      * @respbody {"id":"123","password":"123456","username":"admin"}
      * @title 注册
      * @see User
+     * @resp score 分数
      */
     @ResponseBody
     @RequestMapping(value = "register", method = {RequestMethod.POST, RequestMethod.PUT})

@@ -1,11 +1,12 @@
 package org.treeleafj.xdoc.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import java.lang.reflect.Method;
 
 /**
- * 接口信息
+ * 接口信息,一个接口类里面会有多个接口,每个接口都抽象成ApiAction
  *
  * @author leaf
  * @date 2017-03-03 11:09
@@ -26,6 +27,7 @@ public class ApiAction {
     /**
      * 接口方法
      */
+    @JsonIgnore
     private transient Method method;
 
     /**

@@ -22,16 +22,18 @@ public class JavaParserTagConverterManager {
         registrator.put(tagName, tagConverter);
     }
 
+    /**
+     * 获取标签转换器,如果没有特殊定制的,则返回默认的转换器DefaultJavaParserTagConverterImpl
+     *
+     * @param tagName 要转换的标签名称
+     * @return 匹配到的标签转换器
+     */
     public static JavaParserTagConverter getConverter(String tagName) {
         for (Map.Entry<String, JavaParserTagConverter> entry : registrator.entrySet()) {
             if (entry.getKey().equalsIgnoreCase(tagName)) {
                 return entry.getValue();
             }
         }
-        return null;
-    }
-
-    public static JavaParserTagConverter getDefaultConverter() {
         return defaultTagConverter;
     }
 }

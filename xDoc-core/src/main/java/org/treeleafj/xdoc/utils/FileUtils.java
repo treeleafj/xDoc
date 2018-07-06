@@ -10,7 +10,12 @@ import java.util.List;
  */
 public class FileUtils {
 
-    public static List<String> getAllFiles(File file) {
+    /**
+     * 递归获取指定目录下面所有的Java文件,包括子目录中的
+     * @param file 文件目录
+     * @return 所有java文件
+     */
+    public static List<String> getAllJavaFiles(File file) {
         if (!file.exists()) {
             return new ArrayList(0);
         }
@@ -30,7 +35,7 @@ public class FileUtils {
             File[] files = file.listFiles();
             if (files != null) {
                 for (File f : files) {
-                    list.addAll(getAllFiles(f));
+                    list.addAll(getAllJavaFiles(f));
                 }
             }
         }

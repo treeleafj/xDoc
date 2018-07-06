@@ -1,5 +1,6 @@
 package org.treeleafj.xdoc.model;
 
+import lombok.Data;
 import org.treeleafj.xdoc.tag.DocTag;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 /**
  * Created by leaf on 2017/3/4.
  */
+@Data
 public class DocTags {
 
     private List<DocTag> list;
@@ -22,7 +24,7 @@ public class DocTags {
     public DocTag getTag(String name) {
         for (int i = 0; i < list.size(); i++) {
             DocTag docTag = list.get(i);
-            if (docTag.getName().equals(name)) {
+            if (docTag.getTagName().equals(name)) {
                 return docTag;
             }
         }
@@ -33,18 +35,10 @@ public class DocTags {
         List<DocTag> docTags = new ArrayList<DocTag>();
         for (int i = 0; i < list.size(); i++) {
             DocTag docTag = list.get(i);
-            if (docTag.getName().equals(name)) {
+            if (docTag.getTagName().equals(name)) {
                 docTags.add(docTag);
             }
         }
         return docTags;
-    }
-
-    public List<DocTag> getList() {
-        return list;
-    }
-
-    public void setList(List<DocTag> list) {
-        this.list = list;
     }
 }

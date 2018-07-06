@@ -8,12 +8,7 @@ import lombok.Data;
  * Created by leaf on 2017/3/4.
  */
 @Data
-public class ParamTagImpl extends DocTag {
-
-    /**
-     * 标签名
-     */
-    private String name;
+public class ParamTagImpl extends DocTag<String> {
 
     /**
      * 参数名
@@ -30,26 +25,21 @@ public class ParamTagImpl extends DocTag {
      */
     private boolean require;
 
-    public ParamTagImpl(String name, String paramName, String paramDesc) {
-        this.name = name;
-        this.paramName = paramName;
-        this.paramDesc = paramDesc;
-    }
+    /**
+     * 参数类型
+     */
+    private String paramType;
 
-    public ParamTagImpl(String name, String paramName, String paramDesc, boolean require) {
-        this.name = name;
+    public ParamTagImpl(String tagName, String paramName, String paramDesc, String paramType, boolean require) {
+        super(tagName);
         this.paramName = paramName;
         this.paramDesc = paramDesc;
+        this.paramType = paramType;
         this.require = require;
     }
 
     @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Object getValues() {
+    public String getValues() {
         return paramName + " " + this.paramDesc;
     }
 
