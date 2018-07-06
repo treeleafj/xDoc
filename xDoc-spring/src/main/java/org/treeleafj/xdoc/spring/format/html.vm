@@ -10,7 +10,7 @@
 <body>
 <div id="app">
     <div>
-        <el-menu id="header" mode="horizontal" background-color="#303133" text-color="#fff" active-text-color="#303133">
+        <el-menu id="header" mode="horizontal">
             <h2 class="logo-text">{{title}}</h2>
             <el-menu-item index="1" disabled class="head-user-box">
                 <template slot="title">版本 {{version}}</template>
@@ -419,13 +419,9 @@
     .logo-text {
         float: left;
         height: 60px;
-        color: #fff;
+        color: hsla(0,0%,40%,.7);
         line-height: 60px;
         padding-left: 32px;
-    }
-
-    #header .el-input__inner {
-        background: #303133;
     }
 
     .left-menu {
