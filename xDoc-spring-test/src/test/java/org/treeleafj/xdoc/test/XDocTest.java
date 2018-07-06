@@ -16,7 +16,8 @@ import java.io.FileOutputStream;
 public class XDocTest {
 
     @Test
-    public void buildMarkdown() throws Exception {
+    public void buildMarkdown() {
+        //生成离线的Markdown格式的接口文档
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         String rootDir = System.getProperty("user.dir");
         XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
@@ -27,8 +28,9 @@ public class XDocTest {
 
     @Test
     public void buildHtml() throws Exception {
+        //生成离线的HTML格式的接口文档
         String userDir = System.getProperty("user.dir");
-        FileOutputStream out = new FileOutputStream(new File(new File(userDir).getParentFile(), "api.html"));
+        FileOutputStream out = new FileOutputStream(new File(userDir, "api.html"));
         XDoc xDoc = new XDoc(userDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
         xDoc.build(out, new HtmlForamt());
     }
