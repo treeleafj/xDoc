@@ -50,8 +50,8 @@ public class SpringWebFramework extends Framework {
                 sam.setUris(this.getUris(classRequestMappingAnno.value()));
                 sam.setMethods(this.getMethods(classRequestMappingAnno.method()));
             } else {
-                sam.setUris(new ArrayList<String>(0));
-                sam.setMethods(new ArrayList<String>(0));
+                sam.setUris(new ArrayList<>(0));
+                sam.setMethods(new ArrayList<>(0));
             }
 
             for (ApiAction apiAction : apiModule.getApiActions()) {
@@ -158,7 +158,7 @@ public class SpringWebFramework extends Framework {
 
     protected List<ParamInfo> getParams(SpringApiAction saa) {
         List tags = saa.getDocTags().getTags("@param");
-        List<ParamInfo> paramInfos = new ArrayList<ParamInfo>(tags.size());
+        List<ParamInfo> paramInfos = new ArrayList<>(tags.size());
         for (Object tag : tags) {
             ParamTagImpl paramTag = (ParamTagImpl) tag;
             ParamInfo paramInfo = new ParamInfo();
@@ -209,7 +209,7 @@ public class SpringWebFramework extends Framework {
      * @return
      */
     protected List<String> getUris(String[] values) {
-        List<String> uris = new ArrayList<String>();
+        List<String> uris = new ArrayList<>();
         for (String value : values) {
             uris.add(value);
         }
@@ -222,7 +222,7 @@ public class SpringWebFramework extends Framework {
      * @return
      */
     protected List<String> getMethods(RequestMethod... methods) {
-        List<String> methodStrs = new ArrayList<String>();
+        List<String> methodStrs = new ArrayList<>();
         for (RequestMethod requestMethod : methods) {
             methodStrs.add(requestMethod.name());
         }

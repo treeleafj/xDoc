@@ -11,7 +11,7 @@
 <div id="app">
     <div>
         <el-menu id="header" mode="horizontal">
-            <h2 class="logo-text">{{title}}</h2>
+            <p class="logo-text">{{title}}</p>
             <el-menu-item index="1" disabled class="head-user-box">
                 <template slot="title">版本 {{version}}</template>
             </el-menu-item>
@@ -42,11 +42,11 @@
                 </template>
                 <el-table :data="reverseParam">
                     <el-table-column prop="paramName" label="参数名" width="180"></el-table-column>
-                    <el-table-column prop="paramDesc" label="描述" width="180"></el-table-column>
-                    <el-table-column prop="paramType" label="类型"></el-table-column>
-                    <el-table-column prop="require" label="是否必填">
+                    <el-table-column prop="paramType" label="类型" width="180"></el-table-column>
+                    <el-table-column prop="require" label="是否必填" width="100">
                         <template scope="scope">{{scope.row.require ? '是' : '否'}}</template>
                     </el-table-column>
+                    <el-table-column prop="paramDesc" label="描述"></el-table-column>
                 </el-table>
             </el-collapse-item>
 
@@ -56,11 +56,11 @@
                 </template>
                 <el-table :data="reverseResponse">
                     <el-table-column prop="paramName" label="参数名" width="180"></el-table-column>
-                    <el-table-column prop="paramDesc" label="描述" width="180"></el-table-column>
-                    <el-table-column prop="paramType" label="类型"></el-table-column>
-                    <el-table-column prop="require" label="是否必填">
+                    <el-table-column prop="paramType" label="类型" width="180"></el-table-column>
+                    <el-table-column prop="require" label="是否必填" width="100">
                         <template scope="scope">{{scope.row.require ? '是' : '否'}}</template>
                     </el-table-column>
+                    <el-table-column prop="paramDesc" label="描述"></el-table-column>
                 </el-table>
             </el-collapse-item>
 
@@ -311,7 +311,7 @@
         methods: {
 
             fullData(data) {
-                if (data.title != null) {
+                if (data.properties && data.properties.title != null) {
                     this.title = data.properties.title;
                 }
                 if (data.properties && data.properties.version != null) {
@@ -422,6 +422,7 @@
         color: hsla(0,0%,40%,.7);
         line-height: 60px;
         padding-left: 32px;
+		font-size: 22px;
     }
 
     .left-menu {
