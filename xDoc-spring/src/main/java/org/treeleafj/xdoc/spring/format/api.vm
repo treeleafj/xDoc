@@ -6,7 +6,11 @@
 # $apiAction.title
 > $apiAction.comment
 
+#if($uris.size() > 0)
 地址: $uris.get(0)/$apiAction.uris.get(0)
+#else
+地址: $apiAction.uris.get(0)
+#end
 #if($apiAction.methods.size() > 0)
 支持方式: $apiAction.methods
 #else
