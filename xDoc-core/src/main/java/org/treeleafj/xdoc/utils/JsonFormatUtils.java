@@ -1,5 +1,7 @@
 package org.treeleafj.xdoc.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * @author leaf
  * @date 2017-03-07 17:01
@@ -9,11 +11,13 @@ public class JsonFormatUtils {
     /**
      * 格式化json字符串
      *
-     * @param jsonStr
-     * @return
+     * @param jsonStr 未格式化前的JSON窜
+     * @return 格式化好的JSON窜
      */
     public static String formatJson(String jsonStr) {
-        if (null == jsonStr || "".equals(jsonStr)) return "";
+        if (StringUtils.isBlank(jsonStr)) {
+            return StringUtils.EMPTY;
+        }
         StringBuilder sb = new StringBuilder();
         char last;
         char current = '\0';
@@ -54,8 +58,8 @@ public class JsonFormatUtils {
     /**
      * 添加space
      *
-     * @param sb
-     * @param indent
+     * @param sb     要追加空格的字符串
+     * @param indent 追加的空格数
      */
     private static void addIndentBlank(StringBuilder sb, int indent) {
         for (int i = 0; i < indent; i++) {
