@@ -8,19 +8,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by leaf on 2017/4/3 0003.
+ * 注释文本工具
+ *
+ * @author leaf
+ * @date 2017/4/3 0003
  */
 public class CommentUtils {
+
+    private static Pattern TAG_NAME_COMPILE = Pattern.compile("^@[\\w]+[\\t ]");
 
     /**
      * 获取注释的类型
      *
-     * @param coment
+     * @param comment 注释文本
      * @return @see @param @resp @return等
      */
-    public static String getTagType(String coment) {
-        Pattern compile = Pattern.compile("^@[\\w]+[\\t ]");
-        Matcher m = compile.matcher(coment);
+    public static String getTagType(String comment) {
+        Matcher m = TAG_NAME_COMPILE.matcher(comment);
         if (m.find()) {
             return m.group().trim();
         } else {
@@ -31,12 +35,11 @@ public class CommentUtils {
     /**
      * 解析基本的文本注释
      *
-     * @param coment
-     * @return
+     * @param comment 注释文本
      */
-    public static String parseCommentText(String coment) {
-        List<String> coments = asCommentList(coment);
-        for (String s : coments) {
+    public static String parseCommentText(String comment) {
+        List<String> comments = asCommentList(comment);
+        for (String s : comments) {
             if (!s.startsWith("@")) {
                 return s;
             }
@@ -47,12 +50,11 @@ public class CommentUtils {
     /**
      * 将注释转为多行文本
      *
-     * @param coment
-     * @return
+     * @param comment 注释文本
      */
-    public static List<String> asCommentList(String coment) {
-        coment = coment.replaceAll("\\*", "").trim();
-        String[] array = coment.split("\n");
+    public static List<String> asCommentList(String comment) {
+        comment = comment.replaceAll("\\*", "").trim();
+        String[] array = comment.split("\n");
         List<String> comments = new ArrayList(array.length);
         int index = 0;
         StringBuilder sb = new StringBuilder();

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 文件工具
+ *
  * @author leaf
  * @date 2017-03-03 16:52
  */
@@ -12,6 +14,7 @@ public class FileUtils {
 
     /**
      * 递归获取指定目录下面所有的Java文件,包括子目录中的
+     *
      * @param file 文件目录
      * @return 所有java文件
      */
@@ -22,7 +25,7 @@ public class FileUtils {
 
         if (file.isFile()) {
             if (file.getName().lastIndexOf(".java") > 0) {
-                List list = new ArrayList();
+                List list = new ArrayList(1);
                 list.add(file.getAbsolutePath());
                 return list;
             } else {

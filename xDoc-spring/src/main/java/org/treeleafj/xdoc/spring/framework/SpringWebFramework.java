@@ -10,24 +10,24 @@ import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.tag.ParamTagImpl;
 import org.treeleafj.xdoc.tag.RespTagImpl;
 import org.treeleafj.xdoc.tag.SeeTagImpl;
+import org.treeleafj.xdoc.utils.TagUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 基于spirng web框架,扩展api数据
+ * 基于spirng web框架,扩展api接口数据
  * <p>
- * Created by leaf on 2018/6/22.
+ *
+ * @author leaf
+ * @date 2018/6/22
  */
-public class SpringWebFramework extends Framework {
+public class SpringWebFramework implements Framework {
 
     @Override
     public boolean support(Class<?> classz) {
-        if (classz.getAnnotation(Controller.class) != null
-                || classz.getAnnotation(RestController.class) != null) {
-            return true;
-        }
-        return false;
+        return classz.getAnnotation(Controller.class) != null
+                || classz.getAnnotation(RestController.class) != null;
     }
 
     @Override
@@ -69,9 +69,9 @@ public class SpringWebFramework extends Framework {
     /**
      * 构建基于spring web的接口
      *
-     * @param apiAction
+     * @param apiAction 请求的Action信息
      * @param isjson    是否json
-     * @return
+     * @return 封装后的机遇SpringWeb的Action信息
      */
     private SpringApiAction buildSpringApiAction(ApiAction apiAction, boolean isjson) {
         SpringApiAction saa = new SpringApiAction();
@@ -94,13 +94,16 @@ public class SpringWebFramework extends Framework {
         }
 
         saa.setParam(this.getParams(saa));
-        saa.setRespParam(this.getRespParam(saa));
-        saa.setReturnObj(this.getReturnObj(saa));
+        saa.setRespParam(this.getResp(saa));
+        saa.setReturnObj(this.getSeeObj(saa));
         saa.setReturnDesc(this.getReturnDesc(saa));
 
         return saa;
     }
 
+    /**
+     * 设置请求地址和请求方法
+     */
     private boolean setUrisAndMethods(ApiAction apiAction, SpringApiAction saa) {
         RequestMapping methodRequestMappingAnno = apiAction.getMethod().getAnnotation(RequestMapping.class);
         if (methodRequestMappingAnno != null) {
@@ -146,18 +149,27 @@ public class SpringWebFramework extends Framework {
         return false;
     }
 
+    /**
+     * 获取@return注释上的描述语
+     */
     protected String getReturnDesc(SpringApiAction saa) {
-        DocTag tag = saa.getDocTags().getTag("@return");
+        DocTag tag = TagUtils.findTag(saa.getDocTags(), "@return");
         return tag != null ? tag.getValues().toString() : null;
     }
 
-    protected ObjectInfo getReturnObj(SpringApiAction saa) {
-        SeeTagImpl tag = (SeeTagImpl) saa.getDocTags().getTag("@see");
+    /**
+     * 获取@ss注释上的对象
+     */
+    protected ObjectInfo getSeeObj(SpringApiAction saa) {
+        SeeTagImpl tag = (SeeTagImpl) TagUtils.findTag(saa.getDocTags(), "@see");
         return tag != null ? tag.getValues() : null;
     }
 
+    /**
+     * 获取@param注释上的信息
+     */
     protected List<ParamInfo> getParams(SpringApiAction saa) {
-        List tags = saa.getDocTags().getTags("@param");
+        List tags = TagUtils.findTags(saa.getDocTags(), "@param");
         List<ParamInfo> paramInfos = new ArrayList<>(tags.size());
         for (Object tag : tags) {
             ParamTagImpl paramTag = (ParamTagImpl) tag;
@@ -171,8 +183,11 @@ public class SpringWebFramework extends Framework {
         return paramInfos;
     }
 
-    protected List<ParamInfo> getRespParam(SpringApiAction saa) {
-        List<DocTag> tags = saa.getDocTags().getTags("@resp");
+    /**
+     * 获取@resp注释上的信息
+     */
+    protected List<ParamInfo> getResp(SpringApiAction saa) {
+        List<DocTag> tags = TagUtils.findTags(saa.getDocTags(), "@resp");
         List<ParamInfo> list = new ArrayList(tags.size());
         for (DocTag tag : tags) {
             RespTagImpl respTag = (RespTagImpl) tag;
@@ -186,16 +201,22 @@ public class SpringWebFramework extends Framework {
         return list;
     }
 
+    /**
+     * 获取@respbody上的信息
+     */
     protected String getRespbody(SpringApiAction saa) {
-        DocTag respbodyTag = saa.getDocTags().getTag("@respbody");
+        DocTag respbodyTag = TagUtils.findTag(saa.getDocTags(), "@respbody");
         if (respbodyTag != null) {
             return (String) respbodyTag.getValues();
         }
         return null;
     }
 
+    /**
+     * 获取@title上的信息
+     */
     protected String getTitile(SpringApiAction saa) {
-        DocTag titleTag = saa.getDocTags().getTag("@title");
+        DocTag titleTag = TagUtils.findTag(saa.getDocTags(), "@title");
         if (titleTag != null) {
             return (String) titleTag.getValues();
         } else {
@@ -205,8 +226,6 @@ public class SpringWebFramework extends Framework {
 
     /**
      * 获取接口的uri
-     *
-     * @return
      */
     protected List<String> getUris(String[] values) {
         List<String> uris = new ArrayList<>();
@@ -218,8 +237,6 @@ public class SpringWebFramework extends Framework {
 
     /**
      * 获取接口上允许的访问方式
-     *
-     * @return
      */
     protected List<String> getMethods(RequestMethod... methods) {
         List<String> methodStrs = new ArrayList<>();
@@ -231,22 +248,10 @@ public class SpringWebFramework extends Framework {
 
     /**
      * 判断整个类里的所有接口是否都返回json
-     *
-     * @param classz
-     * @return
      */
     protected boolean isJson(Class<?> classz) {
-        Controller controllerAnno = classz.getAnnotation(Controller.class);
         RestController restControllerAnno = classz.getAnnotation(RestController.class);
         ResponseBody responseBody = classz.getAnnotation(ResponseBody.class);
-
-        if (responseBody != null) {
-            return true;
-        } else if (controllerAnno != null) {
-            return false;
-        } else if (restControllerAnno != null) {
-            return true;
-        }
-        return false;
+        return responseBody != null || restControllerAnno != null;
     }
 }

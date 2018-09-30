@@ -5,7 +5,10 @@ import org.treeleafj.xdoc.tag.DocTagImpl;
 import org.treeleafj.xdoc.utils.CommentUtils;
 
 /**
- * Created by leaf on 2017/3/4.
+ * 基于JavaParser包的默认注释解析转换器
+ *
+ * @author leaf
+ * @date 2017/3/4
  */
 public class DefaultJavaParserTagConverterImpl implements JavaParserTagConverter<String> {
 

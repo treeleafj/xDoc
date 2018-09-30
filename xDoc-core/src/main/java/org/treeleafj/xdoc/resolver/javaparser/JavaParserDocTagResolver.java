@@ -13,11 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.treeleafj.xdoc.framework.Framework;
 import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
-import org.treeleafj.xdoc.model.DocTags;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
 import org.treeleafj.xdoc.resolver.IgnoreApi;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverter;
-import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverterManager;
+import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverterRegistrar;
 import org.treeleafj.xdoc.tag.DocTag;
 import org.treeleafj.xdoc.utils.ClassMapperUtils;
 import org.treeleafj.xdoc.utils.CommentUtils;
@@ -31,7 +30,9 @@ import java.util.List;
 /**
  * 基于开源JavaParser实现的解析
  * <p>
- * Created by leaf on 2017/4/1 0001.
+ *
+ * @author leaf
+ * @date 2017/4/1 0001
  */
 public class JavaParserDocTagResolver implements DocTagResolver {
 
@@ -40,7 +41,8 @@ public class JavaParserDocTagResolver implements DocTagResolver {
     @Override
     public List<ApiModule> resolve(List<String> files, Framework framework) {
 
-        for (String file : files) {//缓存文件
+        //先缓存类文件信息
+        for (String file : files) {
             try (FileInputStream in = new FileInputStream(file)) {
                 CompilationUnit cu = JavaParser.parse(in);
                 if (cu.getTypes().size() <= 0) {
@@ -51,8 +53,10 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 final Class<?> moduleType = Class.forName(cu.getPackageDeclaration().get().getNameAsString() + "." + typeDeclaration.getNameAsString());
                 IgnoreApi ignoreApi = moduleType.getAnnotation(IgnoreApi.class);
                 if (ignoreApi == null) {
-                    ClassMapperUtils.put(moduleType.getName(), file);//缓存路径
-                    ClassMapperUtils.put(moduleType.getSimpleName(), file);//缓存路径
+                    //缓存"包名+类名"跟对应的.java文件的位置映射关系
+                    ClassMapperUtils.put(moduleType.getName(), file);
+                    //缓存"类名"跟对应的.java文件的位置映射关系
+                    ClassMapperUtils.put(moduleType.getSimpleName(), file);
                 }
             } catch (Exception e) {
                 log.warn("读取文件失败:{}, {}", file, e.getMessage());
@@ -113,7 +117,7 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                             if (StringUtils.isBlank(tagType)) {
                                 continue;
                             }
-                            JavaParserTagConverter converter = JavaParserTagConverterManager.getConverter(tagType);
+                            JavaParserTagConverter converter = JavaParserTagConverterRegistrar.getInstance().getConverter(tagType);
                             DocTag docTag = converter.converter(c);
                             if (docTag != null) {
                                 docTagList.add(docTag);
@@ -122,13 +126,12 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                             }
                         }
 
-                        DocTags docTags = new DocTags(docTagList);
                         ApiAction apiAction = new ApiAction();
                         if (m.getComment().isPresent()) {
                             apiAction.setComment(CommentUtils.parseCommentText(m.getComment().get().getContent()));
                         }
                         apiAction.setName(m.getNameAsString());
-                        apiAction.setDocTags(docTags);
+                        apiAction.setDocTags(docTagList);
                         apiAction.setMethod(method);
                         apiModule.getApiActions().add(apiAction);
 

@@ -5,7 +5,9 @@ import org.treeleafj.xdoc.tag.ParamTagImpl;
 import org.treeleafj.xdoc.tag.RespTagImpl;
 
 /**
- * Created by leaf on 2017/3/12 0012.
+ * 针对@resp的转换器
+ * @author leaf
+ * @date 2017/3/12 0012
  */
 public class RespTagConverter extends ParamTagConverter {
 

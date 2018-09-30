@@ -21,7 +21,10 @@ import java.io.FileInputStream;
 import java.util.*;
 
 /**
- * Created by leaf on 2017/3/4.
+ * 针对@see的转换器
+ *
+ * @author leaf
+ * @date 2017/3/4
  */
 public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
 
@@ -29,9 +32,9 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
 
     @Override
     public DocTag converter(String comment) {
-        DocTag _docTag = super.converter(comment);
+        DocTag docTag = super.converter(comment);
 
-        String path = ClassMapperUtils.getPath((String) _docTag.getValues());
+        String path = ClassMapperUtils.getPath((String) docTag.getValues());
         if (StringUtils.isBlank(path)) {
             return null;
         }
@@ -59,12 +62,12 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
         objectInfo.setType(returnClassz);
         objectInfo.setFieldInfos(fields);
         objectInfo.setComment(text);
-        return new SeeTagImpl(_docTag.getTagName(), objectInfo);
+        return new SeeTagImpl(docTag.getTagName(), objectInfo);
     }
 
     private Map<String, String> analysisFieldComments(Class<?> classz) {
 
-        final Map<String, String> commentMap = new HashMap();
+        final Map<String, String> commentMap = new HashMap(10);
 
         List<Class> classes = new LinkedList<>();
 
@@ -122,7 +125,7 @@ public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
 
         for (PropertyDescriptor propertyDescriptor : propertyDescriptors) {
             //排除掉class属性
-            if (propertyDescriptor.getName().equals("class")) {
+            if ("class".equals(propertyDescriptor.getName())) {
                 continue;
             }
 

@@ -7,9 +7,11 @@ import java.util.List;
 /**
  * 抽象各种API框架的特性,用于在基于xDoc-core渲染出来的ApiModule基础中,进行再度包装
  * <p>
- * Created by leaf on 2018/6/22.
+ *
+ * @author leaf
+ * @date 2018/6/22
  */
-public abstract class Framework {
+public interface Framework {
 
     /**
      * 扩展API数据
@@ -17,7 +19,7 @@ public abstract class Framework {
      * @param apiModules 原始基本的Api数据
      * @return 扩展后的api数据
      */
-    public abstract List<ApiModule> extend(List<ApiModule> apiModules);
+    List<ApiModule> extend(List<ApiModule> apiModules);
 
     /**
      * 判断该类是否适合该框架
@@ -25,5 +27,5 @@ public abstract class Framework {
      * @param classz 扫描到的类
      * @return 是支持
      */
-    public abstract boolean support(Class<?> classz);
+    boolean support(Class<?> classz);
 }

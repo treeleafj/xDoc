@@ -2,8 +2,10 @@ package org.treeleafj.xdoc.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.treeleafj.xdoc.tag.DocTag;
 
 import java.lang.reflect.Method;
+import java.util.List;
 
 /**
  * 接口信息,一个接口类里面会有多个接口,每个接口都抽象成ApiAction
@@ -38,5 +40,5 @@ public class ApiAction {
     /**
      * 方法上标注的注解
      */
-    private DocTags docTags;
+    private List<DocTag> docTags;
 }

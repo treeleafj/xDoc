@@ -8,9 +8,12 @@ import java.util.List;
 /**
  * 注释解析器接口,所有的解析器实现都要继承此接口
  * <p>
- * 现有的实现有基于sun javadoc, 也有基于开源的javaparser
+ * 现有的实现有基于开源的javaparser.
+ * 而sun javadoc这种已经废弃掉了
  * <p>
- * Created by leaf on 2017/4/1 0001.
+ *
+ * @author leaf
+ * @date 2017/4/1 0001
  */
 public interface DocTagResolver {
 

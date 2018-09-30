@@ -25,9 +25,4 @@ public class ApiDoc {
     public ApiDoc(List<ApiModule> apiModules) {
         this.apiModules = apiModules;
     }
-
-    public ApiDoc(Map<String, Object> properties, List<ApiModule> apiModules) {
-        this.properties = properties;
-        this.apiModules = apiModules;
-    }
 }

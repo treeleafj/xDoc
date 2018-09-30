@@ -2,16 +2,21 @@ package org.treeleafj.xdoc.model;
 
 import lombok.Data;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * 针对@see标签指向的类具体信息
+ *
  * @author leaf
  * @date 2017-03-03 12:14
  */
 @Data
 public class ObjectInfo {
 
+    /**
+     * 返回的参数名称
+     */
     private String name;
 
     /**
@@ -19,8 +24,14 @@ public class ObjectInfo {
      */
     private Class<?> type;
 
+    /**
+     * 上面的注释
+     */
     private String comment;
 
-    private List<FieldInfo> fieldInfos = new ArrayList<>();
+    /**
+     * 对象的属性
+     */
+    private List<FieldInfo> fieldInfos = new LinkedList<>();
 
 }

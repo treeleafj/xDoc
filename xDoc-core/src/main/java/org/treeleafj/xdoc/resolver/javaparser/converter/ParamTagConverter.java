@@ -5,15 +5,17 @@ import org.treeleafj.xdoc.tag.ParamTagImpl;
 import org.treeleafj.xdoc.utils.Constant;
 
 /**
- * Created by leaf on 2017/3/4.
+ * 针对@param的转换器
+ * @author leaf
+ * @date 2017/3/4
  */
 public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
 
     @Override
     public DocTag converter(String comment) {
-        DocTag _docTag = super.converter(comment);
-        String _val = (String) _docTag.getValues();
-        String[] array = _val.split("[ \t]+");
+        DocTag docTag = super.converter(comment);
+        String val = (String) docTag.getValues();
+        String[] array = val.split("[ \t]+");
         String paramName = null;
         String paramDesc = "";
         String paramType = "String";
@@ -24,12 +26,14 @@ public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
         //上面的"必填"两个字也可以换成英文的"Y"
 
         if (array.length > 0) {
-            paramName = array[0];//先将第一个认为是参数名称
+            //先将第一个认为是参数名称
+            paramName = array[0];
             if (array.length > 1) {
 
                 int start = 1;
                 if (array[1].startsWith(":") && array[1].length() > 1) {
-                    paramName = array[1].substring(1);//获取 :username这种类型的参数名称
+                    //获取 :username这种类型的参数名称
+                    paramName = array[1].substring(1);
                     start = 2;
                 }
 
@@ -59,6 +63,6 @@ public class ParamTagConverter extends DefaultJavaParserTagConverterImpl {
             }
         }
 
-        return new ParamTagImpl(_docTag.getTagName(), paramName, paramDesc, paramType, require);
+        return new ParamTagImpl(docTag.getTagName(), paramName, paramDesc, paramType, require);
     }
 }
