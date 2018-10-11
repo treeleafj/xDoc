@@ -80,7 +80,9 @@ public class XDoc {
     public ApiDoc resolve() {
         List<String> files = new ArrayList<>();
         for (String srcPath : this.srcPaths) {
-            files.addAll(FileUtils.getAllJavaFiles(new File(srcPath)));
+            File dir = new File(srcPath);
+            log.info("解析源码路径:{}", dir.getAbsolutePath());
+            files.addAll(FileUtils.getAllJavaFiles(dir));
         }
 
         List<ApiModule> apiModules = this.docTagResolver.resolve(files, framework);
