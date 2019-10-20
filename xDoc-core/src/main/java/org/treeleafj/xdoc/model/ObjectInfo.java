@@ -15,11 +15,6 @@ import java.util.List;
 public class ObjectInfo {
 
     /**
-     * 返回的参数名称
-     */
-    private String name;
-
-    /**
      * 源码在哪个类
      */
     private Class<?> type;

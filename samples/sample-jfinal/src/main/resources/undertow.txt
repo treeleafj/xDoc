@@ -1,0 +1,1 @@
+undertow.resourcePath=sample-jfinal/src/main/webapp,classpath:static

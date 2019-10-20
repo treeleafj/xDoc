@@ -9,8 +9,8 @@ import org.treeleafj.xdoc.framework.Framework;
 import org.treeleafj.xdoc.model.ApiDoc;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
+import org.treeleafj.xdoc.resolver.JavaSourceFileManager;
 import org.treeleafj.xdoc.resolver.javaparser.JavaParserDocTagResolver;
-import org.treeleafj.xdoc.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,12 +30,12 @@ public class XDoc {
 
     private static final String CHARSET = "utf-8";
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 源码路径
      */
-    private List<String> srcPaths;
+    private List<File> srcDirs;
 
     /**
      * api框架类型
@@ -56,19 +56,20 @@ public class XDoc {
     /**
      * 构建XDoc对象
      *
-     * @param srcPath 源码路径
+     * @param srcDir 源码目录路径
      */
-    public XDoc(String srcPath, Framework framework) {
-        this(Arrays.asList(srcPath), framework);
+    public XDoc(File srcDir, Framework framework) {
+        this(Arrays.asList(srcDir), framework);
     }
+
 
     /**
      * 构建XDoc对象
      *
-     * @param srcPaths 源码路径,支持多个
+     * @param srcDirs 源码目录路径,支持多个
      */
-    public XDoc(List<String> srcPaths, Framework framework) {
-        this.srcPaths = srcPaths;
+    public XDoc(List<File> srcDirs, Framework framework) {
+        this.srcDirs = srcDirs;
         this.framework = framework;
     }
 
@@ -79,15 +80,25 @@ public class XDoc {
      */
     public ApiDoc resolve() {
         List<String> files = new ArrayList<>();
-        for (String srcPath : this.srcPaths) {
-            File dir = new File(srcPath);
-            log.info("解析源码路径:{}", dir.getAbsolutePath());
-            files.addAll(FileUtils.getAllJavaFiles(dir));
+        for (File dir : this.srcDirs) {
+
+            if (!dir.exists()) {
+                logger.error("源码路径[{}]不存在", dir.getAbsolutePath());
+                continue;
+            }
+
+            if (!dir.isDirectory()) {
+                logger.error("源码路径[{}]不是一个目录", dir.getAbsolutePath());
+                continue;
+            }
+
+            logger.info("开始解析源码路径:{}", dir.getAbsolutePath());
+            files.addAll(JavaSourceFileManager.getInstance().getAllJavaFiles(dir));
         }
 
         List<ApiModule> apiModules = this.docTagResolver.resolve(files, framework);
 
-        if (framework != null) {
+        if (framework != null && apiModules != null) {
             apiModules = framework.extend(apiModules);
         }
         return new ApiDoc(apiModules);
@@ -121,7 +132,7 @@ public class XDoc {
             try {
                 IOUtils.write(s, out, CHARSET);
             } catch (IOException e) {
-                log.error("接口文档写入文件失败", e);
+                logger.error("接口文档写入文件失败", e);
             } finally {
                 IOUtils.closeQuietly(out);
             }

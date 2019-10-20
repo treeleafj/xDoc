@@ -1,0 +1,5 @@
+xdoc.enable=true
+## 该路径可能在不同的环境启动时应用的相对路径是不同的,请设置成绝对路径
+xdoc.sourcePath=samples/sample-jfinal/src/main/java,samples/sample-base/src/main/java
+xdoc.version=1.0
+xdoc.title=Jfinal文档测试

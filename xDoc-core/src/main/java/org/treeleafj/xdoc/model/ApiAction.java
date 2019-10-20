@@ -30,7 +30,7 @@ public class ApiAction {
      * 接口方法
      */
     @JsonIgnore
-    private transient Method method;
+    private Method method;
 
     /**
      * 接口的描述

@@ -1,9 +1,6 @@
 package org.treeleafj.xdoc.format;
 
 import org.treeleafj.xdoc.model.ApiDoc;
-import org.treeleafj.xdoc.model.ApiModule;
-
-import java.util.List;
 
 /**
  * 文档输出格式

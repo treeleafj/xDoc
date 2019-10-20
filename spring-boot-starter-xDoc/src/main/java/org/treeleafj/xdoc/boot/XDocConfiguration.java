@@ -11,7 +11,7 @@ public class XDocConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "xdoc", name = "enable", matchIfMissing = true)
-    public XDocController xDocController() {
-        return new XDocController();
+    public XDocSpringController xDocController() {
+        return new XDocSpringController();
     }
 }

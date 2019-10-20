@@ -1,6 +1,7 @@
 package org.treeleafj.xdoc.resolver.javaparser;
 
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
@@ -15,10 +16,10 @@ import org.treeleafj.xdoc.model.ApiAction;
 import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.resolver.DocTagResolver;
 import org.treeleafj.xdoc.resolver.IgnoreApi;
+import org.treeleafj.xdoc.resolver.JavaSourceFileManager;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverter;
 import org.treeleafj.xdoc.resolver.javaparser.converter.JavaParserTagConverterRegistrar;
 import org.treeleafj.xdoc.tag.DocTag;
-import org.treeleafj.xdoc.utils.ClassMapperUtils;
 import org.treeleafj.xdoc.utils.CommentUtils;
 
 import java.io.FileInputStream;
@@ -26,6 +27,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 基于开源JavaParser实现的解析
@@ -38,13 +40,20 @@ public class JavaParserDocTagResolver implements DocTagResolver {
 
     private Logger log = LoggerFactory.getLogger(JavaParserDocTagResolver.class);
 
+    private JavaParser javaParser = new JavaParser();
+
     @Override
     public List<ApiModule> resolve(List<String> files, Framework framework) {
 
         //先缓存类文件信息
         for (String file : files) {
             try (FileInputStream in = new FileInputStream(file)) {
-                CompilationUnit cu = JavaParser.parse(in);
+                Optional<CompilationUnit> optional = javaParser.parse(in).getResult();
+                if (!optional.isPresent()) {
+                    continue;
+                }
+
+                CompilationUnit cu = optional.get();
                 if (cu.getTypes().size() <= 0) {
                     continue;
                 }
@@ -54,9 +63,9 @@ public class JavaParserDocTagResolver implements DocTagResolver {
                 IgnoreApi ignoreApi = moduleType.getAnnotation(IgnoreApi.class);
                 if (ignoreApi == null) {
                     //缓存"包名+类名"跟对应的.java文件的位置映射关系
-                    ClassMapperUtils.put(moduleType.getName(), file);
+                    JavaSourceFileManager.getInstance().put(moduleType.getName(), file);
                     //缓存"类名"跟对应的.java文件的位置映射关系
-                    ClassMapperUtils.put(moduleType.getSimpleName(), file);
+                    JavaSourceFileManager.getInstance().put(moduleType.getSimpleName(), file);
                 }
             } catch (Exception e) {
                 log.warn("读取文件失败:{}, {}", file, e.getMessage());
@@ -68,7 +77,12 @@ public class JavaParserDocTagResolver implements DocTagResolver {
         for (String file : files) {
             try (FileInputStream in = new FileInputStream(file)) {
 
-                CompilationUnit cu = JavaParser.parse(in);
+                Optional<CompilationUnit> optional = javaParser.parse(in).getResult();
+                if (!optional.isPresent()) {
+                    continue;
+                }
+
+                CompilationUnit cu = optional.get();
                 if (cu.getTypes().size() <= 0) {
                     continue;
                 }

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>{{title}}</title>
+    <title>接口文档</title>
     <!--<link rel="stylesheet" href="https://cdn.bootcss.com/element-ui/2.4.0/theme-chalk/index.css">-->
     <!--<script type="text/javascript" src="http://vuejs.org/js/vue.min.js"></script>-->
     <!--<script src="https://cdn.bootcss.com/element-ui/2.4.0/index.js"></script>-->
@@ -12,6 +12,7 @@
 </head>
 <body>
 <div id="app">
+    <input id="title" type="hidden" v-model="title" />
     <div>
         <el-menu id="header" mode="horizontal">
             <p class="logo-text">{{title}}</p>
@@ -38,7 +39,7 @@
         <p class="uri" v-if="currentApiAction.methods.length > 0">只支持:
             <span v-for="m in currentApiAction.methods">{{m}} </span>
         </p>
-        <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{(currentApiModule.uris[0] ? currentApiModule.uris[0] + '/' : '') + uri}}</p>
+        <p class="uri" v-for="uri in currentApiAction.uris">接口地址: {{uri}}</p>
         <p class="return">接口返回: {{currentApiAction.returnDesc}}</p>
 
         <el-collapse v-model="activeNames">
@@ -216,6 +217,12 @@
                         data = JSON.parse(data);
                     }
                     self.fullData(data);
+
+                    //设置title
+                    var titleEl = document.getElementById("title");
+                    if (titleEl && titleEl.value) {
+                        document.title = titleEl.value;
+                    }
                 }).catch(function(e) {
                     self.$message.error('系统错误,请求api列表 接口失败');
                 });
@@ -383,9 +390,6 @@
                 var self = this;
 
                 var uri = '';
-                if (this.currentApiModule.uris.length > 0) {
-                    uri += '/' + this.currentApiModule.uris[0];
-                }
 
                 if (this.currentApiAction.uris.length > 0) {
                     uri += '/' + this.currentApiAction.uris[0];

@@ -1,0 +1,5 @@
+xdoc:
+  enable: true
+  title: 测试文档
+  ## 该路径可能在不同的环境启动时应用的相对路径是不同的,请设置成绝对路径
+  sourcePath: samples/sample-springboot/src/main/java,samples/sample-base/src/main/java
