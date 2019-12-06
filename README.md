@@ -109,7 +109,13 @@ public void buildHtml() throws Exception {
     //生成离线的HTML格式的接口文档
     String userDir = System.getProperty("user.dir");
     FileOutputStream out = new FileOutputStream(new File(userDir, "api.html"));
+    
+    /**注意!!!路径必须是要能扫描到源码工程的路径,本文user.dir只是作者IDE中的工程目录,不一定是你的工程目录,执行生成的文件打开没有接口目录,说明没扫描到,请优先确认自己传入的路径是否正确!!!*/
     XDoc xDoc = new XDoc(userDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
+    
+    //1.1.0版本后改为SpringWebHttpFramework
+    //XDoc xDoc = new XDoc(userDir + "/src/main/java/org/treeleafj", new SpringWebHttpFramework());
+    
     xDoc.build(out, new HtmlForamt());
 }
 ```
@@ -121,7 +127,13 @@ public void buildMarkdown() {
     //生成离线的Markdown格式的接口文档
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     String rootDir = System.getProperty("user.dir");
+    
+    /**注意!!!路径必须是要能扫描到源码工程的路径,本文user.dir只是作者IDE中的工程目录,不一定是你的工程目录,执行生成的文件打开没有接口目录,说明没扫描到,请优先确认自己传入的路径是否正确!!!*/
     XDoc xDoc = new XDoc(rootDir + "/src/main/java/org/treeleafj", new SpringWebFramework());
+    
+    //1.1.0版本后改为SpringWebHttpFramework
+    //XDoc xDoc = new XDoc(userDir + "/src/main/java/org/treeleafj", new SpringWebHttpFramework());
+    
     xDoc.build(out, new MarkdownFormat());
 
     System.out.println(out.toString());
