@@ -19,20 +19,21 @@
 
 **参数:**
 
-参数名|描述|是否必填
+参数名|类型|是否必填|描述
 -----|------|------
 #foreach($p in $apiAction.param)
-$p.paramName|$p.paramDesc|$p.require
+$p.paramName|$p.paramType|#if($p.require) 是 #else 否 #end|$p.paramDesc
 #end
 
 **返回:**
 $apiAction.returnDesc
 
-参数名|类型|描述
+参数名|类型|是否必填|描述
 -----|------|------
-#foreach($field in $apiAction.returnObj.fieldInfos)
-$field.name|$field.simpleTypeName|$field.comment
+#foreach($p in $apiAction.respParam)
+$p.paramName|$p.paramType|#if($p.require) 是 #else 否 #end|$p.paramDesc
 #end
+
 #if($apiAction.respbody)
 返回：
 ```json

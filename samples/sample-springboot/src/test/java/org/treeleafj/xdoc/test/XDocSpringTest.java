@@ -21,8 +21,11 @@ public class XDocSpringTest {
     public void buildMarkdown() {
         //生成离线的Markdown格式的接口文档
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        String rootDir = System.getProperty("user.dir");
-        XDoc xDoc = new XDoc(new File(rootDir + "/src/main/java/org/treeleafj"), new SpringWebHttpFramework());
+        String userDir = System.getProperty("user.dir");
+        File srcDir1 = new File(userDir + "/src/main/java/org/treeleafj");
+        File srcDir2 = new File(userDir + "/../sample-base/src/main/java/org/treeleafj");
+        List<File> list = Arrays.asList(srcDir1, srcDir2);
+        XDoc xDoc = new XDoc(list, new SpringWebHttpFramework());
         xDoc.build(out, new MarkdownFormat());
 
         System.out.println(out.toString());

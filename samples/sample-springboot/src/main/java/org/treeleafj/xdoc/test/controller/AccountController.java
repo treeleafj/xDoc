@@ -39,6 +39,7 @@ public class AccountController {
      * @param type 账户类型(1-普通账户)|必填
      * @return 用户的资产
      * @title 查询用户资产
+     * @resp balance 账户余额|double
      * @see org.treeleafj.xdoc.test.vo.AccountEx
      */
     @ResponseBody

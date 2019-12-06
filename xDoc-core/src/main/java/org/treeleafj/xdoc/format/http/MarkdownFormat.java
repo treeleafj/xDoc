@@ -5,12 +5,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.treeleafj.xdoc.format.Format;
-import org.treeleafj.xdoc.model.ApiAction;
-import org.treeleafj.xdoc.model.ApiDoc;
-import org.treeleafj.xdoc.model.ApiModule;
+import org.treeleafj.xdoc.model.*;
 import org.treeleafj.xdoc.model.http.HttpApiAction;
+import org.treeleafj.xdoc.model.http.HttpParam;
 import org.treeleafj.xdoc.utils.JsonUtils;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,6 +37,29 @@ public class MarkdownFormat implements Format {
             HttpApiAction saa = (HttpApiAction) apiAction;
             if (saa.isJson() && StringUtils.isNotBlank(saa.getRespbody())) {
                 saa.setRespbody(JsonUtils.formatJson(saa.getRespbody()));
+            }
+
+            ObjectInfo returnObj = saa.getReturnObj();
+            if (returnObj != null && returnObj.getFieldInfos() != null) {
+                //将@resp标签跟@return标签中重复的属性进行去重,以@resp的为准
+                for (HttpParam httpParam : saa.getRespParam()) {
+                    for (int i = returnObj.getFieldInfos().size() - 1; i >= 0; i--) {
+                        FieldInfo fieldInfo = returnObj.getFieldInfos().get(i);
+                        if (StringUtils.equals(httpParam.getParamName(), fieldInfo.getName())) {
+                            returnObj.getFieldInfos().remove(i);
+                            break;
+                        }
+                    }
+                }
+
+                for (FieldInfo fieldInfo : returnObj.getFieldInfos()) {
+                    HttpParam param = new HttpParam();
+                    param.setParamType(fieldInfo.getSimpleTypeName());
+                    param.setParamDesc(fieldInfo.getComment());
+                    param.setParamName(fieldInfo.getName());
+                    param.setRequire(fieldInfo.isRequire());
+                    saa.getRespParam().add(param);
+                }
             }
         }
 
