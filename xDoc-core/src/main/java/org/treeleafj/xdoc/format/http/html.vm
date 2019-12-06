@@ -265,30 +265,38 @@
             },
 
             reverseResponse() {
+                var names = {};
 
                 var data = [];
-
-                if (this.currentApiAction && this.currentApiAction.returnObj) {
-
-                    for (var i = 0; i < this.currentApiAction.returnObj.fieldInfos.length; i++) {
-                        var par = this.currentApiAction.returnObj.fieldInfos[i];
-                        data.push({
-                            paramName: par.name,
-                            paramDesc: par.comment,
-                            paramType: par.simpleTypeName,
-                            require : par.require
-                        });
-                    }
-                }
 
                 if (this.currentApiAction && this.currentApiAction.respParam && this.currentApiAction.respParam.length > 0) {
                     for (var i = 0; i < this.currentApiAction.respParam.length; i++) {
                         var par = this.currentApiAction.respParam[i];
+                        names[par.paramName] = par.paramName;
                         data.push({
                             paramName: par.paramName,
                             paramDesc: par.paramDesc,
                             paramType: par.paramType,
                             require: par.require
+                        });
+                    }
+                }
+
+                if (this.currentApiAction && this.currentApiAction.returnObj) {
+
+                    for (var i = 0; i < this.currentApiAction.returnObj.fieldInfos.length; i++) {
+                        var par = this.currentApiAction.returnObj.fieldInfos[i];
+
+                        if (names[par.name] != null) {
+                            //已经有@resp注解进行了覆盖,就不再采纳@return中的
+                            continue;
+                        }
+
+                        data.push({
+                            paramName: par.name,
+                            paramDesc: par.comment,
+                            paramType: par.simpleTypeName,
+                            require : par.require
                         });
                     }
                 }
