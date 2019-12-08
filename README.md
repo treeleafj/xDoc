@@ -163,3 +163,6 @@ public void buildMarkdown() {
 
 - @return
   返回信息的描述,内容为纯文本,仅用于展示
+  
+- @IgnoreApi
+  这个是注解,不是放在注释上的,用于标注哪些接口不需要生成接口文档
