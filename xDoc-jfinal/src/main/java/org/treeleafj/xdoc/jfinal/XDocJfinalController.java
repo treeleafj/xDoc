@@ -67,7 +67,7 @@ public class XDocJfinalController extends Controller {
      */
     public void rebuild() {
         init();
-        redirect("xdoc/index.html");
+        redirect("index");
     }
 
     /**

@@ -26,7 +26,12 @@ public class HttpApiAction extends ApiAction {
     /**
      * 入参
      */
-    private List<HttpParam> param = new ArrayList<>(0);
+    private List<HttpParam> params = new ArrayList<>(0);
+
+    /**
+     * 请求参数对象
+     */
+    private List<ObjectInfo> paramObjs = new ArrayList<>(0);
 
     /**
      * 返回对象

@@ -253,13 +253,41 @@
 
             reverseParam() {
                 if (this.currentApiAction) {
+                    var names = {};
                     var data = [];
                     this.testForm = {};
-                    for (var i = 0; i < this.currentApiAction.param.length; i++) {
-                        var par = this.currentApiAction.param[i];
+                    for (var i = 0; i < this.currentApiAction.params.length; i++) {
+                        var par = this.currentApiAction.params[i];
                         data.push(par);
                         this.$set(this.testForm, par.paramName, '');//动态绑定监控
+
+                        names[par.paramName] = par.paramName;
                     }
+
+                    if (this.currentApiAction.paramObjs) {
+                        for (var i = 0; i < this.currentApiAction.paramObjs.length; i++) {
+                            var paramObj = this.currentApiAction.paramObjs[i];
+                            if (!paramObj.fieldInfos) {
+                                continue;
+                            }
+
+                            for (var j = 0; j < paramObj.fieldInfos.length; j++) {
+                                var fieldInfo = paramObj.fieldInfos[j];
+                                if (names[fieldInfo.name]) {
+                                    //@param上已经有了,则不再使用@paramObj中的
+                                    continue;
+                                }
+                                data.push({
+                                    paramName : fieldInfo.name,
+                                    paramDesc: fieldInfo.comment,
+                                    require: fieldInfo.require,
+                                    paramType: fieldInfo.simpleTypeName
+                                });
+                                this.$set(this.testForm, fieldInfo.name, '');//动态绑定监控
+                            }
+                        }
+                    }
+
                     return data;
                 }
             },

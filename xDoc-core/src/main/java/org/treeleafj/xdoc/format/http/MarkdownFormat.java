@@ -10,8 +10,9 @@ import org.treeleafj.xdoc.model.http.HttpApiAction;
 import org.treeleafj.xdoc.model.http.HttpParam;
 import org.treeleafj.xdoc.utils.JsonUtils;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by leaf on 2017/3/4.
@@ -20,7 +21,7 @@ public class MarkdownFormat implements Format {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
-    private VelocityTemplater templater = new VelocityTemplater("org/treeleafj/xdoc/format/http/api.vm");
+    private VelocityTemplater templater = new VelocityTemplater("org/treeleafj/xdoc/format/http/markdown.vm");
 
     @Override
     public String format(ApiDoc apiDoc) {
@@ -42,23 +43,35 @@ public class MarkdownFormat implements Format {
             ObjectInfo returnObj = saa.getReturnObj();
             if (returnObj != null && returnObj.getFieldInfos() != null) {
                 //将@resp标签跟@return标签中重复的属性进行去重,以@resp的为准
-                for (HttpParam httpParam : saa.getRespParam()) {
-                    for (int i = returnObj.getFieldInfos().size() - 1; i >= 0; i--) {
-                        FieldInfo fieldInfo = returnObj.getFieldInfos().get(i);
-                        if (StringUtils.equals(httpParam.getParamName(), fieldInfo.getName())) {
-                            returnObj.getFieldInfos().remove(i);
-                            break;
-                        }
-                    }
+                Set<String> paramNames = new HashSet<>();
+                for (HttpParam param : saa.getRespParam()) {
+                    paramNames.add(param.getParamName());
                 }
 
                 for (FieldInfo fieldInfo : returnObj.getFieldInfos()) {
-                    HttpParam param = new HttpParam();
-                    param.setParamType(fieldInfo.getSimpleTypeName());
-                    param.setParamDesc(fieldInfo.getComment());
-                    param.setParamName(fieldInfo.getName());
-                    param.setRequire(fieldInfo.isRequire());
+                    if (paramNames.contains(fieldInfo.getName())) {
+                        continue;
+                    }
+                    HttpParam param = toHttpParam(fieldInfo);
                     saa.getRespParam().add(param);
+                }
+            }
+
+            if (saa.getParamObjs().size() > 0) {
+                //将@param跟@paramObj标签中重复的属性进行去重,以@param中的为准
+                Set<String> paramNames = new HashSet<>();
+                for (HttpParam param : saa.getParams()) {
+                    paramNames.add(param.getParamName());
+                }
+
+                for (ObjectInfo paramObj : saa.getParamObjs()) {
+                    for (FieldInfo fieldInfo : paramObj.getFieldInfos()) {
+                        if (paramNames.contains(fieldInfo.getName())) {
+                            continue;
+                        }
+                        HttpParam param = toHttpParam(fieldInfo);
+                        saa.getParams().add(param);
+                    }
                 }
             }
         }
@@ -70,5 +83,14 @@ public class MarkdownFormat implements Format {
             log.error("输出markdown文档格式失败", e);
         }
         return null;
+    }
+
+    private HttpParam toHttpParam(FieldInfo fieldInfo) {
+        HttpParam param = new HttpParam();
+        param.setParamType(fieldInfo.getSimpleTypeName());
+        param.setParamDesc(fieldInfo.getComment());
+        param.setParamName(fieldInfo.getName());
+        param.setRequire(fieldInfo.isRequire());
+        return param;
     }
 }

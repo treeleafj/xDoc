@@ -8,10 +8,7 @@ import org.treeleafj.xdoc.model.ApiModule;
 import org.treeleafj.xdoc.model.ObjectInfo;
 import org.treeleafj.xdoc.model.http.HttpApiAction;
 import org.treeleafj.xdoc.model.http.HttpParam;
-import org.treeleafj.xdoc.tag.DocTag;
-import org.treeleafj.xdoc.tag.ParamTagImpl;
-import org.treeleafj.xdoc.tag.RespTagImpl;
-import org.treeleafj.xdoc.tag.SeeTagImpl;
+import org.treeleafj.xdoc.tag.*;
 import org.treeleafj.xdoc.utils.TagUtils;
 
 import java.util.ArrayList;
@@ -39,10 +36,11 @@ public abstract class AbstractHttpFramework implements Framework {
 
                 newApiAction.setTitle(this.getTitile(newApiAction));
                 newApiAction.setRespbody(this.getRespbody(newApiAction));
-                newApiAction.setParam(this.getParams(newApiAction));
+                newApiAction.setParams(this.getParams(newApiAction));
                 newApiAction.setRespParam(this.getResp(newApiAction));
                 newApiAction.setReturnObj(this.getSeeObj(newApiAction));
                 newApiAction.setReturnDesc(this.getReturnDesc(newApiAction));
+                newApiAction.setParamObjs(this.getParamObjs(newApiAction));
 
                 apiModule.getApiActions().set(i, newApiAction);
             }
@@ -125,5 +123,18 @@ public abstract class AbstractHttpFramework implements Framework {
     protected ObjectInfo getSeeObj(ApiAction aa) {
         SeeTagImpl tag = (SeeTagImpl) TagUtils.findTag(aa.getDocTags(), "@see");
         return tag != null ? tag.getValues() : null;
+    }
+
+    /**
+     * 获取@paramObj注解上的对象
+     */
+    private List<ObjectInfo> getParamObjs(HttpApiAction aa) {
+        List<DocTag> tags = TagUtils.findTags(aa.getDocTags(), "@paramObj");
+        List<ObjectInfo> paramObjs = new ArrayList<>(tags.size());
+        for (DocTag tag : tags) {
+            ParamObjTagImpl paramObjTag = (ParamObjTagImpl) tag;
+            paramObjs.add(paramObjTag.getValues());
+        }
+        return paramObjs;
     }
 }

@@ -21,7 +21,7 @@
 
 参数名|类型|是否必填|描述
 -----|------|------
-#foreach($p in $apiAction.param)
+#foreach($p in $apiAction.params)
 $p.paramName|$p.paramType|#if($p.require) 是 #else 否 #end|$p.paramDesc
 #end
 

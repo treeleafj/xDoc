@@ -20,10 +20,12 @@ public class AccountController extends Controller {
     /**
      * 获取当前登录用户的账户资产信息,用户不存在会返回code为9999的错误信息,见:https://github.com/treeleafj/xDoc
      *
-     * @param :type 账户类型(1-普通账户)|必填
+     * @param type 账户类型(1-普通账户)|必填
+     * @param balance 重写@paramObj中AccountEx的balance的注释
+     * @paramObj AccountEx
      * @return 用户的资产
      * @title 查询用户资产
-     * @see org.treeleafj.xdoc.test.vo.AccountEx
+     * @resp balance 账户余额|double
      */
     public void info() {
         String type = this.get("type");

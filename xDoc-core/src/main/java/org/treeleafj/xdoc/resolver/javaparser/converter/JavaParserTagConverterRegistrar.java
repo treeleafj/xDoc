@@ -28,6 +28,7 @@ public class JavaParserTagConverterRegistrar {
         registerConverter("@param", new ParamTagConverter());
         registerConverter("@see", new SeeTagConverter());
         registerConverter("@resp", new RespTagConverter());
+        registerConverter("@paramObj", new ParamObjTagConverter());
     }
 
     /**

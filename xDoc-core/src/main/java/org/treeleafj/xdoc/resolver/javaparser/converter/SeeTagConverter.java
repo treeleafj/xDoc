@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 public class SeeTagConverter extends DefaultJavaParserTagConverterImpl {
 
-    private Logger log = LoggerFactory.getLogger(SeeTagConverter.class);
+    private Logger log = LoggerFactory.getLogger(this.getClass());
 
     private JavaParser javaParser = new JavaParser();
 
